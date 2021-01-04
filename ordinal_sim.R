@@ -8,63 +8,63 @@ source("functions.R")
 set.seed(1234)
 
 
-sim = 2 #100  # simulation runs
+sim = 100  # simulation runs
 n <- c(200,200) #,600) # sample size include high dimension only on cluster
 d <- c(50,250) #,3000) # dimensionality --> include high dimension (3000) only on cluster 
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
-plan(multisession) ## Run in parallel on local computer
+plan(multisession, workers = (availableCores() - 10)) ## Run in parallel on local computer
 
 
 #### data generation via sparse Omega ####
 
 data <- setNames(lapply(seq_along(n), function(i)
-          setNames(future_lapply(1:sim, function(k)
+          setNames(future_lapply(future.seed = T, 1:sim, function(k)
             generate.data(t=t,n=n[i],d=d[i], n_E = n_E)),nm=1:sim)),nm=paste("d =",d))
 
 # data according to Multivariate normal 
 data_0 <- setNames(lapply(seq_along(n), function(i)
-            setNames(future_lapply(1:sim, function(k) 
+            setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               data[[i]][[k]][[1]]),nm=1:sim)),nm=paste("d =",d)) 
 
 # underlying undirected graph via precision matrix
 Omega <- setNames(lapply(seq_along(n), function(i)
-            setNames(future_lapply(1:sim, function(k) 
+            setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               data[[i]][[k]][[2]]),nm=1:sim)),nm=paste("d =",d)) 
 
 #### choose d_1 Variables to be ordinal and let's give them all 3 categories
 
 data_mixed <- setNames(lapply(seq_along(n), function(i)
-                setNames(future_lapply(1:sim, function(k) 
+                setNames(future_lapply(future.seed = T, 1:sim, function(k) 
                   make.ordinal(data=data_0[[i]][[k]])),nm=1:sim)),nm=paste("d =",d)) 
 
 ### benchmark against unknown latent data! ####
 
 rho_pd <- setNames(lapply(seq_along(n), function(i)
-            setNames(future_lapply(1:sim, function(k) 
+            setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               mixed.omega(data = data_mixed[[i]][[k]])),nm=1:sim)),nm=paste("d =",d)) 
 
 rho_latent <- setNames(lapply(seq_along(n), function(i)
-                setNames(future_lapply(1:sim, function(k) 
+                setNames(future_lapply(future.seed = T, 1:sim, function(k) 
                   mixed.omega(data = data_0[[i]][[k]])),nm=1:sim)),nm=paste("d =",d)) 
 
 ### perform glasso ####  
 result <- setNames(lapply(seq_along(n), function(i)
-            setNames(future_lapply(1:sim, function(k) 
+            setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               huge(rho_pd[[i]][[k]],nlambda=nlam,method="glasso",verbose=FALSE)),nm=1:sim)),nm=paste("d =",d)) 
             
 result.benchmark <- setNames(lapply(seq_along(n), function(i)
-                      setNames(future_lapply(1:sim, function(k) 
+                      setNames(future_lapply(future.seed = T, 1:sim, function(k) 
                         huge(rho_latent[[i]][[k]],nlambda=nlam,method="glasso",verbose=FALSE)),nm=1:sim)),nm=paste("d =",d))  
 
 #### use eBIC proposed by Foygel & Drton (2010)  
 Omega_hat <- setNames(lapply(seq_along(n), function(i)
-              setNames(future_lapply(1:sim, function(k) 
+              setNames(future_lapply(future.seed = T, 1:sim, function(k) 
                 omega.select(x=result[[i]][[k]], n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
 
 Omega_Z <- setNames(lapply(seq_along(n), function(i)
-            setNames(future_lapply(1:sim, function(k) 
+            setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               omega.select(x=result.benchmark[[i]][[k]], n=n[i])),nm=1:sim)),nm=paste("d =",d))  
 
 #### obtain adjacency matrix ####   
