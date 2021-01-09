@@ -180,3 +180,33 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
   return(pAUC)
 }
 
+
+
+#### need new big function because result object is getting too large
+### Sigma: Sample correlation matrix
+### Omega: True Precision matrix
+### nlam: positive integer indicating number of tuning parameters
+### n: sample size
+
+
+glasso.results <- function(Sigma = Sigma, Omega = Omega_true, nlam = nlam, n=n){
+  ### this takes a while
+  huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
+  Omega_hat <- omega.select(x=huge.result, n=n)
+  
+  adj_hat <- abs(Omega_hat) > .05
+  adj_true <- Omega_true > 0
+  
+  frobenius <- base::norm(Omega_hat - Omega_true, type = "F")
+  fpr_hat <- fpr(truth = adj_true, estimate = adj_hat)
+  tpr_hat <- tpr(truth = adj_true, estimate = adj_hat)
+  pAUC_hat <- pAUC(truth = Omega_true, huge_obj = huge.result)
+  
+  output <- list("Frobenius norm" = frobenius, "False Positive Rate" = fpr_hat,
+                 "True Positive Rate" = tpr_hat, "partial Area Under the Curve" = pAUC_hat)
+  
+  return(output)
+}
+
+
+

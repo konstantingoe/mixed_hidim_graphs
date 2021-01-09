@@ -48,8 +48,6 @@ save(Omega, file = "Omega.Rdata")
 save(rho_latent, file = "rho_latent.Rdata")
 save(rho_pd, file = "rho_pd.Rdata")
 
-
-
 rho_pd <- setNames(lapply(seq_along(n), function(i)
             setNames(future_lapply(future.seed = T, 1:sim, function(k) 
               mixed.omega(data = data_mixed[[i]][[k]])),nm=1:sim)),nm=paste("d =",d)) 
@@ -60,6 +58,25 @@ rho_latent <- setNames(lapply(seq_along(n), function(i)
 
 rm(data, data_0, data_mixed, Omega, rho_latent)
 ### perform glasso ####  
+
+results_hat <- setNames(lapply(seq_along(n), function(i)
+                setNames(future_lapply(future.seed = T, 1:sim, function(k) 
+                  glasso.results(Sigma = rho_pd[[i]][[k]], Omega = Omega[[i]][[k]],
+                   nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
+
+results_latent <- setNames(lapply(seq_along(n), function(i)
+                    setNames(future_lapply(future.seed = T, 1:sim, function(k) 
+                      glasso.results(Sigma = rho_latent[[i]][[k]], Omega = Omega[[i]][[k]],
+                       nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
+
+
+
+
+
+
+
+
+
 
 ### result object would have 410 GB... not feasible write function so that result object can be deleted afterwards! 
 #sim=2
