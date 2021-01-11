@@ -59,9 +59,19 @@ rho_latent <- setNames(lapply(seq_along(n), function(i)
 rm(data, data_0, data_mixed, Omega, rho_latent)
 ### perform glasso ####  
 
+load("Omega.Rdata")
+load("rho_pd.Rdata")
+load("rho_latent.Rdata")
+
 results_hat <- setNames(lapply(seq_along(n), function(i)
-                setNames(future_lapply(future.seed = T, 1:sim, function(k) 
+                setNames(mclapply(mc.cores = 30, 1:sim, function(k) 
                   glasso.results(Sigma = rho_pd[[i]][[k]], Omega = Omega[[i]][[k]],
+                    nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d))
+
+
+results_hat <- setNames(lapply(seq_along(n), function(i)
+  setNames(future_lapply(future.seed = T, future.lazy = T , 1:sim, function(k) 
+    glasso.results(Sigma = rho_pd[[i]][[k]], Omega = Omega[[i]][[k]],
                    nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
 
 results_latent <- setNames(lapply(seq_along(n), function(i)

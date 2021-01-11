@@ -170,8 +170,11 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
   stopifnot((class(huge_obj)=="huge"))
   #d = dim(truth)[1]
   #n_E <- sum(truth[lower.tri(truth)] != 0)
-  fpr_lambda <- sapply(1:nlam, function(l) fpr(truth = truth,estimate = huge_obj$icov[[l]]))
-  tpr_lambda <- sapply(1:nlam, function(l) tpr(truth = truth,estimate = huge_obj$icov[[l]]))
+  ### here we need adjacency matrices!
+  adj_estimate <- lapply(1:nlam, function(q) abs(huge_obj$icov[[q]]) > .05)
+
+  fpr_lambda <- sapply(1:nlam, function(l) fpr(truth = truth,estimate = adj_estimate[[l]]))
+  tpr_lambda <- sapply(1:nlam, function(l) tpr(truth = truth,estimate = adj_estimate[[l]]))
   
   d_fpr_lambda <- c(diff(fpr_lambda),0)
   d_tpr_lambda <- c(diff(tpr_lambda),0)
@@ -189,22 +192,16 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
 ### n: sample size
 
 
-glasso.results <- function(Sigma = Sigma, Omega = Omega_true, nlam = nlam, n=n){
+glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n){
   ### this takes a while
   huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
   Omega_hat <- omega.select(x=huge.result, n=n)
   
-  adj_hat <- abs(Omega_hat) > .05
-  adj_true <- Omega_true > 0
+  frobenius <- base::norm(Omega_hat - Omega, type = "F")
+  pAUC_hat <- pAUC(truth = Omega, huge_obj = huge.result)
   
-  frobenius <- base::norm(Omega_hat - Omega_true, type = "F")
-  fpr_hat <- fpr(truth = adj_true, estimate = adj_hat)
-  tpr_hat <- tpr(truth = adj_true, estimate = adj_hat)
-  pAUC_hat <- pAUC(truth = Omega_true, huge_obj = huge.result)
-  
-  output <- list("Frobenius norm" = frobenius, "False Positive Rate" = fpr_hat,
-                 "True Positive Rate" = tpr_hat, "partial Area Under the Curve" = pAUC_hat)
-  
+  huge.result <- NULL
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Frobenius norm" = frobenius, "partial Area Under the Curve" = pAUC_hat)
   return(output)
 }
 
