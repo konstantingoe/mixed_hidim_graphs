@@ -9,13 +9,10 @@ set.seed(1234)
 
 
 sim = 100  # simulation runs
-<<<<<<< HEAD
 n <- c(200,200) #,600) # sample size include high dimension only on cluster
 d <- c(50,250) #,3000) # dimensionality --> include high dimension (3000) only on cluster 
-=======
 n <- c(200,200,600) # sample size include high dimension only on cluster
 d <- c(50,250,3000) # dimensionality --> include high dimension (3000) only on cluster 
->>>>>>> c2cc866912796037b127a54958d51beb43945629
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 30 # number of tuning parameters for graphical lassols()
