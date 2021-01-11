@@ -16,8 +16,8 @@ d <- c(50,250,3000) # dimensionality --> include high dimension (3000) only on c
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 30 # number of tuning parameters for graphical lassols()
-plan(multisession, workers = (availableCores() - 30)) ## Run in parallel on local computer
-options(future.globals.maxSize= 20000*1024^2)
+plan(multisession, workers = (availableCores() - 34)) ## Run in parallel on local computer
+#options(future.globals.maxSize= 20000*1024^2)
 
 firstrun <-  F
 
