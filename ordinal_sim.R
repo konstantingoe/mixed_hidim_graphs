@@ -16,7 +16,7 @@ d <- c(50,250,3000) # dimensionality --> include high dimension (3000) only on c
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 30 # number of tuning parameters for graphical lassols()
-plan(multisession, workers = (availableCores() - 10)) ## Run in parallel on local computer
+plan(multisession, workers = (availableCores() - 30)) ## Run in parallel on local computer
 options(future.globals.maxSize= 20000*1024^2)
 
 firstrun <-  F
@@ -70,12 +70,6 @@ load("rho_pd.Rdata")
 load("rho_latent.Rdata")
 
 results_hat <- setNames(lapply(seq_along(n), function(i)
-                setNames(mclapply(mc.cores = 30, 1:sim, function(k) 
-                  glasso.results(Sigma = rho_pd[[i]][[k]], Omega = Omega[[i]][[k]],
-                    nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d))
-
-
-results_hat <- setNames(lapply(seq_along(n), function(i)
                 setNames(future_lapply(future.seed = T, future.lazy = T , 1:sim, function(k) 
                   glasso.results(Sigma = rho_pd[[i]][[k]], Omega = Omega[[i]][[k]],
                    nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
@@ -86,9 +80,7 @@ results_latent <- setNames(lapply(seq_along(n), function(i)
                        nlam=nlam, n=n[i])),nm=1:sim)),nm=paste("d =",d)) 
 
 
-
 old = T
-
 ### result object would have 410 GB... not feasible write function so that result object can be deleted afterwards! 
 #sim=2
 if (old == F) {
