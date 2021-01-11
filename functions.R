@@ -170,8 +170,11 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
   stopifnot((class(huge_obj)=="huge"))
   #d = dim(truth)[1]
   #n_E <- sum(truth[lower.tri(truth)] != 0)
-  fpr_lambda <- sapply(1:nlam, function(l) fpr(truth = truth,estimate = huge_obj$icov[[l]]))
-  tpr_lambda <- sapply(1:nlam, function(l) tpr(truth = truth,estimate = huge_obj$icov[[l]]))
+  ### here we need adjacency matrices!
+  adj_estimate <- lapply(1:nlam, function(q) abs(huge_obj$icov[[q]]) > .05)
+
+  fpr_lambda <- sapply(1:nlam, function(l) fpr(truth = truth,estimate = adj_estimate[[l]]))
+  tpr_lambda <- sapply(1:nlam, function(l) tpr(truth = truth,estimate = adj_estimate[[l]]))
   
   d_fpr_lambda <- c(diff(fpr_lambda),0)
   d_tpr_lambda <- c(diff(tpr_lambda),0)
@@ -179,4 +182,28 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
   pAUC <- (1 + ((sum(tpr_lambda * d_fpr_lambda) + sum(d_tpr_lambda * d_fpr_lambda)/2) - min(fpr_lambda))/(max(fpr_lambda) - min(fpr_lambda)))/2
   return(pAUC)
 }
+
+
+
+#### need new big function because result object is getting too large
+### Sigma: Sample correlation matrix
+### Omega: True Precision matrix
+### nlam: positive integer indicating number of tuning parameters
+### n: sample size
+
+
+glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n){
+  ### this takes a while
+  huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
+  Omega_hat <- omega.select(x=huge.result, n=n)
+  
+  frobenius <- base::norm(Omega_hat - Omega, type = "F")
+  pAUC_hat <- pAUC(truth = Omega, huge_obj = huge.result)
+  
+  huge.result <- NULL
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Frobenius norm" = frobenius, "partial Area Under the Curve" = pAUC_hat)
+  return(output)
+}
+
+
 
