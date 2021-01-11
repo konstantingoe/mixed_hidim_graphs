@@ -64,8 +64,14 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
 ### choose c function to control number of edges
 choose.c <- function(n_E=200, d=50){
   ### what does p_ij have to be:
-  p <- (n_E) / choose(d,2)*2
-  c <- 1/(4*(log(p) + .5*log(2*pi)))
+  #### this is so dependent on euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))
+  #### that c will have to dominate the euclidean norm... have to find appropriate c for each scenario unfortunately
+  ### evtl. höhere polynome finden (25/d)
+  p <- (n_E) / choose(d,2)
+  c <- .5*( (1/spline(d)) /(log(p) + .5*log(2*pi)))
+  
+  edges <- sum(sapply(1:choose(d,2), function(i) rbinom(1,1, prob = (1/sqrt(2*pi))*exp( euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*(c))))))
+  
   ### initiate c 
   #c <- seq(from=-1, to=0, by = .01)
   #prob = sapply(seq_along(c), function(i) (1/sqrt(2*pi))*exp(.5/(2*(c[i]))))

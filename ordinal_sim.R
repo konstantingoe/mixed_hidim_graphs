@@ -8,7 +8,7 @@ source("functions.R")
 set.seed(1234)
 
 
-sim = 2 #100  # simulation runs
+sim = 100  # simulation runs
 n <- c(200,200) #,600) # sample size include high dimension only on cluster
 d <- c(50,250) #,3000) # dimensionality --> include high dimension (3000) only on cluster 
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
