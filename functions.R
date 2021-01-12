@@ -2,20 +2,31 @@
 #function for euclidean norm
 euclid_norm <- function(x) sqrt(sum(x^2))
 
+# function for number of edges
+
+edgenumber <- function(Precision=Precision, cut=0){
+  sum((abs(Precision) > (0 + cut))[lower.tri((abs(Precision) > (0 + cut)))])
+}
+  
 #function for Omega selection
-omega.select <- function(x=x, param = 0.1, n=n){
+### potentially set param = 1 (.5)
+omega.select <- function(x=x, param = .25, n=n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
-  eBIC <- rep(0,nlam)
-  for (ind in 1:nlam) {
-    At <- x$icov[[ind]]
-    #At=solve(cov2cor(solve(At)))
-    edge <- sum((abs(At) > .05)[lower.tri((abs(At) > .05))])
-    eBIC[ind] <- -n*x$loglik[ind] + edge*log(n) + 4*edge*param*log(d)
+  cut <- seq(from=0, to=.1, by = .001)
+  cutwhich <- rep(0, length(cut))
+  for (c in 1:length(cut)){
+    eBIC <- rep(0,nlam)
+    for (ind in 1:nlam) {
+      At <- x$icov[[ind]]
+      edge <- edgenumber(At,cut=cut[c])
+      eBIC[ind] <- -n*x$loglik[ind] + edge*log(n) + 4*edge*param*log(d)
+    }
+    cutwhich[c] <- which.min(eBIC)
+    cutmaxdiff <- which.max(diff(cutwhich))
   }
-  
-  indlam <- which.min(eBIC)
-  At <- x$icov[[indlam]]
+  At <- x$icov[[cutwhich[cutmaxdiff+1]]]
+  diag(At) <- 1
   return(At) 
 }
 
@@ -49,7 +60,7 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   diag(Omega) <- 1
   #### check number of edges:
   
-  edgenumber <- sum(Omega[lower.tri(Omega)] != 0)
+  edgenumber <- edgenumber(Precision = Omega)
   # from possible choose(d,2)
   #### retrieve Sigma ####
   Sigma <- solve(Omega)
@@ -68,7 +79,7 @@ choose.c <- function(n_E=200, d=50){
   #### that c will have to dominate the euclidean norm... have to find appropriate c for each scenario unfortunately
   ### evtl. höhere polynome finden (25/d)
   p <- (n_E) / choose(d,2)
-  c <- .5*( (1/spline(d)) /(log(p) + .5*log(2*pi)))
+  c <- .5*( (1/(d)) /(log(p) + .5*log(2*pi)))
   
   edges <- sum(sapply(1:choose(d,2), function(i) rbinom(1,1, prob = (1/sqrt(2*pi))*exp( euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*(c))))))
   
@@ -145,42 +156,45 @@ mixed.omega <- function(data=data, verbose = F){
     } else {
       rho_pd <- rho
     }
+    diag(rho_pd) <- 1
   return(rho_pd)
 }
 
 #### functions for tpr and fpr
 
 tpr <- function(truth=truth, estimate=estimate){
-  n_E <- sum(truth[lower.tri(truth)] != 0)
+  n_E <- edgenumber(truth)
   sum((truth != 0 & estimate != 0)[lower.tri((truth != 0 & estimate != 0))]) / n_E
 }
 
 fpr <- function(truth=truth, estimate=estimate){
-  n_E <- sum(truth[lower.tri(truth)] != 0)
+  n_E <- edgenumber(truth)
   d = dim(truth)[1]
   
   sum((truth == 0 & estimate != 0)[lower.tri((truth == 0 & estimate != 0))]) / (d*(d-1)/2 - n_E) 
 }
 
-#### Partial area under the curve conditional on FPR --- method used by McClish (1989)####
+#### area under the curve conditional on FPR --- method used by McClish (1989)####
 
 #### input truth: True Precision Matrix
 ####       huge_obj: huge object e.g. glasso output
-pAUC <- function(truth = truth, huge_obj = huge_obj){
+AUC <- function(truth = truth, huge_obj = huge_obj){
   stopifnot((class(huge_obj)=="huge"))
   #d = dim(truth)[1]
   #n_E <- sum(truth[lower.tri(truth)] != 0)
   ### here we need adjacency matrices!
-  adj_estimate <- lapply(1:nlam, function(q) abs(huge_obj$icov[[q]]) > .05)
+  adj_estimate <- lapply(1:nlam, function(q) abs(huge_obj$icov[[q]]) > 0)
 
   fpr_lambda <- sapply(1:nlam, function(l) fpr(truth = truth,estimate = adj_estimate[[l]]))
   tpr_lambda <- sapply(1:nlam, function(l) tpr(truth = truth,estimate = adj_estimate[[l]]))
   
-  d_fpr_lambda <- c(diff(fpr_lambda),0)
-  d_tpr_lambda <- c(diff(tpr_lambda),0)
-  #use partial area under the curve: pAUC = .5[1 + (AUC - min(FPR))/(max(DPR) - min(FPR))]
-  pAUC <- (1 + ((sum(tpr_lambda * d_fpr_lambda) + sum(d_tpr_lambda * d_fpr_lambda)/2) - min(fpr_lambda))/(max(fpr_lambda) - min(fpr_lambda)))/2
-  return(pAUC)
+  fp <- c(fpr_lambda,1)
+  tp <- c(tpr_lambda,1)
+  dfp <- c(diff(fp),0)
+  dtp <- c(diff(tp),0)
+  
+  AUC <- sum(tp * dfp) + sum(dtp * dfp)/2
+  return(AUC)
 }
 
 
@@ -192,18 +206,72 @@ pAUC <- function(truth = truth, huge_obj = huge_obj){
 ### n: sample size
 
 
-glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n){
+glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matexport = matexport){
   ### this takes a while
   huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
   Omega_hat <- omega.select(x=huge.result, n=n)
   
   frobenius <- base::norm(Omega_hat - Omega, type = "F")
-  pAUC_hat <- pAUC(truth = Omega, huge_obj = huge.result)
+  AUC_hat <- AUC(truth = Omega, huge_obj = huge.result)
   
-  huge.result <- NULL
-  output <- list("Estimated Precision Matrix" = Omega_hat, "Frobenius norm" = frobenius, "partial Area Under the Curve" = pAUC_hat)
+  adj_estimate <- abs(Omega_hat) > 0
+  
+  tpr <- tpr(truth = Omega, estimate = adj_estimate)
+  fpr <- fpr(truth = Omega, estimate = adj_estimate)
+  
+  huge.result <- adj_estimate <-  NULL
+  
+  if (matexport == T){
+    output <- list("True Precision Matrix" = Omega, "Estimated Precision Matrix" = Omega_hat, "Frobenius norm" = frobenius,
+                 "FPR" = fpr, "TPR" = tpr, "AUC" = AUC_hat)
+  } else if (matexport == F) {
+    Omega_hat <- Omega <-  NULL
+    output <- list("Frobenius norm" = frobenius,
+                   "FPR" = fpr, "TPR" = tpr, "AUC" = AUC_hat)
+  }
   return(output)
 }
 
 
+
+#### boil it down even further... we don't really need the data object.
+
+serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F){
+  
+  data <- generate.data(t=t, n = n, d = d, n_E = n_E)
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  
+  data <- NULL
+  
+  if (latent == T) {
+    rho <- mixed.omega(data_0)
+    data_0 <- NULL
+  } else {
+    data_mixed <- make.ordinal(data_0)
+    rho <- mixed.omega(data_mixed)
+    data_mixed <- NULL
+    data_0 <- NULL
+  }
+  
+  results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  
+  return(results)
+}
+
+#### extract results
+
+extract.result <- function(results=results, which = c("F", "TPR", "FPR", "AUC")){
+  sim <- length(test)
+  if (which == "F"){
+    extract <- sapply(1:sim, function(k) test[[k]][["Frobenius norm"]])
+  } else if (which == "TPR") {
+    extract <- sapply(1:sim, function(k) test[[k]][["TPR"]])
+  } else if (which == "FPR") {
+    extract <- sapply(1:sim, function(k) test[[k]][["FPR"]])  
+  } else if (which == "AUC") {
+    extract <- sapply(1:sim, function(k) test[[k]][["AUC"]])
+  }
+  return(extract)
+}
 
