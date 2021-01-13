@@ -39,12 +39,13 @@ omega.select <- function(x=x, param = .25, n=n){
 #                         for this simulation use choose.c function
 #                         potentially look rather specify number of edges!
 
-
 generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   if (d==50){
     c <- -.2798173
   } else if (d==250) {
     c <- -.0285
+  } else if (d==1500) {
+    c <- -.0045
   } else if (d==3000) {
     c <- -.002
   }
@@ -94,25 +95,44 @@ choose.c <- function(n_E=200, d=50){
 #input: continuous data from which ordinal data will be generated 
 # proportion of data that should be converted to ordinal
 # number of levels for all ordinal variables (could also think of a vector of size d/2 here)
+# allow for a mix of 20-leveled discrete variables (count variables) and 3-leveled ones
 
-make.ordinal <- function(data = data, proportion = .5, n_O = 3){
-  d = ncol(data)
+make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_count = proportion*1/3){
+  d <-  ncol(data)
   d_1 <- d*proportion
   ordinal <- data[,1:d_1]
   
+  
+  d_12 <- floor(d*p_count)
+  if (countvar == F) {
+    d_12 <- 0
+  }
+  d_11 <- d_1 - d_12
   #### generate thresholds via quantiles
   gamma <- list()
   ### reconstruct the binary case in Fan et.al. (2017)
   
-  for (col in 1:ncol(ordinal)) { 
+  for (col in 1:d_11) { 
     if (n_O == 3){
-      gamma[[col]] <- c(-Inf, runif(1,quantile(ordinal[,col])[2],quantile(ordinal[,col])[3]), runif(1,quantile(ordinal[,col])[3],quantile(ordinal[,col])[4]), Inf) # ordinal case
+      gamma[[col]] <- c(-Inf,
+                        runif(1,quantile(ordinal[,col])[2],quantile(ordinal[,col])[3]), 
+                        runif(1,quantile(ordinal[,col])[3],quantile(ordinal[,col])[4]),
+                        Inf) # ordinal case
     } else {
-      cat("need to define automatic quantile generation here")
+      stop("need to define automatic quantile generation here")
     }
     ordinal[,col] <- cut(ordinal[,col], breaks = gamma[[col]], labels = F, right=T, include.lowest=T)
   }
   
+  if (countvar == T) {
+    for (col in ((d_11+1):d_1)) {
+      gamma[[col]] <- c(-Inf,
+                        seq(from = quantile(ordinal[,col])[2]*2, to = quantile(ordinal[,col])[4]*2, length.out=19),
+                        Inf)
+       
+      ordinal[,col] <- cut(ordinal[,col], breaks = gamma[[col]], labels = F, right=T, include.lowest=T)
+    }
+  }
   data_mixed <- as.data.frame(cbind(ordinal,data[,(d_1+1):d]))
   
   ### declare ordinal variables as factors!
@@ -236,7 +256,7 @@ glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matex
 
 #### boil it down even further... we don't really need the data object.
 
-serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F){
+serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T){
   
   data <- generate.data(t=t, n = n, d = d, n_E = n_E)
   data_0 <- data[[1]]
@@ -248,7 +268,7 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
     rho <- mixed.omega(data_0)
     data_0 <- NULL
   } else {
-    data_mixed <- make.ordinal(data_0)
+    data_mixed <- make.ordinal(data_0, countvar = countvar)
     rho <- mixed.omega(data_mixed)
     data_mixed <- NULL
     data_0 <- NULL
@@ -262,15 +282,15 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
 #### extract results
 
 extract.result <- function(results=results, which = c("F", "TPR", "FPR", "AUC")){
-  sim <- length(test)
+  sim <- length(results)
   if (which == "F"){
-    extract <- sapply(1:sim, function(k) test[[k]][["Frobenius norm"]])
+    extract <- sapply(1:sim, function(k) results[[k]][["Frobenius norm"]])
   } else if (which == "TPR") {
-    extract <- sapply(1:sim, function(k) test[[k]][["TPR"]])
+    extract <- sapply(1:sim, function(k) results[[k]][["TPR"]])
   } else if (which == "FPR") {
-    extract <- sapply(1:sim, function(k) test[[k]][["FPR"]])  
+    extract <- sapply(1:sim, function(k) results[[k]][["FPR"]])  
   } else if (which == "AUC") {
-    extract <- sapply(1:sim, function(k) test[[k]][["AUC"]])
+    extract <- sapply(1:sim, function(k) results[[k]][["AUC"]])
   }
   return(extract)
 }

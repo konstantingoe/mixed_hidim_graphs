@@ -12,5 +12,4 @@ pacman::p_load(
   polycor,
   plyr,
   # those beneath always load last
-  ggplot2,
   tidyverse)
