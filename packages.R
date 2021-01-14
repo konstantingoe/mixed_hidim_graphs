@@ -10,6 +10,7 @@ pacman::p_load(
   MASS,
   Matrix,
   polycor,
+  corpcor,
   plyr,
   # those beneath always load last
   tidyverse)

@@ -12,20 +12,25 @@ d <- c(50,250,1500) # dimensionality --> include high dimension (1500) only on c
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
-plan(multisession, workers = availableCores()-1) ## Run in parallel on local computer
+plan(multisession, workers = availableCores()) ## Run in parallel on local computer
 
 mixed_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
 latent_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
 
+print("d=50 done")
+
 mixed_result_2 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
 latent_result_2 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+
+print("d=250 done")
 
 mixed_result_3 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
 latent_result_3 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
 
+print("d=1500 done")
 
-output <- list(mixed_result_1, mixed_result_2, mixed_result_3,
-          latent_result_1, latent_result_2, latent_result_3)
+output <- list("Mixed with d = 50" = mixed_result_1, "Mixed with d = 250" = mixed_result_2, "Mixed with d = 1500" = mixed_result_3,
+               "Latent with d = 50" = latent_result_1, "Latent with d = 250" = latent_result_2, "Latent with d = 1500" = latent_result_3)
 
 save(output, file = "output.Rdata")
 
