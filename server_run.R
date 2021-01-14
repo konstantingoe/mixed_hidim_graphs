@@ -12,11 +12,15 @@ d <- c(50,250,1500) # dimensionality --> include high dimension (1500) only on c
 n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
-plan(multisession, workers = 20) ## Run in parallel on Linux cluster
+#plan(multisession, workers = 20) ## Run in parallel on Linux cluster
 comment_out <- T
+nCores <- 20
 
-mixed_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
-latent_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+mixed_result_1 <- mclapply(mc.cores = nCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
+latent_result_1 <- mclapply(mc.cores = nCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+
+#mixed_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
+#latent_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
 
 if (comment_out == F) {
 mixed_result_2 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
