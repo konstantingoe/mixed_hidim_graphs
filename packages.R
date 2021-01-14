@@ -11,6 +11,4 @@ pacman::p_load(
   Matrix,
   polycor,
   corpcor,
-  plyr,
-  # those beneath always load last
-  tidyverse)
+  plyr)
