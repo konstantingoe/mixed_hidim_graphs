@@ -18,4 +18,4 @@ module load r
 
 cd /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 
-R –f server_run.R
+Rscript –vanilla server_run.R
