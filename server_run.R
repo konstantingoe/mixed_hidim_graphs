@@ -13,7 +13,7 @@ n_E <- 200 # sparsity level of the graph: amount of edges we want to introduce
 t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
 #plan(multisession, workers = 20) ## Run in parallel on Linux cluster
-nCores <- 50
+nCores <- detectCores()
 
 mixed_result_1 <- mclapply(mc.cores = nCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
 latent_result_1 <- mclapply(mc.cores = nCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
