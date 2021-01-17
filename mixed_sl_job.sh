@@ -6,7 +6,7 @@
 #SBATCH --clusters=cm2_tiny
 #SBATCH --partition=cm2_tiny
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=28
+#SBATCH --cpus-per-task=35
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE

@@ -269,9 +269,10 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
     data_0 <- NULL
   } else {
     data_mixed <- make.ordinal(data_0, countvar = countvar)
+    data_0 <- NULL
+    ### learn sample correlation matrix   
     rho <- mixed.omega_fast(data_mixed)
     data_mixed <- NULL
-    data_0 <- NULL
   }
   
   results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
