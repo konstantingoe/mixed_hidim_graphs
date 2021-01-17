@@ -265,11 +265,11 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
   data <- NULL
   
   if (latent == T) {
-    rho <- mixed.omega(data_0)
+    rho <- mixed.omega_fast(data_0)
     data_0 <- NULL
   } else {
     data_mixed <- make.ordinal(data_0, countvar = countvar)
-    rho <- mixed.omega(data_mixed)
+    rho <- mixed.omega_fast(data_mixed)
     data_mixed <- NULL
     data_0 <- NULL
   }
@@ -295,3 +295,48 @@ extract.result <- function(results=results, which = c("F", "TPR", "FPR", "AUC"))
   return(extract)
 }
 
+
+mixed.omega_fast <- function(data=data, verbose = F){
+  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
+    cat("Warning, there are no factors in the input data.
+          Did you declare ordinal variables as factors?")
+  }
+  d <- ncol(data)
+  rho <- matrix(1,d,d)
+  
+  for (j in 1:(d-1)){
+    rho[(j+1):d,j] <- sapply(j:(d-1), function(i) 
+      mixed_corr(data[,j], data[,i+1]))
+  }
+  
+  upperTriangle(rho) <- lowerTriangle(rho, byrow=TRUE)
+  
+  
+  if (!is.positive.definite(rho)) {
+    rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
+  } else {
+    rho_pd <- rho
+  }
+  diag(rho_pd) <- 1
+  return(rho_pd)
+}
+
+
+
+mixed_corr <- function(vec1, vec2){
+  
+  if (is.numeric(vec1) & is.numeric(vec2)){
+    corr <- cor(vec1,vec2, method = "pearson") 
+  }  
+  if ((is.factor(vec1) & is.numeric(vec2)) |  (is.numeric(vec1) & is.factor(vec2))) {
+    if (is.factor(vec2)) {
+      corr <- polyserial(vec1, vec2)
+    } else {
+      corr <- polyserial(vec2, vec1)
+    }
+  }  
+  if (is.factor(vec1) & is.factor(vec2)) {
+    corr <- polychor(vec1, vec2)
+  }
+  return(corr)
+}
