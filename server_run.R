@@ -14,9 +14,14 @@ t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
 
 print(paste0("number of available cores: ",detectCores()))
+if (detectCores() >= 100){
+  numCores <-  100
+} else {
+  numCores <- detectCores()
+}
 
 print("Start with d=50")
-plan(multisession, workers = detectCores()) ## Run in parallel on Linux cluster
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 mixed_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
 latent_result_1 <- future_lapply(future.seed =T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
