@@ -14,8 +14,8 @@
 
 module load slurm_setup
 
-R_LIBS_USER="/dss/dsshome1/lxc0A/ge43doh2/R/debian10/3.6/"
-export R_LIBS_USER
+# R_LIBS_USER="/dss/dsshome1/lxc0A/ge43doh2/R/debian10/3.6/"
+# export R_LIBS_USER
 
 module load r
 
