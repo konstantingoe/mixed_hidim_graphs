@@ -14,19 +14,19 @@ t <- .15 # signal strength
 nlam <- 50 # number of tuning parameters for graphical lasso
 
 print(paste0("number of available cores: ",detectCores()))
-if (detectCores() >= 25){
-  numCores <-  25
+if (detectCores() >= 100){
+  numCores <-  100
 } else {
   numCores <- detectCores()
 }
 
 print("Start with d=50")
-plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+#plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-mixed_result_1 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
-latent_result_1 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+mixed_result_1 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
+latent_result_1 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[1], d=d[1], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
 
-plan(sequential)
+#plan(sequential)
 
 table_1 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_result_1, which = "F")),'sd_p' = sd(extract.result(mixed_result_1, which = "F")),
                                    'latent data'= mean(extract.result(latent_result_1, which = "F")), 'sd_l' = sd(extract.result(latent_result_1, which = "F"))),
@@ -43,12 +43,13 @@ table_1 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_resu
 stargazer(table_1, out = "table_1.tex", summary = F, title=paste("Mixed data structure learning of the precision matrix with n=",n[1],"and d=",d[1],"under",sim, "simulation runs."))                    
 
 print("Start with d=250")
-plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+#plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-mixed_result_2 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
-latent_result_2 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+mixed_result_2 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
+print("mixed_result_2 done")
+latent_result_2 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[2], d=d[2], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
 
-plan(sequential)
+#plan(sequential)
 
 table_2 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_result_2, which = "F")),'sd_p' = sd(extract.result(mixed_result_2, which = "F")),
                                    'latent data'= mean(extract.result(latent_result_2, which = "F")), 'sd_l' = sd(extract.result(latent_result_2, which = "F"))),
@@ -66,16 +67,16 @@ stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data str
 
 
 print("Start with d=1500")
-plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+#plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-mixed_result_3 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
-print("mixed results done")
+mixed_result_3 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
+print("mixed results 3 done")
 save(mixed_result_3, file = "mixed_result_3_future.Rdata")
 
-latent_result_3 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
-print("latent results done")
+latent_result_3 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+print("latent results 3 done")
 save(latent_result_3, file = "latent_result_3_future.Rdata")
-plan(sequential)
+#plan(sequential)
 
 table_3 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_result_3, which = "F")),'sd_p' = sd(extract.result(mixed_result_3, which = "F")),
                                    'latent data'= mean(extract.result(latent_result_3, which = "F")), 'sd_l' = sd(extract.result(latent_result_3, which = "F"))),
