@@ -64,12 +64,17 @@ table_2 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_resu
 
 stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data structure learning of the precision matrix with n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))
 
+
 print("Start with d=1500")
 #plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 mixed_result_3 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T))
-latent_result_3 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+print("mixed results done")
+save(mixed_result_3, file = "mixed_result_3.Rdata")
 
+latent_result_3 <- mclapply(mc.cores = numCores, 1:sim, function(k) serverrun(n=n[3], d=d[3], n_E = n_E, latent = T, nlam=nlam, matexport = F))             
+print("latent results done")
+save(latent_result_3, file = "mixed_result_3.Rdata")
 #plan(sequential)
 
 table_3 <- round(as_tibble(rbind(c('polychoric' = mean(extract.result(mixed_result_3, which = "F")),'sd_p' = sd(extract.result(mixed_result_3, which = "F")),
