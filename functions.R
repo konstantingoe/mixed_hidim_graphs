@@ -44,6 +44,8 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
     c <- -.2798173
   } else if (d==250) {
     c <- -.0285
+  } else if (d==750) {
+    c <- -.0085
   } else if (d==1500) {
     c <- -.0045
   } else if (d==3000) {
@@ -61,7 +63,7 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   diag(Omega) <- 1
   #### check number of edges:
   
-  edgenumber <- edgenumber(Precision = Omega)
+  edge_number <- edgenumber(Precision = Omega)
   # from possible choose(d,2)
   #### retrieve Sigma ####
   Sigma <- solve(Omega)
@@ -70,7 +72,7 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   data_0 <- mvrnorm(n=n,mu=rep(0,d), Sigma = Sigma_corr)
   return(list("data" = data_0,
               "Omega" = Omega,
-              "n_E" = edgenumber))
+              "n_E" = edge_number))
 }
 
 ### choose c function to control number of edges
