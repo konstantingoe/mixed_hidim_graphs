@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_SL_kendall.out
+#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_kendall.out
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
-#SBATCH -J "mixed_SL_kendall"
+#SBATCH -J "mixed_kendall"
 #SBATCH --get-user-env
 #SBATCH --clusters=cm2_tiny
 #SBATCH --partition=cm2_tiny
@@ -10,7 +10,7 @@
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE
-#SBATCH --time=72:00:00
+#SBATCH --time=38:00:00
 
 module load slurm_setup
 
