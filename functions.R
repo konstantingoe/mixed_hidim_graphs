@@ -13,6 +13,7 @@ edgenumber <- function(Precision=Precision, cut=0){
 omega.select <- function(x=x, param = .25, n=n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
+  nlam <- length(x$lambda)
   cut <- seq(from=0, to=.1, by = .001)
   cutwhich <- rep(0, length(cut))
   for (c in 1:length(cut)){
@@ -28,6 +29,27 @@ omega.select <- function(x=x, param = .25, n=n){
   At <- x$icov[[cutwhich[cutmaxdiff+1]]]
   diag(At) <- 1
   return(At) 
+}
+
+
+omega.select.drton <- function(x=x, param = .25, n=n, s = s){
+  stopifnot((class(x)=="huge"))
+  d=dim(x$data)[1]
+  nlam <- length(x$lambda)
+  eBIC <- rep(0,nlam)
+  for (ind in 1:nlam) {
+    huge_path <- x$path[[ind]]
+    edge <- edgenumber(huge_path)
+    huge_path[upper.tri(huge_path, diag = T)] <- 1
+    zero_mat <- which(huge_path == 0, arr.ind = T)
+    loglik <- glasso::glasso(s = s, rho = 0, nobs = n, zero = zero_mat)$loglik
+    eBIC[ind] <- -2*loglik + edge*log(n) + 4* edge * param * log(d)
+  }  
+  
+  Omega_hat <- x$icov[[which.min(eBIC)]]
+  diag(Omega_hat) <- 1
+  
+  return(Omega_hat)
 }
 
 #### write data generating function ####
@@ -57,7 +79,8 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   
   for(i in 1:(d-1)) {
     for(j in (i+1):d){
-      Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+      #Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+      Omega[i,j] <- Omega[j,i] <- runif(1,min = t, max = 1.3*t)*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
     }
   }  
   diag(Omega) <- 1
@@ -65,6 +88,12 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   
   edge_number <- edgenumber(Precision = Omega)
   # from possible choose(d,2)
+  
+  if (!is.positive.definite(Omega)) {
+    Omega <- as.matrix(nearPD(Omega, corr = T, keepDiag = T)$mat)
+  } 
+  diag(Omega) <- 1
+  
   #### retrieve Sigma ####
   Sigma <- solve(Omega)
   Sigma_corr <- cov2cor(Sigma)
@@ -120,6 +149,10 @@ make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_
                         runif(1,quantile(ordinal[,col])[2],quantile(ordinal[,col])[3]), 
                         runif(1,quantile(ordinal[,col])[3],quantile(ordinal[,col])[4]),
                         Inf) # ordinal case
+    } else if (n_O == 2) {
+      gamma[[col]] <- c(-Inf,
+                        runif(1,-1,1), 
+                        Inf) # ordinal case
     } else {
       stop("need to define automatic quantile generation here")
     }
@@ -147,7 +180,7 @@ make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_
 ### write polychoric function ####
 ### input: data frame with mixed variables where ordinal variables are denoted as factors
 ### output: positive definite sample correlation matrix \hat{Sigma}
-mixed.omega <- function(data=data, verbose = F){
+mixed.omega <- function(data=data, verbose = T){
     if (sum(sapply(data, is.factor)) == 0 & verbose == T){
       cat("Warning, there are no factors in the input data.
           Did you declare ordinal variables as factors?")
@@ -181,6 +214,63 @@ mixed.omega <- function(data=data, verbose = F){
     diag(rho_pd) <- 1
   return(rho_pd)
 }
+
+#### Mixed Tau for Fan et.al. Method:
+
+mixed.omega.kendall <- function(data = data, verbose = T){
+  
+  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
+    cat("Warning, there are no factors in the input data.
+        Did you declare ordinal variables as factors?")
+  }
+  d <- ncol(data)
+  n <- nrow(data)
+  cor1 <- hatR <- tau <- na <- nb <- nc <- nd <- matrix(1,d,d)
+  
+  for(i in 1:(d[1]-1)) {
+    for(j in (i+1):d[1]){
+      if (is.numeric(data[,i]) & is.numeric(data[,j])){
+        ### Fan et.al.
+        cor1[j,i] <- cor1[i,j] <- cor(data[,i],data[,j],method="kendall")
+        hatR[i,j] <- hatR[j,i] <- sin(cor1[i,j]*pi/2)
+        ###
+      }
+      if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
+        if (is.factor(data[,j])) {
+          ### Fan et.al.
+          cor1[j,i] <- cor1[i,j] <- cor(data[,i], as.numeric(data[,j]), method="kendall")
+          hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
+          ###
+        } else {
+          ### Fan et.al.
+          cor1[j,i] <- cor1[i,j] <- cor(data[,j],as.numeric(data[,i]),method="kendall")
+          hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
+          ###
+        }
+      }
+      if (is.factor(data[,i]) & is.factor(data[,j])) {
+        ### Fan et.al. ### population kendall's tau
+        na[i,j] <- na[i,j] <- sum((data[,i] == 1)*(data[,j] == 1))
+        nb[i,j] <- nb[i,j] <- sum((data[,i] == 1)*(data[,j] == 0))
+        nc[i,j] <- nc[i,j] <- sum((data[,i] == 0)*(data[,j] == 1))
+        nd[i,j] <- nd[i,j] <- sum((data[,i] == 0)*(data[,j] == 0))
+        
+        tau[i,j] <- tau[j,i] <- 2*(na[i,j]*nd[i,j] - nb[i,j]*nc[i,j])/(n*(n-1))
+        #tau[i,j] <- tau[j,i] <- cor(as.numeric(data[,i]),as.numeric(data[,j]),method="kendall")
+        hatR[i,j] <- hatR[j,i] <- sin(pi*tau[i,j])
+        ###
+      }
+    }
+  }    
+  
+  if (!is.positive.definite(hatR)) {
+    hatR_pd <- as.matrix(nearPD(hatR, corr = T, keepDiag = T)$mat)
+  } else {
+    hatR_pd <- hatR
+  }
+  return(hatR_pd)
+}
+
 
 #### functions for tpr and fpr
 
@@ -281,6 +371,39 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
   
   return(results)
 }
+
+
+
+serverrun.kendall <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T, method = c("latent", "kendall", "poly")){
+  
+  data <- generate.data(t=t, n = n, d = d, n_E = n_E)
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  
+  data <- NULL
+  
+  if (method == "latent") {
+    rho <- mixed.omega(data_0)
+    data_0 <- NULL
+  } else if (method == "kendall"){
+    data_mixed <- make.ordinal(data_0, countvar = countvar, n_O = 2)
+    data_0 <- NULL
+    ### learn sample correlation matrix   
+    rho <- mixed.omega.kendall(data_mixed)
+    data_mixed <- NULL
+  } else if (method == "poly") {
+    data_mixed <- make.ordinal(data_0, countvar = countvar, n_O = 2)
+    data_0 <- NULL
+    ### learn sample correlation matrix   
+    rho <- mixed.omega(data_mixed)
+    data_mixed <- NULL
+  }
+  results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  
+  return(results)
+}
+
+
 
 #### extract results
 
