@@ -19,8 +19,8 @@ latent <- F
 
 cat(paste0("number of available cores: ",detectCores()))
 
-if (detectCores() >= 20){
-  numCores <-  20
+if (detectCores() >= 100){
+  numCores <-  100
 } else {
   numCores <- detectCores()
 }
