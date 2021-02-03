@@ -79,8 +79,8 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   
   for(i in 1:(d-1)) {
     for(j in (i+1):d){
-      #Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
-      Omega[i,j] <- Omega[j,i] <- runif(1,min = t, max = 1.3*t)*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+      Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+      #Omega[i,j] <- Omega[j,i] <- runif(1,min = t, max = 1.3*t)*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
     }
   }  
   diag(Omega) <- 1
@@ -286,7 +286,6 @@ fpr <- function(truth=truth, estimate=estimate){
   sum((truth == 0 & estimate != 0)[lower.tri((truth == 0 & estimate != 0))]) / (d*(d-1)/2 - n_E) 
 }
 
-#### area under the curve conditional on FPR --- method used by McClish (1989)####
 
 #### input truth: True Precision Matrix
 ####       huge_obj: huge object e.g. glasso output
@@ -374,7 +373,7 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
 
 
 
-serverrun.kendall <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T, method = c("latent", "kendall", "poly")){
+serverrun.kendall <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T){
   
   data <- generate.data(t=t, n = n, d = d, n_E = n_E)
   data_0 <- data[[1]]
@@ -382,24 +381,17 @@ serverrun.kendall <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=n
   
   data <- NULL
   
-  if (method == "latent") {
-    rho <- mixed.omega(data_0)
-    data_0 <- NULL
-  } else if (method == "kendall"){
-    data_mixed <- make.ordinal(data_0, countvar = countvar, n_O = 2)
-    data_0 <- NULL
-    ### learn sample correlation matrix   
-    rho <- mixed.omega.kendall(data_mixed)
-    data_mixed <- NULL
-  } else if (method == "poly") {
-    data_mixed <- make.ordinal(data_0, countvar = countvar, n_O = 2)
-    data_0 <- NULL
-    ### learn sample correlation matrix   
-    rho <- mixed.omega(data_mixed)
-    data_mixed <- NULL
-  }
-  results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  data_mixed <- make.ordinal(data_0, countvar = countvar, n_O = 2)
+  data_0 <- NULL
+  ### learn sample correlation matrix   
+  rho_kendall <- mixed.omega.kendall(data_mixed)
+  rho_poly <- mixed.omega(data_mixed)
   
+  data_mixed <- NULL
+  
+  results_kendall <- glasso.results(Sigma=rho_kendall, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  results_poly <- glasso.results(Sigma=rho_poly, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  results <- list("kendall"=results_kendall, "poly" = results_poly)
   return(results)
 }
 
@@ -465,4 +457,22 @@ mixed_corr <- function(vec1, vec2){
     corr <- polychor(vec1, vec2)
   }
   return(corr)
+}
+
+
+kendalls.results <- function(result_object = result_object){
+  table <- rbind(
+    c("kendall" = mean(sapply(1:sim, function(k) result_object[[k]][[1]][["Frobenius norm"]])),"kendall_sd" = sd(sapply(1:sim, function(k) result_object[[k]][[1]][["Frobenius norm"]])),
+      "poly" = mean(sapply(1:sim, function(k) result_object[[k]][[2]][["Frobenius norm"]])),"poly_sd" = sd(sapply(1:sim, function(k) result_object[[k]][[2]][["Frobenius norm"]]))),
+    
+    c(mean(sapply(1:sim, function(k) result_object[[k]][[1]][["FPR"]])),sd(sapply(1:sim, function(k) result_object[[k]][[1]][["FPR"]])),
+      mean(sapply(1:sim, function(k) result_object[[k]][[2]][["FPR"]])),sd(sapply(1:sim, function(k) result_object[[k]][[2]][["FPR"]]))),
+    
+    c(mean(sapply(1:sim, function(k) result_object[[k]][[1]][["TPR"]])),sd(sapply(1:sim, function(k) result_object[[k]][[1]][["TPR"]])),
+      mean(sapply(1:sim, function(k) result_object[[k]][[2]][["TPR"]])),sd(sapply(1:sim, function(k) result_object[[k]][[2]][["TPR"]]))),
+    
+    c(mean(sapply(1:sim, function(k) result_object[[k]][[1]][["AUC"]])),sd(sapply(1:sim, function(k) result_object[[k]][[1]][["AUC"]])),
+      mean(sapply(1:sim, function(k) result_object[[k]][[2]][["AUC"]])),sd(sapply(1:sim, function(k) result_object[[k]][[2]][["AUC"]])))
+  )
+  return(table)
 }
