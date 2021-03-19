@@ -32,7 +32,7 @@ omega.select <- function(x=x, param = .25, n=n){
 }
 
 
-omega.select.drton <- function(x=x, param = .25, n=n, s = s){
+omega.select.drton <- function(x=x, param = .1, n=n, s = s){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlam <- length(x$lambda)
@@ -42,7 +42,7 @@ omega.select.drton <- function(x=x, param = .25, n=n, s = s){
     edge <- edgenumber(huge_path)
     huge_path[upper.tri(huge_path, diag = T)] <- 1
     zero_mat <- which(huge_path == 0, arr.ind = T)
-    loglik <- glasso::glasso(s = s, rho = 0, nobs = n, zero = zero_mat)$loglik
+    loglik <- suppressWarnings(glasso::glasso(s = s, rho = 0, nobs = n, zero = zero_mat)$loglik)
     eBIC[ind] <- -2*loglik + edge*log(n) + 4* edge * param * log(d)
   }  
   
@@ -61,18 +61,16 @@ omega.select.drton <- function(x=x, param = .25, n=n, s = s){
 #                         for this simulation use choose.c function
 #                         potentially look rather specify number of edges!
 
-generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
-  if (d==50){
-    c <- -.2798173
-  } else if (d==250) {
-    c <- -.0285
-  } else if (d==750) {
-    c <- -.0085
-  } else if (d==1500) {
-    c <- -.0045
-  } else if (d==3000) {
-    c <- -.002
-  }
+generate.data <- function(t=.15, n = 200, d = 50){
+    if (d==50){
+      c <- -.2798173
+    } else if (d==250) {
+      c <- -0.03072694
+    } else if (d==750) {
+      c <- -0.01697741
+    } else if (d==1500) {
+      c <- -0.01227969
+    } 
   #c <- choose.c(n_E=n_E, d=d)
   ##### Initiate the precision matrix \Omega = \Sigma^{-1}
   Omega <- diag(nrow = d,ncol = d)
@@ -86,7 +84,6 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   diag(Omega) <- 1
   #### check number of edges:
   
-  edge_number <- edgenumber(Precision = Omega)
   # from possible choose(d,2)
   
   if (!is.positive.definite(Omega)) {
@@ -94,8 +91,12 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
   } 
   diag(Omega) <- 1
   
+  edge_number <- edgenumber(Precision = Omega)
+  
   #### retrieve Sigma ####
-  Sigma <- solve(Omega)
+  ### potential alternative here: 
+  Sigma <- chol2inv(chol(Omega)) #is simply a lot faster!175
+  #Sigma <- solve(Omega)
   Sigma_corr <- cov2cor(Sigma)
   #### Done: Now we can simulate from multivariate normal ####
   data_0 <- mvrnorm(n=n,mu=rep(0,d), Sigma = Sigma_corr)
@@ -104,23 +105,6 @@ generate.data <- function(t=.15, n = 200, d = 50, n_E = 200){
               "n_E" = edge_number))
 }
 
-### choose c function to control number of edges
-choose.c <- function(n_E=200, d=50){
-  ### what does p_ij have to be:
-  #### this is so dependent on euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))
-  #### that c will have to dominate the euclidean norm... have to find appropriate c for each scenario unfortunately
-  ### evtl. höhere polynome finden (25/d)
-  p <- (n_E) / choose(d,2)
-  c <- .5*( (1/(d)) /(log(p) + .5*log(2*pi)))
-  
-  edges <- sum(sapply(1:choose(d,2), function(i) rbinom(1,1, prob = (1/sqrt(2*pi))*exp( euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*(c))))))
-  
-  ### initiate c 
-  #c <- seq(from=-1, to=0, by = .01)
-  #prob = sapply(seq_along(c), function(i) (1/sqrt(2*pi))*exp(.5/(2*(c[i]))))
-  #c_1 <- c[which.min(abs(prob-p))]
-  return(c)
-}
 
 ### also write function here:
 #input: continuous data from which ordinal data will be generated 
@@ -188,6 +172,9 @@ mixed.omega <- function(data=data, verbose = T){
     d <- ncol(data)
     rho <- matrix(1,d,d)
     
+    ### retrieve maxlevels for polychoric:
+    maxlevel <- max(sapply(1:ncol(data), function(i) length(levels(data[,i])))) +1
+    
     for(i in 1:(d-1)) {
       for(j in (i+1):d){
         if (is.numeric(data[,i]) & is.numeric(data[,j])){
@@ -195,13 +182,14 @@ mixed.omega <- function(data=data, verbose = T){
         }
         if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
           if (is.factor(data[,j])) {
-            rho[i,j] <- rho[j,i] <- polyserial(data[,i], data[,j])
+            rho[i,j] <- rho[j,i] <- polycor::polyserial(data[,i], data[,j])
           } else {
-            rho[i,j] <- rho[j,i] <- polyserial(data[,j], data[,i])
+            rho[i,j] <- rho[j,i] <- polycor::polyserial(data[,j], data[,i])
           }
         }
         if (is.factor(data[,i]) & is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- polychor(data[,i], data[,j])
+          rho[i,j] <- rho[j,i] <- polycor::polychor(data[,i], data[,j])
+          #rho[i,j] <- rho[j,i] <- suppressMessages(psych::polychoric(data[,c(i,j)], max.cat = maxlevel, progress = F)[[1]][1,2])
         }
       }
     }    
@@ -317,10 +305,14 @@ AUC <- function(truth = truth, huge_obj = huge_obj){
 ### n: sample size
 
 
-glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matexport = matexport){
+glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matexport = matexport, thresholding = F){
   ### this takes a while
   huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
-  Omega_hat <- omega.select(x=huge.result, n=n)
+  if (thresholding == T) {
+    Omega_hat <- omega.select(x=huge.result, n=n)
+  } else if (thresholding == F){
+    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = Sigma)
+  }
   
   frobenius <- base::norm(Omega_hat - Omega, type = "F")
   AUC_hat <- AUC(truth = Omega, huge_obj = huge.result)
@@ -373,9 +365,9 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
 
 
 
-serverrun.kendall <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T){
+serverrun.kendall <- function(t=.15, n = n, d = d, latent = F, nlam=nlam, matexport = F, countvar = T){
   
-  data <- generate.data(t=t, n = n, d = d, n_E = n_E)
+  data <- generate.data(t=t, n = n, d = d)
   data_0 <- data[[1]]
   Omega <- data[[2]]
   
