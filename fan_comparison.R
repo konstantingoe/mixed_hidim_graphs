@@ -26,6 +26,8 @@ if (detectCores() >= 100){
   numCores <- detectCores()
 }
 
+run <- F
+if (run == T) {
 print("Start with d=50")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
@@ -59,7 +61,7 @@ plan(sequential)
 table_3 <- kendalls.results(result_3)
 stargazer(table_3, out = "table_kendall_3.tex", summary = F, title=paste("Mixed data structure learning of the precision matrix with n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))
 
-
+}
 
 print("Start with d=1500")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
