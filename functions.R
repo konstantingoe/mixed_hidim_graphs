@@ -468,3 +468,110 @@ kendalls.results <- function(result_object = result_object){
   )
   return(table)
 }
+
+make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1)+5)){
+  d <-  ncol(data)
+  n <- nrow(data)
+  d_1 <- floor(d*proportion)
+  ordinal <- data[,1:d_1]
+  
+  #### now we can do with ordinal what we want 
+  
+  if (namevector[1] == T & namevector[2] == T & namevector[3] == T) {
+    p_devide <- diff(c(0,floor(d_1/sum(namevector)), d_1))
+    ordinal_binary <- ordinal[,1:p_devide[1]]
+    ordinal_ordinal <- ordinal[,(p_devide[1]+1):p_devide[2]]
+    ordinal_poisson <- ordinal[,(p_devide[2]+1):d_1]
+  }    
+  if (namevector[1] == T & namevector[2] == T & namevector[3] == F) {
+    p_devide <- diff(c(0,floor(d_1/sum(namevector))))
+    ordinal_binary <- ordinal[,1:p_devide[1]]
+    ordinal_ordinal <- ordinal[,(p_devide[1]+1):d_1]
+    ordinal_poisson <- NULL
+  }  
+  if (namevector[1] == T & namevector[2] == F & namevector[3] == T) {
+    p_devide <- diff(c(0,floor(d_1/sum(namevector))))
+    ordinal_binary <- ordinal[,1:p_devide[1]]
+    ordinal_ordinal <- NULL
+    ordinal_poisson <- ordinal[,(p_devide[1]+1):d_1]
+  }  
+  if (namevector[1] == F & namevector[2] == T & namevector[3] == T) {
+    p_devide <- diff(c(0,floor(d_1/sum(namevector))))
+    ordinal_binary <- NULL
+    ordinal_ordinal <- ordinal[,1:p_devide[1]]
+    ordinal_poisson <- ordinal[,(p_devide[1]+1):d_1]
+  }
+  if (namevector[1] == F & namevector[2] == F & namevector[3] == T) {
+    ordinal_binary <- NULL
+    ordinal_ordinal <- NULL
+    ordinal_poisson <- ordinal[,1:d_1]
+  }
+  if (namevector[1] == F & namevector[2] == T & namevector[3] == F) {
+    ordinal_binary <- NULL
+    ordinal_ordinal <- ordinal[,1:d_1]
+    ordinal_poisson <- NULL
+  }
+  if (namevector[1] == T & namevector[2] == F & namevector[3] == F) {
+    ordinal_binary <- ordinal[,1:d_1]
+    ordinal_ordinal <- NULL
+    ordinal_poisson <- NULL
+  }
+  
+  if (namevector["binary"] == T){
+    #### Xbinary
+    #### split binary so as to control fraction of unbalanced binary data
+    unbalanced <- .2
+    pbin1 <- runif(floor(ncol(ordinal_binary)*(1-unbalanced)),.4,.6)
+    pbin2 <- runif((ncol(ordinal_binary) - floor(ncol(ordinal_binary)*(1-unbalanced))),low,high)
+    pbin <- c(pbin1, pbin2)
+    for(i in 1:ncol(ordinal_binary)){
+      ordinal_binary[,i] <- qbinom(pnorm(scale(ordinal_binary[,i])),size=1,prob = pbin[i])
+    }
+  }
+  if (namevector["ordinal"] == T){
+    cum.mat <- list()
+    for (k in 1:ncol(ordinal_ordinal)){
+      breaks <- runif(num_breaks)
+      sum_breaks <- sum(breaks)
+      breaks_norm <- sort(breaks)/sum_breaks
+      cum.mat[[k]]<- c(0,cumsum(breaks_norm))
+    }
+    for(i in 1:ncol(ordinal_ordinal)){
+      u <- pnorm(scale(ordinal_ordinal[,i]))
+      ordinal_ordinal[,i] <- cut(u, breaks = cum.mat[[i]], include.lowest = T, ordered_result = T, labels = 1:(length(cum.mat[[i]])-1))
+    }
+  }
+  if (namevector["poisson"] == T){
+    #### Poisson Variables from Threshold generation 
+    lambda_sample <- abs(rnorm(ncol(ordinal_poisson),mean = lambda, sd = 2))
+    for (i in 1:ncol(ordinal_poisson)) {
+      ordinal_poisson[,i] <- qpois(pnorm(scale(ordinal_poisson[,i])),lambda = lambda_sample[i])
+    }
+  } 
+  
+  ordinal <- cbind(ordinal_binary, ordinal_ordinal, ordinal_poisson)
+  data_mixed <- as.data.frame(cbind(ordinal,data[,(d_1+1):d]))
+  ### declare ordinal variables as factors!
+  for (f in 1:d_1) {
+    data_mixed[,f] <- factor(data_mixed[,f],ordered = T) 
+  }
+  return(data_mixed)
+}
+
+### what we want is basically frobenius norm as a function of n and success probability:
+unbalanced.run <- function(n=n, d=d, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+                           unbalanced = 0, low = .05, high = .1){
+  data <- generate.data(t=t, n = n, d = d)
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  data <- NULL
+  ### here at this point generate a range of make.ordinals!
+  data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
+  data_0 <- NULL
+  rho_poly <- mixed.omega(data_mixed)
+  data_mixed <- NULL
+  results_poly <- glasso.results(Sigma=rho_poly, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+
+  return(results_poly)
+}
+
