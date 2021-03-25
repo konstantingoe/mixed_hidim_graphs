@@ -61,36 +61,41 @@ omega.select.drton <- function(x=x, param = .1, n=n, s = s){
 #                         for this simulation use choose.c function
 #                         potentially look rather specify number of edges!
 
-generate.data <- function(t=.15, n = 200, d = 50){
-    if (d==50){
-      c <- -.2798173
-    } else if (d==250) {
-      c <- -0.03072694
-    } else if (d==750) {
-      c <- -0.01697741
-    } else if (d==1500) {
-      c <- -0.01227969
-    } 
-  #c <- choose.c(n_E=n_E, d=d)
-  ##### Initiate the precision matrix \Omega = \Sigma^{-1}
-  Omega <- diag(nrow = d,ncol = d)
+generate.data <- function(mode = mode, t=.15, n = 200, d = 50, sparsity = sparsity){
   
-  for(i in 1:(d-1)) {
-    for(j in (i+1):d){
-      Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
-      #Omega[i,j] <- Omega[j,i] <- runif(1,min = t, max = 1.3*t)*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
-    }
-  }  
-  diag(Omega) <- 1
-  #### check number of edges:
-  
-  # from possible choose(d,2)
+    if (mode == "fan"){
+      if (d==50){
+        c <- -.2798173
+      } else if (d==250) {
+        c <- -0.03072694
+      } else if (d==750) {
+        c <- -0.01697741
+      } else if (d==1500) {
+        c <- -0.01227969
+      } 
+    #c <- choose.c(n_E=n_E, d=d)
+    ##### Initiate the precision matrix \Omega = \Sigma^{-1}
+    Omega <- diag(nrow = d,ncol = d)
+    
+    for(i in 1:(d-1)) {
+      for(j in (i+1):d){
+        Omega[i,j] <- Omega[j,i] <- t*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+        #Omega[i,j] <- Omega[j,i] <- runif(1,min = t, max = 1.3*t)*rbinom(1,1,prob = (1/sqrt(2*pi))*exp(euclid_norm((runif(2, min = 0, max = 1) - runif(2, min = 0, max = 1)))/(2*c)))
+      }
+    }  
+    diag(Omega) <- 1
+    #### check number of edges:
   
   if (!is.positive.definite(Omega)) {
     Omega <- as.matrix(nearPD(Omega, corr = T, keepDiag = T)$mat)
   } 
   diag(Omega) <- 1
   
+  } else if (mode == "er"){
+    if (!requireNamespace("genscore", quietly=TRUE))
+      stop("Please install package \"genscore\".")
+    Omega <- cov_cons(mode="er", p=d, seed=NULL, spars=sparsity, eig=0.1)
+  }
   edge_number <- edgenumber(Precision = Omega)
   
   #### retrieve Sigma ####
@@ -559,9 +564,9 @@ make.ordinal.general <- function(data = data, proportion = .5, namevector = c("b
 }
 
 ### what we want is basically frobenius norm as a function of n and success probability:
-unbalanced.run <- function(n=n, d=d, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+unbalanced.run <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
                            unbalanced = 0, low = .05, high = .1){
-  data <- generate.data(t=t, n = n, d = d)
+  data <- generate.data(mode = mode, t=t, n = n, d = d, sparsity = sparsity)
   data_0 <- data[[1]]
   Omega <- data[[2]]
   data <- NULL
