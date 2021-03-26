@@ -66,7 +66,7 @@ stargazer(table_3, out = "table_kendall_3.tex", summary = F, title=paste("Mixed 
 print("Start with d=1500")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-result_4 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun.kendall(n=n[4], d=d[4], nlam=nlam, matexport = F))
+result_4 <- future_lapply(future.seed = T, 1:sim, function(k) serverrun.kendall(n=n[4], d=d[4], mode = "fan", nlam=nlam, matexport = F))
 
 plan(sequential)
 
