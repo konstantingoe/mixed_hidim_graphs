@@ -19,7 +19,7 @@ nlam <- 50 # number of tuning parameters for graphical lasso
 countvar <- F
 latent <- F
 matexport = F
-reps <- 50
+reps <- 25
 unbalanced.grid <- seq(from=0, to=1, by = .05)
 
 cat(paste0("number of available cores: ",detectCores()))
