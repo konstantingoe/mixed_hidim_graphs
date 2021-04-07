@@ -33,10 +33,10 @@ if (detectCores() >= 50){
 print("Start with d=50")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
   
-lowdim.result.fan <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "fan", n=n[1], d=d[1], sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+lowdim.result.fan <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "fan", n=n[1], d=d[3], sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
                        unbalanced = unbalanced.grid[k], low = .05, high = .1)))
 
-lowdim.result.er <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "er", n=n[1], d=d[1], nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+lowdim.result.er <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "er", n=n[1], d=d[3], nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
                        unbalanced = unbalanced.grid[k], low = .05, high = .1)))
 
 plan(sequential)

@@ -10,7 +10,7 @@
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE
-#SBATCH --time=12:00:00
+#SBATCH --time=22:00:00
 
 module load slurm_setup
 
