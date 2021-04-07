@@ -370,9 +370,9 @@ serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, mat
 
 
 
-serverrun.kendall <- function(t=.15, n = n, d = d, latent = F, nlam=nlam, matexport = F, countvar = T){
+serverrun.kendall <- function(t=.15, n = n, d = d, latent = F, nlam=nlam, matexport = F, countvar = T, mode = mode){
   
-  data <- generate.data(t=t, n = n, d = d)
+  data <- generate.data(t=t, n = n, d = d, mode = mode)
   data_0 <- data[[1]]
   Omega <- data[[2]]
   
