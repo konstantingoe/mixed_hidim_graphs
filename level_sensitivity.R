@@ -67,7 +67,6 @@ q <- ggplot(plotdata, aes(x=factor(plotgrid), y=AUC_fan)) +
   geom_boxplot() +
   xlab("Unbalanced Proportion") +
   ylab("AUC") +
-  ylab("Area Under the Curve") +
   scale_x_discrete(breaks = levels(factor(plotdata$plotgrid))[c(rep(c(T, F),floor(length(unbalanced.grid)/2)),T)])
 
 r <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius_er)) +
