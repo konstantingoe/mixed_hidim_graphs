@@ -56,11 +56,6 @@ frobenius.er <- unlist(lapply(seq_along(unbalanced.grid), function(k)
 AUC.er <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
           sapply(1:reps, function(j) lowdim.result.er[[k]][[j]][[4]])))
 
-frobenius.plot <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-              sapply(1:reps, function(j) lowdim.result[[k]][[j]][[1]])))
-AUC.plot <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-                sapply(1:reps, function(j) lowdim.result[[k]][[j]][[4]])))
-
 plotdata <- as.data.frame(cbind(plotgrid, "frobenius_fan" = frobenius.fan, "AUC_fan" = AUC.fan, "frobenius_er" = frobenius.er, "AUC_er" = AUC.er))
 
 p <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius_fan)) +
