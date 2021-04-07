@@ -19,65 +19,70 @@ nlam <- 50 # number of tuning parameters for graphical lasso
 countvar <- F
 latent <- F
 matexport = F
-
-unbalanced.grid <- seq(from=0, to=1, by = .05)
 reps <- 50
-lowdim.result <- lapply(seq_along(unbalanced.grid), function(k) lapply(1:reps, function(i) unbalanced.run(mode = "fan", n=n[1], d=d[1], sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+unbalanced.grid <- seq(from=0, to=1, by = .05)
+
+cat(paste0("number of available cores: ",detectCores()))
+
+if (detectCores() >= 50){
+  numCores <-  50
+} else {
+  numCores <- detectCores()
+}
+
+print("Start with d=50")
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+  
+lowdim.result.fan <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "fan", n=n[1], d=d[1], sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
                        unbalanced = unbalanced.grid[k], low = .05, high = .1)))
+
+lowdim.result.er <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "er", n=n[1], d=d[1], nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
+                       unbalanced = unbalanced.grid[k], low = .05, high = .1)))
+
+plan(sequential)
 
 plotgrid <- rep(unbalanced.grid[1], reps)
 for (k in 2:length(unbalanced.grid)){
   plotgrid <- c(plotgrid, rep(unbalanced.grid[k], reps))
 }
 
-frobenius <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-              sapply(1:reps, function(j) lowdim.result[[k]][[j]][[1]])))
-AUC <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-                sapply(1:reps, function(j) lowdim.result[[k]][[j]][[4]])))
+frobenius.fan <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
+                 sapply(1:reps, function(j) lowdim.result.fan[[k]][[j]][[1]])))
+AUC.fan <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
+           sapply(1:reps, function(j) lowdim.result.fan[[k]][[j]][[4]])))
 
-plotdata <- as.data.frame(cbind(plotgrid, "frobenius" = frobenius, "AUC" = AUC))
+frobenius.er <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
+                sapply(1:reps, function(j) lowdim.result.er[[k]][[j]][[1]])))
+AUC.er <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
+          sapply(1:reps, function(j) lowdim.result.er[[k]][[j]][[4]])))
 
-p <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius)) +
+
+plotdata <- as.data.frame(cbind(plotgrid, "frobenius_fan" = frobenius.fan, "AUC_fan" = AUC.fan, "frobenius_er" = frobenius.er, "AUC_er" = AUC.er))
+
+p <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius_fan)) +
      geom_boxplot() +
      xlab("Unbalanced Proportion") +
      ylab("Frobenius Norm") +
      scale_x_discrete(breaks = levels(factor(plotdata$plotgrid))[c(rep(c(T, F),floor(length(unbalanced.grid)/2)),T)])
-q <- ggplot(plotdata, aes(x=factor(plotgrid), y=AUC)) +
+q <- ggplot(plotdata, aes(x=factor(plotgrid), y=AUC_fan)) +
   geom_boxplot() +
   xlab("Unbalanced Proportion") +
-  ylab("Arean Under the Curve") +
+  ylab("AUC") +
   scale_x_discrete(breaks = levels(factor(plotdata$plotgrid))[c(rep(c(T, F),floor(length(unbalanced.grid)/2)),T)])
 
-plot_grid(p,q)
-
-
-
-lowdim.result <- lapply(seq_along(unbalanced.grid), function(k) lapply(1:reps, function(i) unbalanced.run(mode = "er", n=n[1], d=d[1], nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
-                                                                                                          unbalanced = unbalanced.grid[k], low = .05, high = .1)))
-
-plotgrid <- rep(unbalanced.grid[1], reps)
-for (k in 2:length(unbalanced.grid)){
-  plotgrid <- c(plotgrid, rep(unbalanced.grid[k], reps))
-}
-
-frobenius.plot <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-  sapply(1:reps, function(j) lowdim.result[[k]][[j]][[1]])))
-AUC.plot <- unlist(lapply(seq_along(unbalanced.grid), function(k) 
-  sapply(1:reps, function(j) lowdim.result[[k]][[j]][[4]])))
-
-plotdata <- as.data.frame(cbind(plotgrid, "frobenius" = frobenius.plot, "AUC" = AUC.plot))
-
-p <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius)) +
+r <- ggplot(plotdata, aes(x=factor(plotgrid), y=frobenius_er)) +
   geom_boxplot() +
   xlab("Unbalanced Proportion") +
   ylab("Frobenius Norm") +
   scale_x_discrete(breaks = levels(factor(plotdata$plotgrid))[c(rep(c(T, F),floor(length(unbalanced.grid)/2)),T)])
-q <- ggplot(plotdata, aes(x=factor(plotgrid), y=AUC)) +
+s <- ggplot(plotdata, aes(x=factor(plotgrid), y=AUC_er)) +
   geom_boxplot() +
   xlab("Unbalanced Proportion") +
-  ylab("Area Under the Curve") +
+  ylab("AUC") +
   scale_x_discrete(breaks = levels(factor(plotdata$plotgrid))[c(rep(c(T, F),floor(length(unbalanced.grid)/2)),T)])
 
-plot_grid(p,q)
+p_q_r_s <- plot_grid(p,q,r,s, labels = c('A', 'B', 'C', 'D'), ncol = 2, nrow = 2)
+
+ggsave("fan_gen.pdf", plot = p_q_r_s, width = 20, height = 10, units = "cm")
 
 

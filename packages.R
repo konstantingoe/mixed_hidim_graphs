@@ -14,4 +14,7 @@ pacman::p_load(
   Matrix,
   polycor,
   corpcor,
-  plyr)
+  cowplot,
+  genscore,
+  plyr,
+  ggplot2)
