@@ -15,11 +15,11 @@ n <- c(200,200,300,600) # sample size include high dimension only on cluster
 d <- c(50,250,750, 1500) # dimensionality --> include high dimension (1500) only on cluster 
 n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
-nlam <- 50 # number of tuning parameters for graphical lasso
+nlam <- 30 # number of tuning parameters for graphical lasso
 countvar <- F
 latent <- F
 matexport = F
-reps <- 50
+reps <- 20
 unbalanced.grid <- seq(from=0, to=1, by = .1)
 
 cat(paste0("number of available cores: ",detectCores()))
@@ -30,7 +30,7 @@ if (detectCores() >= 50){
   numCores <- detectCores()
 }
 
-print("Start with d=50")
+print("Start with d=750")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
   
 lowdim.result.fan <- lapply(seq_along(unbalanced.grid), function(k) future_lapply(future.seed = T, 1:reps, function(i) unbalanced.run(mode = "fan", n=n[1], d=d[3], sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
