@@ -15,6 +15,8 @@ nlam <- 50 # number of tuning parameters for graphical lasso
 countvar <- F
 latent <- F
 matexport <-  F
+first_half <- T
+
 
 print(paste0("number of available cores: ",detectCores()))
 if (detectCores() >= 100){
@@ -23,7 +25,7 @@ if (detectCores() >= 100){
   numCores <- detectCores()
 }
 
-
+if (first_half == F){
 print("Start with d=50")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
@@ -49,6 +51,7 @@ plan(sequential)
 table_2 <- results_generator(mixed_result_2)
 
 stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data structure learning of the precision matrix with n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))
+}
 
 print("Start with d=750")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
