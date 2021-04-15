@@ -53,6 +53,8 @@ table_2 <- results_generator(mixed_result_2)
 stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data structure learning of the precision matrix with n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))
 }
 
+numCores <- 10
+
 print("Start with d=750")
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
