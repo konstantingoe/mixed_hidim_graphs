@@ -344,31 +344,33 @@ glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matex
 
 #### boil it down even further... we don't really need the data object.
 
-serverrun <- function(t=.15, n = n, d = d, n_E = n_E, latent = F, nlam=nlam, matexport = F, countvar = T){
+serverrun <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, matexport = F, 
+                      namevector = c("binary" = T, "ordinal" = T, "poisson" = T), 
+                      unbalanced = unbalanced, low = .05, high = .1, latent = latent){
   
-  data <- generate.data(t=t, n = n, d = d, n_E = n_E)
+  data <- generate.data(t=t, n = n, d = d, mode = mode)
   data_0 <- data[[1]]
   Omega <- data[[2]]
   
   data <- NULL
   
   if (latent == T) {
-    rho <- mixed.omega_fast(data_0)
-    data_0 <- NULL
-  } else {
-    data_mixed <- make.ordinal(data_0, countvar = countvar)
-    data_0 <- NULL
-    ### learn sample correlation matrix   
-    rho <- mixed.omega_fast(data_mixed)
-    data_mixed <- NULL
+    rho_latent <- mixed.omega(data_0)
+    results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
   }
+  data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
+  data_0 <- NULL
+  ### learn sample correlation matrix   
+  rho <- mixed.omega(data_mixed)
+  data_mixed <- NULL
   
   results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
   
+  if (latent == T) {
+    results <- list("latent"=results_latent, "mixed" = results)
+  }
   return(results)
 }
-
-
 
 serverrun.kendall <- function(t=.15, n = n, d = d, latent = F, nlam=nlam, matexport = F, countvar = T, mode = mode){
   
@@ -580,3 +582,28 @@ unbalanced.run <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, mat
   return(results_poly)
 }
 
+
+results_generator <- function(results_object){
+    table <- round(as_tibble(rbind(
+              c("latent" = mean(sapply(1:sim, function(k) results_object[[k]]$latent[["Frobenius norm"]])),
+                "sd_latent" = sd(sapply(1:sim, function(k) results_object[[k]]$latent[["Frobenius norm"]])),
+                "mixed" = mean(sapply(1:sim, function(k) results_object[[k]]$mixed[["Frobenius norm"]])),
+                "sd_mixed" = sd(sapply(1:sim, function(k) results_object[[k]]$mixed[["Frobenius norm"]]))),
+              
+              c(mean(sapply(1:sim, function(k) results_object[[k]]$latent[["FPR"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$latent[["FPR"]])),
+                mean(sapply(1:sim, function(k) results_object[[k]]$mixed[["FPR"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$mixed[["FPR"]]))),
+              
+              c(mean(sapply(1:sim, function(k) results_object[[k]]$latent[["TPR"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$latent[["TPR"]])),
+                mean(sapply(1:sim, function(k) results_object[[k]]$mixed[["TPR"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$mixed[["TPR"]]))),
+              
+              c(mean(sapply(1:sim, function(k) results_object[[k]]$latent[["AUC"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$latent[["AUC"]])),
+                mean(sapply(1:sim, function(k) results_object[[k]]$mixed[["AUC"]])),
+                sd(sapply(1:sim, function(k) results_object[[k]]$mixed[["AUC"]])))
+            )),4)
+  return(table)
+}
