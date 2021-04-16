@@ -1,14 +1,14 @@
 
 #### applied function for undirected graph learning
-# data can be supplied in any form, and discrete variables will be declared as factors internally
-# verbose supplies a notice that no factors are declared when loading the data in
-# nlam is the vector length of panalty parameters for the glasso
-# thresholding is an boolean variable. If False, then the EBIC of Foygel, Drton (2018) is 
-# used (recommended for high dimensional problems) if True then thresholding will be applied (presumably better for medium and low dimensional problems)
+# data:             can be supplied in any form, and discrete variables will be declared as factors internally
+# verbose:          supplies a notice that no factors are declared when loading the data in
+# nlam:             is the vector length of panalty parameters for the glasso
+# thresholding:     is an boolean variable. If False, then the EBIC of Foygel, Drton (2010) is 
+#                   used (recommended for high dimensional problems) if True then thresholding will be applied (presumably better for medium and low dimensional problems)
+# param:            value of additional penalty term in eBIC, default .1
+# required packages: stats, polycor, glasso, huge, corpcor, matrix 
 
-# required packages: stats, polycor, glasso, huge 
-
-mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F){
+mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F, param = .1){
   if (sum(sapply(data, is.factor)) == 0 & verbose == T){
     cat("Warning, there are no factors in the input data.
         I'm checking you input and declare factors for level(x)<20")
@@ -80,10 +80,11 @@ euclid_norm <- function(x) sqrt(sum(x^2))
 edgenumber <- function(Precision=Precision, cut=0){
   sum((abs(Precision) > (0 + cut))[lower.tri((abs(Precision) > (0 + cut)))])
 }
+
   
 #function for Omega selection
 ### potentially set param = 1 (.5)
-omega.select <- function(x=x, param = .25, n=n){
+omega.select <- function(x=x, param = param, n=n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlam <- length(x$lambda)
@@ -105,7 +106,7 @@ omega.select <- function(x=x, param = .25, n=n){
 }
 
 
-omega.select.drton <- function(x=x, param = .1, n=n, s = s){
+omega.select.drton <- function(x=x, param = param, n=n, s = s){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlam <- length(x$lambda)
