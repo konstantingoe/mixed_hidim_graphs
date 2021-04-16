@@ -8,7 +8,7 @@
 # param:            value of additional penalty term in eBIC, default .1
 # required packages: stats, polycor, glasso, huge, corpcor, matrix 
 
-mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F){
+mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F, param = .1){
   if (sum(sapply(data, is.factor)) == 0 & verbose == T){
     cat("Warning, there are no factors in the input data.
         I'm checking you input and declare factors for level(x)<20")
@@ -62,11 +62,11 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
   #now with rho_pd we have the sample correlation matrix 
   huge.result <- huge(rho_pd,nlambda=nlam,method="glasso",verbose=FALSE)
   if (thresholding == T) {
-    Omega_hat <- omega.select(x=huge.result, n=n)
+    Omega_hat <- omega.select(x=huge.result, n=n, param = param)
   } else if (thresholding == F){
     if (!requireNamespace("glasso", quietly=TRUE))
       stop("Please install package \"glasso\".")
-    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = rho_pd)
+    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = rho_pd, param = param)
   }
   number_edges <- edgenumber(Omega_hat)
   max_degree <- max(sapply(1:d, function(k) (sum(abs(Omega_hat[k,]) > 0) -1))) 
