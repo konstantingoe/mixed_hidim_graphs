@@ -388,9 +388,9 @@ glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matex
   ### this takes a while
   huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
   if (thresholding == T) {
-    Omega_hat <- omega.select(x=huge.result, n=n)
+    Omega_hat <- omega.select(x=huge.result, n=n, param = param)
   } else if (thresholding == F){
-    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = Sigma)
+    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = Sigma, param = param)
   }
   
   frobenius <- base::norm(Omega_hat - Omega, type = "F")
@@ -438,7 +438,7 @@ serverrun <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, param = 
   rho <- mixed.omega(data_mixed)
   data_mixed <- NULL
   
-  results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+  results <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = param)
   
   if (latent == T) {
     results <- list("latent"=results_latent, "mixed" = results)
