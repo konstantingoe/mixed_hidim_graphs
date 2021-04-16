@@ -384,7 +384,7 @@ AUC <- function(truth = truth, huge_obj = huge_obj){
 ### n: sample size
 
 
-glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matexport = matexport, thresholding = F){
+glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matexport = matexport, thresholding = F, param = param){
   ### this takes a while
   huge.result <- huge(Sigma,nlambda=nlam,method="glasso",verbose=FALSE)
   if (thresholding == T) {
@@ -418,7 +418,7 @@ glasso.results <- function(Sigma = Sigma, Omega = Omega, nlam = nlam, n=n, matex
 
 #### boil it down even further... we don't really need the data object.
 
-serverrun <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, matexport = F, 
+serverrun <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, param = .1, matexport = F, 
                       namevector = c("binary" = T, "ordinal" = T, "poisson" = T), 
                       unbalanced = unbalanced, low = .05, high = .1, latent = latent){
   
@@ -430,7 +430,7 @@ serverrun <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, matexpor
   
   if (latent == T) {
     rho_latent <- mixed.omega(data_0)
-    results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
+    results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
   }
   data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
   data_0 <- NULL
