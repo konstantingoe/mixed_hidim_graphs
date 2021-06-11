@@ -48,7 +48,7 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
   } else {
     rho_pd <- rho
   }
-  diag(rho_pd) <- 1
+  #diag(rho_pd) <- 1
   
   if (!requireNamespace("huge", quietly=TRUE))
     stop("Please install package \"huge\".")
@@ -87,12 +87,12 @@ edgenumber <- function(Precision=Precision, cut=0){
 omega.select <- function(x=x, param = param, n=n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
-  nlam <- length(x$lambda)
+  nlambda <- length(x$lambda)
   cut <- seq(from=0, to=.1, by = .001)
   cutwhich <- rep(0, length(cut))
   for (c in 1:length(cut)){
-    eBIC <- rep(0,nlam)
-    for (ind in 1:nlam) {
+    eBIC <- rep(0,nlambda)
+    for (ind in 1:nlambda) {
       At <- x$icov[[ind]]
       edge <- edgenumber(At,cut=cut[c])
       eBIC[ind] <- -n*x$loglik[ind] + edge*log(n) + 4*edge*param*log(d)
@@ -101,17 +101,19 @@ omega.select <- function(x=x, param = param, n=n){
     cutmaxdiff <- which.max(diff(cutwhich))
   }
   At <- x$icov[[cutwhich[cutmaxdiff+1]]]
-  diag(At) <- 1
-  return(At) 
+  #diag(At) <- 1
+  At.final <- cov2cor(At)
+  
+  return(At.final) 
 }
 
 
 omega.select.drton <- function(x=x, param = param, n=n, s = s){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
-  nlam <- length(x$lambda)
-  eBIC <- rep(0,nlam)
-  for (ind in 1:nlam) {
+  nlambda <- length(x$lambda)
+  eBIC <- rep(0,nlambda)
+  for (ind in 1:nlambda) {
     huge_path <- x$path[[ind]]
     edge <- edgenumber(huge_path)
     huge_path[upper.tri(huge_path, diag = T)] <- 1
@@ -121,9 +123,9 @@ omega.select.drton <- function(x=x, param = param, n=n, s = s){
   }  
   
   Omega_hat <- x$icov[[which.min(eBIC)]]
-  diag(Omega_hat) <- 1
+  Omega_hat.standardized <- cov2cor(Omega_hat)
   
-  return(Omega_hat)
+  return(Omega_hat.standardized)
 }
 
 #### write data generating function ####
@@ -163,7 +165,7 @@ generate.data <- function(mode = mode, t=.15, n = 200, d = 50, sparsity = sparsi
   if (!is.positive.definite(Omega)) {
     Omega <- as.matrix(nearPD(Omega, corr = T, keepDiag = T)$mat)
   } 
-  diag(Omega) <- 1
+  #diag(Omega) <- 1
   
   } else if (mode == "er"){
     if (!requireNamespace("genscore", quietly=TRUE))
@@ -278,7 +280,7 @@ mixed.omega <- function(data=data, verbose = T){
     } else {
       rho_pd <- rho
     }
-    diag(rho_pd) <- 1
+    #diag(rho_pd) <- 1
   return(rho_pd)
 }
 
@@ -508,7 +510,7 @@ mixed.omega_fast <- function(data=data, verbose = F){
   } else {
     rho_pd <- rho
   }
-  diag(rho_pd) <- 1
+  #diag(rho_pd) <- 1
   return(rho_pd)
 }
 
@@ -550,7 +552,7 @@ kendalls.results <- function(result_object = result_object){
   return(table)
 }
 
-make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1)+5)){
+make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10))){
   d <-  ncol(data)
   n <- nrow(data)
   d_1 <- floor(d*proportion)
@@ -601,7 +603,6 @@ make.ordinal.general <- function(data = data, proportion = .5, namevector = c("b
   if (namevector["binary"] == T){
     #### Xbinary
     #### split binary so as to control fraction of unbalanced binary data
-    unbalanced <- .2
     pbin1 <- runif(floor(ncol(ordinal_binary)*(1-unbalanced)),.4,.6)
     pbin2 <- runif((ncol(ordinal_binary) - floor(ncol(ordinal_binary)*(1-unbalanced))),low,high)
     pbin <- c(pbin1, pbin2)
