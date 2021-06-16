@@ -47,11 +47,10 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
     stop("Please install package \"stringr\".")
   pair <- rho[lower.tri(rho)]
   if(any(abs(pair) > .9)) 
-    warning(paste0('Correlation of the pair ', 
-                   sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]),
-                          function(k) str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
-                                                               arr.ind = T)[,1]), collapse = ",")),
-                   ' is close to boundary. Inverse might be misleading. '), noBreaks. = F)
+    sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
+           str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
+           arr.ind = T)[,1]), collapse = ",")),
+           ' is close to boundary. Inverse might be misleading. '))
   
   if (!is.positive.definite(rho)) {
     rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
@@ -289,12 +288,10 @@ mixed.omega <- function(data=data, verbose = T){
       stop("Please install package \"stringr\".")
     pair <- rho[lower.tri(rho)]
     if(any(abs(pair) > .9)) 
-      warning(paste0('Correlation of the pair ', 
-                     sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]),
-                            function(k) str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
-                                                                 arr.ind = T)[,1]), collapse = ",")),
-                     ' is close to boundary. Inverse might be misleading. '), noBreaks. = F)
-    
+      sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
+             str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
+             arr.ind = T)[,1]), collapse = ",")),
+             ' is close to boundary. Inverse might be misleading. '))    
     if (!is.positive.definite(rho)) {
       rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
     } else {
