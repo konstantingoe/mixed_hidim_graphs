@@ -68,7 +68,7 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
   } else if (thresholding == F){
     if (!requireNamespace("glasso", quietly=TRUE))
       stop("Please install package \"glasso\".")
-    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = rho_pd)
+    Omega_hat <- omega.select.drton(x=huge.result, n, s = rho_pd, param)
   }
   number_edges <- edgenumber(Omega_hat)
   max_degree <- max(sapply(1:d, function(k) (sum(abs(Omega_hat[k,]) > 0) -1))) 
@@ -93,7 +93,7 @@ edgenumber <- function(Precision=Precision, cut=0){
   
 #function for Omega selection
 ### potentially set param = 1 (.5)
-omega.select <- function(x=x, param = param, n=n){
+omega.select <- function(x, param, n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlambda <- length(x$lambda)
@@ -117,7 +117,7 @@ omega.select <- function(x=x, param = param, n=n){
 }
 
 
-omega.select.drton <- function(x=x, param = param, n=n, s = s){
+omega.select.drton <- function(x, param, n, s){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlambda <- length(x$lambda)
@@ -699,3 +699,218 @@ results_generator <- function(results_object){
             )),4)
   return(table)
 }
+
+
+spearman <- function(x,y){
+  rankx <- rank(x)
+  ranky <- rank(y)
+  rankmean <- (length(rankx)+1)/2
+  
+  rho <- (sum((rankx - rankmean)*(ranky - rankmean)))/(sqrt(sum((rankx - rankmean)^2)*sum((ranky - rankmean)^2))) 
+  return(rho)
+}
+
+
+thresholds <- function(vector){
+  cumprop <- as.numeric(qnorm(table(vector)[-1]/length(vector)))
+}
+
+
+# Input data should be a data frame or matrix where one column is numeric and the other one factor
+# or two vectors x and y
+pointpolynormal <- function(x, y, maxcor = 0.9999, verbose = T){
+  x <- if (missing(y)) 
+    x
+  else cbind(x, y)
+  
+  x <- as.data.frame(x)
+  
+  if (any(is.factor(x) == F)){
+    if (verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+  } else {
+    factor_id <- sapply(x, is.factor)
+  }
+  
+  ### if both categorical perform polychoric correlation 
+  
+  if (sum(factor_id) == 2){
+    adhoc_nonpara <- polycor::polychor(x[,1], x[,2])
+  } else {
+    
+    ### retrieve numeric and discrete variable
+    numeric_var <- x[,factor_id == F]
+    factor_var <- x[,factor_id == T]
+    
+    
+    ### calculate threshold vector and attach infinity bounds for convenience
+    cumprop <- c(-Inf, thresholds(factor_var), Inf)
+    ### calculate rank correlation
+    samplecorr <- spearman(numeric_var, factor_var)
+    if (abs(samplecorr) > maxcor) 
+      samplecorr <- sign(samplecorr) * maxcor
+    ### calculate gaussian density evaluated at the estimated thresholds
+    densityprob <- dnorm(cumprop)
+    
+    
+    ### calculate sample variance 
+    
+    ### first P(Y = y_j)
+    p_hat <- vector(mode = "numeric", (length(cumprop)-1))
+    for (j in 2:length(cumprop)){
+      p_hat[j-1] <- pnorm(cumprop[j]) - pnorm(cumprop[j-1])
+    }  
+    
+    ### calulate sample mean
+    samplmean <- sum(as.numeric(levels(as.factor(factor_var)))*p_hat)
+    ### calculate sample variance
+    samplevar <- sum(as.numeric(levels(as.factor(factor_var)))^2*p_hat) - samplmean^2
+    
+    ### calculate weighting scheme in case levels are not consecutive
+    consecutive <- vector(mode = "numeric", length(head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)))
+    for (j in head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)){
+      consecutive[j] <- as.numeric(levels(as.factor(factor_var)))[j+1] - as.numeric(levels(as.factor(factor_var)))[j]
+    } 
+    
+    ### calculate adhoc nonparanormal point polyserial estimator
+    adhoc_nonpara <- samplecorr*sqrt(samplevar)/(sum(tail(head(densityprob, -1),-1)*(consecutive)))
+  }
+  return(adhoc_nonpara)
+}
+
+
+mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F, param = .1){
+  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
+    cat("Warning, there are no factors in the input data.
+        I'm checking your input and declare factors for level(x)<20")
+  }
+  d <- ncol(data)
+  n <- nrow(data)
+  
+  data <- as.data.frame(data)
+  factor_ids <- sapply(data, function(id) length(unique(id)) < 20)
+  data[,factor_ids] <- lapply(data[,factor_ids], factor)
+  
+  rho <- matrix(1,d,d)
+  
+  if (!requireNamespace("polycor", quietly=TRUE))
+    stop("Please install package \"polycor\".")
+  
+  for(i in 1:(d-1)) {
+    for(j in (i+1):d){
+      if (is.numeric(data[,i]) & is.numeric(data[,j])){
+        rho[i,j] <- rho[j,i] <- 2*sin(pi/6 *spearman(data[,i], data[,j]))
+      }
+      if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
+        if (is.factor(data[,j])) {
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,i], data[,j])
+        } else {
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,j], data[,i])
+        }
+      }
+      if (is.factor(data[,i]) & is.factor(data[,j])) {
+        rho[i,j] <- rho[j,i] <- polycor::polychor(data[,i], data[,j])
+      }
+    }
+  }    
+  
+  if (!requireNamespace("stringr", quietly=TRUE))
+    stop("Please install package \"stringr\".")
+  pair <- rho[lower.tri(rho)]
+  if(any(abs(pair) > .9)) 
+    sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
+                                                                                               str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
+                                                                                                                        arr.ind = T)[,1]), collapse = ",")),
+                                                                                        ' is close to boundary. Inverse might be misleading. '))
+  
+  if (!requireNamespace("corpcor", quietly=TRUE))
+    stop("Please install package \"corpcor\".")
+  if (!requireNamespace("Matrix", quietly=TRUE))
+    stop("Please install package \"Matrix\".")
+  
+  ### eigenvalue decomposition and truncate eigenvalues at 0 
+  
+  if (!is.positive.definite(rho)) {
+    initial_mat_singular <- T
+    rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
+  } else {
+    initial_mat_singular <- F
+    rho_pd <- rho
+  }
+  #diag(rho_pd) <- 1
+  
+  
+  if (!requireNamespace("huge", quietly=TRUE))
+    stop("Please install package \"huge\".")
+  
+  #now with rho_pd we have the sample correlation matrix 
+  huge.result <- huge(rho_pd,nlambda=nlam,method="glasso",verbose=FALSE)
+  if (thresholding == T) {
+    Omega_hat <- omega.select(x=huge.result, n=n, param = param)
+  } else if (thresholding == F){
+    if (!requireNamespace("glasso", quietly=TRUE))
+      stop("Please install package \"glasso\".")
+    Omega_hat <- omega.select.drton(x=huge.result, n=n, s = rho_pd, param = param)
+  }
+  number_edges <- edgenumber(Omega_hat)
+  max_degree <- max(sapply(1:d, function(k) (sum(abs(Omega_hat[k,]) > 0) -1))) 
+  
+  adj_estimate <- abs(Omega_hat) > 0
+  
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjecency Matrix" = adj_estimate,
+                 "Sample Correlation Matrix" = rho_pd, "Edgenumber" = number_edges, "Max Degree" = max_degree, "initial_mat_singular" = initial_mat_singular)  
+  return(output)
+}
+
+
+#### mixed omega function for paranormal
+
+mixed.omega.paranormal <- function(data=data, verbose = T){
+  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
+    cat("Warning, there are no factors in the input data.
+          Did you declare ordinal variables as factors?")
+  }
+  d <- ncol(data)
+  rho <- matrix(1,d,d)
+  
+  ### retrieve maxlevels for polychoric:
+  maxlevel <- max(sapply(1:ncol(data), function(i) length(levels(data[,i])))) +1
+  
+  for(i in 1:(d-1)) {
+    for(j in (i+1):d){
+      if (is.numeric(data[,i]) & is.numeric(data[,j])){
+        rho[i,j] <- rho[j,i] <- 2*sin(pi/6 *spearman(data[,i], data[,j]))
+      }
+      if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
+        if (is.factor(data[,j])) {
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,i], data[,j], more_verbose = F)
+        } else {
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,j], data[,i], more_verbose = F)
+        }
+      }
+      if (is.factor(data[,i]) & is.factor(data[,j])) {
+        rho[i,j] <- rho[j,i] <- polycor::polychor(data[,i], data[,j])
+        #rho[i,j] <- rho[j,i] <- suppressMessages(psych::polychoric(data[,c(i,j)], max.cat = maxlevel, progress = F)[[1]][1,2])
+      }
+    }
+  }    
+  
+  if (!requireNamespace("stringr", quietly=TRUE))
+    stop("Please install package \"stringr\".")
+  pair <- rho[lower.tri(rho)]
+  if(any(abs(pair) > .9)) 
+    sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
+           str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
+                                    arr.ind = T)[,1]), collapse = ",")),
+                                    ' in the nonparanormal estimate is close to the boundary. Inverse might be misleading. '))    
+  if (!is.positive.definite(rho)) {
+    rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
+  } else {
+    rho_pd <- rho
+  }
+  #diag(rho_pd) <- 1
+  return(rho_pd)
+}
+
+
+

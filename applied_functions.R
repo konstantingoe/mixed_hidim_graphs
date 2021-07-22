@@ -104,12 +104,12 @@ edgenumber <- function(Precision=Precision, cut=0){
 omega.select <- function(x=x, param = param, n=n){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
-  nlam <- length(x$lambda)
+  nlambda <- length(x$lambda)
   cut <- seq(from=0, to=.1, by = .001)
   cutwhich <- rep(0, length(cut))
   for (c in 1:length(cut)){
-    eBIC <- rep(0,nlam)
-    for (ind in 1:nlam) {
+    eBIC <- rep(0,nlambda)
+    for (ind in 1:nlambda) {
       At <- x$icov[[ind]]
       edge <- edgenumber(At,cut=cut[c])
       eBIC[ind] <- -n*x$loglik[ind] + edge*log(n) + 4*edge*param*log(d)
@@ -182,9 +182,9 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- polycor::polyserial(data[,i], data[,j])
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,i], data[,j])
         } else {
-          rho[i,j] <- rho[j,i] <- polycor::polyserial(data[,j], data[,i])
+          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,j], data[,i])
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -251,5 +251,74 @@ spearman <- function(x,y){
   return(rho)
 }
 
+
+thresholds <- function(vector){
+  cumprop <- as.numeric(qnorm(table(vector)[-1]/length(vector)))
+}
+
+
+# Input data should be a data frame or matrix where one column is numeric and the other one factor
+# or two vectors x and y
+pointpolynormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
+  x <- if (missing(y)){ 
+    x
+  } else {cbind(x, y)}
+  
+  x <- as.data.frame(x)
+  
+  if (any(is.factor(x) == F)){
+    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+  } else {
+    factor_id <- sapply(x, is.factor)
+  }
+  
+  ### if both categorical perform polychoric correlation 
+  
+  if (sum(factor_id) == 2){
+    adhoc_nonpara <- polycor::polychor(x[,1], x[,2])
+  } else {
+    
+    ### retrieve numeric and discrete variable
+    numeric_var <- x[,factor_id == F]
+    factor_var <- x[,factor_id == T]
+    
+    
+    ### calculate threshold vector and attach infinity bounds for convenience
+    cumprop <- c(-Inf, thresholds(factor_var), Inf)
+    ### calculate rank correlation
+    samplecorr <- spearman(numeric_var, factor_var)
+    if (abs(samplecorr) > maxcor) 
+      samplecorr <- sign(samplecorr) * maxcor
+    ### calculate gaussian density evaluated at the estimated thresholds
+    densityprob <- dnorm(cumprop)
+    
+    
+    ### calculate sample variance 
+    
+    ### first P(Y = y_j)
+    p_hat <- vector(mode = "numeric", (length(cumprop)-1))
+    for (j in 2:length(cumprop)){
+      p_hat[j-1] <- pnorm(cumprop[j]) - pnorm(cumprop[j-1])
+    }  
+    
+    ### calulate sample mean
+    #samplmean <- sum(as.numeric(levels(as.factor(factor_var)))*p_hat)
+    samplmean <- 1/length(factor_var)*sum(factor_var)
+    
+    ### calculate sample variance
+    #samplevar <- sum(as.numeric(levels(as.factor(factor_var)))^2*p_hat) - samplmean^2
+    samplevar <- 1/length(factor_var)*sum((factor_var - samplmean)^2)
+    ### calculate weighting scheme in case levels are not consecutive
+    consecutive <- vector(mode = "numeric", length(head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)))
+    for (j in head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)){
+      consecutive[j] <- as.numeric(levels(as.factor(factor_var)))[j+1] - as.numeric(levels(as.factor(factor_var)))[j]
+    } 
+    
+    ### calculate adhoc nonparanormal point polyserial estimator
+    adhoc_nonpara <- samplecorr*sqrt(samplevar)/(sum(tail(head(densityprob, -1),-1)*(consecutive)))
+  }
+  return(adhoc_nonpara)
+}
 
 
