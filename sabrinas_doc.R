@@ -1,16 +1,33 @@
 rm(list = ls())
-source("packages.R")
-source("functions.R")
-source("applied_functions.R")
+
+
+# Packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  dplyr,
+  rio,
+  stringr,
+  compareGroups,
+  hrbrthemes,
+  missForest,
+  stats,
+  MASS,
+  gdata,
+  Matrix,
+  cowplot,
+  genscore,
+  plyr,
+  ggplot2)
+
 
 set.seed(1221)
 
 ### load data 
+#### change here to path of your data
 
-library(rio)
-library(stringr)
+path <- "/Users/kgoebler/Desktop/Lektorat/Sabrinas Doktorarbeit"  
 
-data <- import("/Users/kgoebler/Desktop/Lektorat/Sabrinas Doktorarbeit/Tabelle ParoVeg_Imputation_kurz.xlsx",
+data <- import(paste(path, "Tabelle ParoVeg_Imputation_kurz.xlsx", sep = "/"),
                which = 1, na = "NA")
 
 arcsinevars <- colnames(dplyr::select(data, contains("arcsin")))
@@ -42,9 +59,7 @@ data.raw <- dplyr::select(data.raw, -all_of(c("SCORE", "holo_t02", "hy")))
 
 data.final <- filter(data.raw, !(is.na(t02) & is.na(t03)))
 
-### imputation: 
-
-library(missForest)
+##### imputation #### 
 
 misstoohigh <- which(sapply(1:ncol(data.final), function(i) sum(is.na(data.final[,i]))/nrow(data.final)) > .2)
 
@@ -56,53 +71,249 @@ data.complete <- cbind(data.final[,c("t01", "t02","t03")], data.imputed$ximp)
 
 #### Descriptive Analysis ####
 
-# decriptive vars
+desc.data <- data.complete
 
-descvars <- c("age", "sexe", "ra", "m", "py", "nu", "bu", "ge", "gr")
-
-c(mean(filter(data.complete, g == 1)[,descvars[1]]), mean(filter(data.complete, g == 2)[,descvars[1]]),
-  wilcox.test(filter(data.complete, g == 1)[,descvars[1]], filter(data.complete, g == 2)[,descvars[1]], exact = F)$p.value)
-
-c((mean(filter(data.complete, g == 1)[,descvars[2]]) -1 )*100, mean((filter(data.complete, g == 2)[,descvars[2]]) -1 )*100,
-  chisq.test(table(data.complete[,c("g",descvars[2])]))$p.value)
-
+p1 <- desc.data %>%
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>%
+  ggplot(aes(x=age, fill=group)) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', bins = 10) +
+  labs(fill="") +
+  facet_grid(~group)
 
 
 
+p2 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>% 
+  ggplot(aes(sexe-1, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Gender", labels = c("male", "female")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p3 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         medics = ifelse(m == 2,0,1)) %>% 
+  ggplot(aes(medics, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "presricption drugs", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
 
 
-
-#### Strategy: Estimate Graph for Baseline, T1, and T2
-#### and take differential edges that are present in each graph 
-### get baseline vars
-
-timeinvariantnames <- c("g", "age", "sexe", "th", "py", "zig", "alk", "mets", "m", 
-                        "medzu", "medred", "nu", "fa", "path", "zvp", "muhy1", "muhy2", "muhy3")
-
-baselinenames <- str_subset(colnames(data.complete), "01")
-
-data.baseline <- dplyr::select(data.complete, all_of(c(baselinenames[-which(baselinenames == "t01")], timeinvariantnames)))
-
-graph.baseline <- mixed.undir.graph(data.baseline, nlam = 50)
-
-library(GGally)
-library(ggnetwork)
-library(network)
-### nice even at this stage this is what we want!
-net.baseline <-  network(graph.baseline$`Adjecency Matrix`, directed = FALSE)
-network.vertex.names(net.baseline) <- colnames(data.baseline)
-ggnet2(net.baseline, size = 12, label = TRUE, label.size = 5, label.alpha = 0.75)
+p4 <- desc.data %>%
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>%
+  ggplot(aes(x=py, fill=group)) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', bins = 10) +
+  labs(fill="", x = "Pack years") +
+  facet_grid(~group)
 
 
-t2names <- str_subset(colnames(data.complete), "02")
-data.t2 <- dplyr::select(data.complete, all_of(c(t2names, timeinvariantnames)))
+p5 <- desc.data %>%
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>%
+  ggplot(aes(x=nu, fill=group)) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', bins = 10) +
+  labs(fill="", x = "Number of Teeth") +
+  facet_grid(~group)
 
-graph.t2 <- mixed.undir.graph(data.t2, nlam = 50)
-### nice even at this stage this is what we want!
-net.t2 <-  network(graph.t2$`Adjecency Matrix`, directed = FALSE)
-network.vertex.names(net.t2) <- colnames(data.t2)
-ggnet2(net.t2, size = 12, label = TRUE, label.size = 5, label.alpha = 0.75)
 
+p6 <- desc.data %>%
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>%
+  ggplot(aes(x=bmi_t01, fill=group)) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', bins = 10) +
+  labs(fill="", x = "Body Mass Index") +
+  facet_grid(~group)
+
+
+p7 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         therapy = ifelse(th == 2,0,1)) %>% 
+  ggplot(aes(therapy, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "antihypertensive therapy", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+
+p8 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         acohol = ifelse(th == 2,0,1)) %>% 
+  ggplot(aes(acohol, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "regular drinking", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p9 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         metsyndrom = ifelse(th == 2,0,1)) %>% 
+  ggplot(aes(metsyndrom, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Regular Drinking", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p10 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         metsyndrom = ifelse(th == 2,0,1)) %>% 
+  ggplot(aes(metsyndrom, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Metabolic Syndrom", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p11 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         medzu = ifelse(medzu == 2,0,1)) %>% 
+  ggplot(aes(medzu, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Change in BP medication additionally", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p12 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         medred = ifelse(medred == 2,0,1)) %>% 
+  ggplot(aes(medred, group = as.factor(group))) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Change in BP medication reduced", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+### could potentially remove those two variables
+
+p13 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         fa = ifelse(fa == 2,0,1)) %>% 
+  ggplot(aes(fa, group = group)) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Family History", labels = c("negative", "positive")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p14 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         fa = ifelse(path == 2,0,1)) %>% 
+  ggplot(aes(path, group = group)) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "PATherapy w.o. year", labels = c("negative", "positive")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p15 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         zvp = ifelse(zvp == 2,0,1)) %>% 
+  ggplot(aes(zvp, group = group)) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "Loss of Teeth (paradontologic)", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+p16 <- desc.data %>% 
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control")),
+         muhy1 = ifelse(muhy1 == 2,0,1)) %>% 
+  ggplot(aes(muhy1, group = group)) + 
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", alpha = .6) + 
+  scale_y_continuous(labels=scales::percent) +
+  ylab("relative frequencies") +
+  scale_fill_discrete(name = "", labels = c("no", "yes")) +
+  labs(x="") +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  facet_grid(~group)
+
+
+p16 <- desc.data %>%
+  mutate(group = factor(g, levels = c(1,2), labels = c("Treat", "Control"))) %>%
+  ggplot(aes(x=muhy1, fill=group)) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity', bins = 3) +
+  labs(fill="", x = "Oral hygiene (# per day)") +
+  facet_grid(~group)
+
+
+desc.data <- desc.data %>% 
+  mutate(group = factor(desc.data$g, levels = c(1,2), labels = c("Treat", "Control")),
+         sex = factor(desc.data$sexe, levels = c(1,2), labels = c("Male", "Female")))
+
+table <- compareGroups(group ~ sex + age + py + zig + bop_t01 + bop_t02 + bop_t03 + 
+                              pcr_t01 + pcr_t02 + pcr_t03 + st_t01 + st_t02 + st_t03 + 
+                              hb1_t01 + hb1_t02 + hb1_t03 + glu_t01 + glu_t03 + glu_t02 + 
+                              bmi_t01 + bmi_t02 + bmi_t03 + whr_t01 + whr_t02 + whr_t03 + 
+                              `pisa-score_t01` + `pisa-score_t02` + `pisa-score_t03`, 
+                              data = desc.data, method = NA)
+createTable(table)
+
+### even more detailed
+
+summary(table)
+
+#### make nice boxplots of the two significant variables
+
+bopdata <- as.data.frame(cbind(
+                 c(desc.data$bop_t01,desc.data$bop_t02,desc.data$bop_t03),
+                 rep(factor(desc.data$g, levels = c(1,2), labels = c("Treat", "Control")),3),
+                 factor(c(rep(1,length(desc.data$bop_t01)), rep(2,length(desc.data$bop_t01)), rep(3,length(desc.data$bop_t01))),
+                          levels = c(1,2,3), labels = c("Baseline", "T1", "T2"))
+                 ))
+
+bopdata <- bopdata %>% 
+  mutate(BOP = V1,
+         Group = factor(V2, levels = c(1,2), labels = c("Treat", "Control")),
+         Time = factor(V3, levels = c(1,2,3), labels = c("Baseline", "T1", "T2"))
+  )
+
+p17 <- ggplot(bopdata, aes(x=Time, y=BOP, fill=Group)) + 
+  geom_boxplot() +
+  facet_wrap(~Group)
+
+##### pisa #####
+
+pisadata <- as.data.frame(cbind(
+  c(desc.data$`pisa-score_t01`,desc.data$`pisa-score_t02`,desc.data$`pisa-score_t03`),
+  rep(factor(desc.data$g, levels = c(1,2), labels = c("Treat", "Control")),3),
+  factor(c(rep(1,length(desc.data$`pisa-score_t01`)), rep(2,length(desc.data$`pisa-score_t01`)), rep(3,length(desc.data$`pisa-score_t01`))),
+         levels = c(1,2,3), labels = c("Baseline", "T1", "T2"))
+))
+pisadata <- pisadata %>% 
+  mutate(PisaScore = V1,
+         Group = factor(V2, levels = c(1,2), labels = c("Treat", "Control")),
+         Time = factor(V3, levels = c(1,2,3), labels = c("Baseline", "T1", "T2"))
+  )
+
+p18 <- ggplot(pisadata, aes(x=Time, y=PisaScore, fill=Group)) + 
+  geom_boxplot() +
+  facet_wrap(~Group)
 
 
 
