@@ -569,7 +569,7 @@ kendalls.results <- function(result_object = result_object){
   return(table)
 }
 
-make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10))){
+make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10)), f_x = 1){
   d <-  ncol(data)
   n <- nrow(data)
   d_1 <- floor(d*proportion)
@@ -649,7 +649,8 @@ make.ordinal.general <- function(data = data, proportion = .5, namevector = c("b
   } 
   
   ordinal <- cbind(ordinal_binary, ordinal_ordinal, ordinal_poisson)
-  data_mixed <- as.data.frame(cbind(ordinal,data[,(d_1+1):d]))
+  continuous <- (data[,(d_1+1):d])^f_x
+  data_mixed <- as.data.frame(cbind(ordinal,continuous))
   ### declare ordinal variables as factors!
   for (f in 1:d_1) {
     data_mixed[,f] <- factor(data_mixed[,f],ordered = T) 
@@ -803,9 +804,9 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,i], data[,j])
+          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,i], data[,j])
         } else {
-          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,j], data[,i])
+          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,j], data[,i])
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -883,9 +884,9 @@ mixed.omega.paranormal <- function(data=data, verbose = T){
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,i], data[,j], more_verbose = F)
+          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,i], data[,j], more_verbose = F)
         } else {
-          rho[i,j] <- rho[j,i] <- pointpolynormal(data[,j], data[,i], more_verbose = F)
+          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,j], data[,i], more_verbose = F)
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -914,3 +915,117 @@ mixed.omega.paranormal <- function(data=data, verbose = T){
 
 
 
+lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
+  x <- if (missing(y)){ 
+    x
+  } else {cbind(x, y)}
+  
+  x <- as.data.frame(x)
+  
+  if (any(is.factor(x) == F)){
+    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+  } else {
+    factor_id <- sapply(x, is.factor)
+  }
+  
+  ### if both categorical perform polychoric correlation 
+  
+  if (sum(factor_id) == 2){
+    lord_estimator <- polycor::polychor(x[,1], x[,2])
+  } else {
+    
+    ### retrieve numeric and discrete variable
+    numeric_var <- x[,factor_id == F]
+    factor_var <- x[,factor_id == T]
+    
+    ranky <- rank(numeric_var)
+    rankmean <- (length(ranky)+1)/2
+    n <- length(factor_var)
+    
+    cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
+    sumindex <- n*cummarg_propotions
+    
+    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+    
+    a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
+    b <- a_i
+    for (i in a_i){
+      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+    }
+    lambda <- 1/(n*s_Y)*sum(b)
+    
+    s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
+    samplecorr <- spearman(numeric_var, factor_var)
+    if (abs(samplecorr) > maxcor) 
+      samplecorr <- sign(samplecorr) * maxcor
+    
+    lord_estimator <- samplecorr*s_X/lambda
+  }
+  if (lord_estimator < 0){
+    numeric_var <- -1*numeric_var
+    ranky <- rank(numeric_var)
+    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+    for (i in a_i){
+      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+    }
+    lambda <- 1/(n*s_Y)*sum(b)
+    samplecorr <- spearman(numeric_var, factor_var)
+    if (abs(samplecorr) > maxcor) 
+      samplecorr <- sign(samplecorr) * maxcor
+    
+    lord_estimator <- -1*samplecorr*s_X/lambda
+  }
+  return(lord_estimator)
+}
+
+
+nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
+                              namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
+                              unbalanced = .5, low = .05, high = .1, sparsity = .1, nonpara = F){
+  data <- generate.data(t=t, n = 200, d = 50, mode = "fan")
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  data <- NULL
+  
+  if (nonpara == F){
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
+  } else if (nonpara == T){
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_x = 3)
+  }
+  rho_latent <- mixed.omega(data_0, verbose = F) #oracle
+  data_0 <- NULL
+  rho <- mixed.omega(data_mixed, verbose = F) #MLestimator
+  rho_nonpara <- mixed.omega.paranormal(data_mixed, verbose = F) # adhoc nonparanormal estimator
+  data_mixed <- NULL
+  
+  results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = .1)
+  results_ml <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
+  results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
+  
+  results <- list("latent"=results_latent, "ML" = results_ml, "nonparanormal" = results_nonpara)
+  return(results)
+}
+
+extract.nonpararesults <- function(object){
+  table <-  cbind(c(mean(sapply(1:sim, function(k) object[[k]][[1]][[1]])),
+                      sd(sapply(1:sim, function(k) object[[k]][[1]][[1]]))),
+                    c(mean(sapply(1:sim, function(k) object[[k]][[2]][[1]])),
+                      sd(sapply(1:sim, function(k) object[[k]][[2]][[1]]))),
+                    c(mean(sapply(1:sim, function(k) object[[k]][[3]][[1]])),
+                      sd(sapply(1:sim, function(k) object[[k]][[3]][[1]]))))
+  
+  for (i in 2:4) {
+    table <- rbind(table,
+                     cbind(c(mean(sapply(1:sim, function(k) object[[k]][[1]][[i]])),
+                             sd(sapply(1:sim, function(k) object[[k]][[1]][[i]]))),
+                           c(mean(sapply(1:sim, function(k) object[[k]][[2]][[i]])),
+                             sd(sapply(1:sim, function(k) object[[k]][[2]][[i]]))),
+                           c(mean(sapply(1:sim, function(k) object[[k]][[3]][[i]])),
+                             sd(sapply(1:sim, function(k) object[[k]][[3]][[i]])))))    
+  }
+  
+  rownames(table) <- c("Frobenius", "sd_F", "FPR", "sd_{FPR}", "TPR", "sd_{TPR}", "AUC", "sd_{AUC}")
+  colnames(table) <- c("Oracle", "Polyserial ML", "Polyserial nonparanormal")
+  return(table)
+}

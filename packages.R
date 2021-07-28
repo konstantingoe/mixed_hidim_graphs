@@ -12,6 +12,7 @@ pacman::p_load(
   MASS,
   gdata,
   Matrix,
+  stringr,
   polycor,
   corpcor,
   cowplot,

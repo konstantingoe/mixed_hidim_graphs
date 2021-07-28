@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/serverrun_last.out
+#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/serverrun_nonpara.out
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 #SBATCH -J "highdim"
 #SBATCH --get-user-env
@@ -21,4 +21,4 @@ module load r
 
 cd /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 
-Rscript server_run.R
+Rscript point_polynomial.R
