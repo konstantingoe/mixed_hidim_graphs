@@ -202,7 +202,7 @@ generate.data <- function(mode = mode, t=.15, n = 200, d = 50, sparsity = sparsi
 # number of levels for all ordinal variables (could also think of a vector of size d/2 here)
 # allow for a mix of 20-leveled discrete variables (count variables) and 3-leveled ones
 
-make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_count = proportion*1/3){
+make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_count = proportion*1/3, f_j = 1){
   d <-  ncol(data)
   d_1 <- d*proportion
   ordinal <- data[,1:d_1]
@@ -242,7 +242,9 @@ make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_
       ordinal[,col] <- cut(ordinal[,col], breaks = gamma[[col]], labels = F, right=T, include.lowest=T)
     }
   }
-  data_mixed <- as.data.frame(cbind(ordinal,data[,(d_1+1):d]))
+  
+  continuous <- (data[,(d_1+1):d])^f_j
+  data_mixed <- as.data.frame(cbind(ordinal,continuous))
   
   ### declare ordinal variables as factors!
   for (f in 1:d_1) {
@@ -325,14 +327,21 @@ mixed.omega.kendall <- function(data = data, verbose = T){
         if (is.factor(data[,j])) {
           ### Fan et.al.
           cor1[j,i] <- cor1[i,j] <- cor(data[,i], as.numeric(data[,j]), method="kendall")
-          hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
-          ###
+          delta_hat <- qnorm(1-mean(as.numeric(data[,j])-1))
+          
         } else {
           ### Fan et.al.
           cor1[j,i] <- cor1[i,j] <- cor(data[,j],as.numeric(data[,i]),method="kendall")
-          hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
-          ###
+          delta_hat <- qnorm(1-mean(as.numeric(data[,i])-1))
+          
         }
+        bridge.func.case2 <- function(t){
+          R_jk <- 4*pmvnorm(lower=-Inf,upper=c(delta_hat,0), corr= matrix(c(1,t/sqrt(2),t/sqrt(2),1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat) - cor1[i,j]
+        }
+        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case2, c(-1,1))[[1]]
+          ###
+        #hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
+          ###
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
         ### Fan et.al. ### population kendall's tau
@@ -342,13 +351,19 @@ mixed.omega.kendall <- function(data = data, verbose = T){
         nd[i,j] <- nd[i,j] <- sum((data[,i] == 0)*(data[,j] == 0))
         
         tau[i,j] <- tau[j,i] <- 2*(na[i,j]*nd[i,j] - nb[i,j]*nc[i,j])/(n*(n-1))
-        #tau[i,j] <- tau[j,i] <- cor(as.numeric(data[,i]),as.numeric(data[,j]),method="kendall")
-        hatR[i,j] <- hatR[j,i] <- sin(pi*tau[i,j])
+        
+        delta_hat_i <- qnorm(1-mean(as.numeric(data[,i])-1))
+        delta_hat_j <- qnorm(1-mean(as.numeric(data[,j])-1))
+        
+        bridge.func.case1 <- function(t){
+          R_jk <- 2*pmvnorm(lower=-Inf,upper=c(delta_hat_i,delta_hat_j), corr= matrix(c(1,t,t,1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat_i)*pnorm(delta_hat_j) - tau[i,j]
+        }
+        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case1, c(-1,1))[[1]]
+        #hatR[i,j] <- hatR[j,i] <- sin(pi*tau[i,j])
         ###
       }
     }
-  }    
-  
+  }
   if (!is.positive.definite(hatR)) {
     hatR_pd <- as.matrix(nearPD(hatR, corr = T, keepDiag = T)$mat)
   } else {
@@ -994,16 +1009,18 @@ nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
     data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_x = 3)
   }
   rho_latent <- mixed.omega(data_0, verbose = F) #oracle
+  rho_nonpara_latent <- mixed.omega.kendall(data_0, verbose = F) #oracle with kendall's tau mapping
   data_0 <- NULL
   rho <- mixed.omega(data_mixed, verbose = F) #MLestimator
   rho_nonpara <- mixed.omega.paranormal(data_mixed, verbose = F) # adhoc nonparanormal estimator
   data_mixed <- NULL
   
   results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = .1)
+  results_latent_nonpara <- glasso.results(Sigma=rho_nonpara_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = .1)
   results_ml <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
   results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
   
-  results <- list("latent"=results_latent, "ML" = results_ml, "nonparanormal" = results_nonpara)
+  results <- list("latent"=results_latent, "latent_nonpara"=results_latent_nonpara, "ML" = results_ml, "nonparanormal" = results_nonpara)
   return(results)
 }
 
@@ -1013,7 +1030,9 @@ extract.nonpararesults <- function(object){
                     c(mean(sapply(1:sim, function(k) object[[k]][[2]][[1]])),
                       sd(sapply(1:sim, function(k) object[[k]][[2]][[1]]))),
                     c(mean(sapply(1:sim, function(k) object[[k]][[3]][[1]])),
-                      sd(sapply(1:sim, function(k) object[[k]][[3]][[1]]))))
+                      sd(sapply(1:sim, function(k) object[[k]][[3]][[1]]))),
+                    c(mean(sapply(1:sim, function(k) object[[k]][[4]][[1]])),
+                      sd(sapply(1:sim, function(k) object[[k]][[4]][[1]]))))
   
   for (i in 2:4) {
     table <- rbind(table,
@@ -1022,10 +1041,76 @@ extract.nonpararesults <- function(object){
                            c(mean(sapply(1:sim, function(k) object[[k]][[2]][[i]])),
                              sd(sapply(1:sim, function(k) object[[k]][[2]][[i]]))),
                            c(mean(sapply(1:sim, function(k) object[[k]][[3]][[i]])),
-                             sd(sapply(1:sim, function(k) object[[k]][[3]][[i]])))))    
+                             sd(sapply(1:sim, function(k) object[[k]][[3]][[i]]))),
+                           c(mean(sapply(1:sim, function(k) object[[k]][[4]][[i]])),
+                             sd(sapply(1:sim, function(k) object[[k]][[4]][[i]])))))    
   }
   
   rownames(table) <- c("Frobenius", "sd_F", "FPR", "sd_{FPR}", "TPR", "sd_{TPR}", "AUC", "sd_{AUC}")
-  colnames(table) <- c("Oracle", "Polyserial ML", "Polyserial nonparanormal")
+  colnames(table) <- c("Oracle", "Oracle nonparanormal", "Polyserial ML", "Polyserial nonparanormal")
   return(table)
 }
+
+
+
+serverrun.kendall.nonpara <- function(t=.15, n = n, d = d, nlam=nlam, matexport = F, countvar = T, mode = mode, param = .1, f_j = 1){
+  
+  data <- generate.data(t=t, n = n, d = d, mode = mode)
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  
+  data <- NULL
+  
+  data_mixed <- make.ordinal(data_0, countvar = F, n_O = 2, f_j = f_j)
+  
+  ### learn sample correlation matrix
+  rho_latent <- mixed.omega(data_0, verbose = F)
+  rho_nonpara_latent <- mixed.omega.kendall(data_0, verbose = F)
+  data_0 <- NULL
+  rho_kendall <- mixed.omega.kendall(data_mixed, verbose = F)
+  rho_poly <- mixed.omega(data_mixed, verbose = F)
+  rho_nonpara <- mixed.omega.paranormal(data_mixed, verbose = F)
+  
+  data_mixed <- NULL
+  
+  results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
+  results_latent_nonpara <- glasso.results(Sigma=rho_nonpara_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
+  results_kendall <- glasso.results(Sigma=rho_kendall, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
+  results_poly <- glasso.results(Sigma=rho_poly, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
+  results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = param)
+  
+  results <- list("latent"=results_latent, "nonpara_latent"= results_latent_nonpara, "kendall"=results_kendall, "poly" = results_poly, "nonpara" = results_nonpara)
+  return(results)
+}
+
+extract.kendall.nonpararesults <- function(object){
+  table <-  cbind(c(mean(sapply(1:sim, function(k) object[[k]][[1]][[1]])),
+                    sd(sapply(1:sim, function(k) object[[k]][[1]][[1]]))),
+                  c(mean(sapply(1:sim, function(k) object[[k]][[2]][[1]])),
+                    sd(sapply(1:sim, function(k) object[[k]][[2]][[1]]))),
+                  c(mean(sapply(1:sim, function(k) object[[k]][[3]][[1]])),
+                    sd(sapply(1:sim, function(k) object[[k]][[3]][[1]]))),
+                  c(mean(sapply(1:sim, function(k) object[[k]][[4]][[1]])),
+                    sd(sapply(1:sim, function(k) object[[k]][[4]][[1]]))),
+                  c(mean(sapply(1:sim, function(k) object[[k]][[5]][[1]])),
+                    sd(sapply(1:sim, function(k) object[[k]][[5]][[1]]))))
+  
+  for (i in 2:4) {
+    table <- rbind(table,
+                   cbind(c(mean(sapply(1:sim, function(k) object[[k]][[1]][[i]])),
+                           sd(sapply(1:sim, function(k) object[[k]][[1]][[i]]))),
+                         c(mean(sapply(1:sim, function(k) object[[k]][[2]][[i]])),
+                           sd(sapply(1:sim, function(k) object[[k]][[2]][[i]]))),
+                         c(mean(sapply(1:sim, function(k) object[[k]][[3]][[i]])),
+                           sd(sapply(1:sim, function(k) object[[k]][[3]][[i]]))),
+                         c(mean(sapply(1:sim, function(k) object[[k]][[4]][[i]])),
+                           sd(sapply(1:sim, function(k) object[[k]][[4]][[i]]))),
+                         c(mean(sapply(1:sim, function(k) object[[k]][[5]][[i]])),
+                           sd(sapply(1:sim, function(k) object[[k]][[5]][[i]])))))    
+  }
+  
+  rownames(table) <- c("Frobenius", "sd_F", "FPR", "sd_{FPR}", "TPR", "sd_{TPR}", "AUC", "sd_{AUC}")
+  colnames(table) <- c("Oracle", "Oracle nonparanormal", "Kenall", "Polyserial ML", "Polyserial nonparanormal")
+  return(table)
+}
+
