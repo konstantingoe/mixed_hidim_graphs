@@ -19,7 +19,8 @@ if (detectCores() >= 100){
   numCores <- detectCores()
 }
 
-
+numCores <- 4
+sim <-  50
 ##### d = 50 ####
 
 print("Start with d=50, f_j(x) = x")
@@ -47,6 +48,8 @@ plan(sequential)
 table_2 <- extract.nonpararesults(nonpara_comparison_2)
 stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[1],"and d=",d[1],"under",sim, "simulation runs."))                    
 
+
+xxx
 ##### d = 250 ####
 
 print("Start with d=250, f_j(x) = x")
