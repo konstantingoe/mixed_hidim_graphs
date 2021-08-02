@@ -10,6 +10,7 @@ pacman::p_load(
   dplyr,
   stats,
   MASS,
+  mvtnorm,
   gdata,
   Matrix,
   stringr,
