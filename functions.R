@@ -584,7 +584,7 @@ kendalls.results <- function(result_object = result_object){
   return(table)
 }
 
-make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10)), f_x = 1){
+make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10)), f_j = 1){
   d <-  ncol(data)
   n <- nrow(data)
   d_1 <- floor(d*proportion)
@@ -664,7 +664,7 @@ make.ordinal.general <- function(data = data, proportion = .5, namevector = c("b
   } 
   
   ordinal <- cbind(ordinal_binary, ordinal_ordinal, ordinal_poisson)
-  continuous <- (data[,(d_1+1):d])^f_x
+  continuous <- (data[,(d_1+1):d])^f_j
   data_mixed <- as.data.frame(cbind(ordinal,continuous))
   ### declare ordinal variables as factors!
   for (f in 1:d_1) {
@@ -1004,9 +1004,9 @@ nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
   #data <- NULL
   
   if (nonpara == F){
-    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_j = 1)
   } else if (nonpara == T){
-    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_x = 3)
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_j = 3)
   }
   rho_latent <- mixed.omega(data_0, verbose = F) #oracle
   rho_nonpara_latent <- mixed.omega.kendall(data_0, verbose = F) #oracle with kendall's tau mapping
