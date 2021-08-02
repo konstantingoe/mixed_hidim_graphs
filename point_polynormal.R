@@ -3,7 +3,7 @@ source("packages.R")
 source("functions.R")
 source("applied_functions.R")
 
-set.seed(1221)
+set.seed(131)
 
 sim <- 100 # simulation runs
 n <- c(200,200,300,600) # sample size include high dimension only on cluster
@@ -25,7 +25,7 @@ print("Start with d=50, f_j(x) = x")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-nonpara_comparison_1 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=nlam, matexport = F,
+nonpara_comparison_1 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=30, matexport = F,
                           namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
                           unbalanced = .5, nonpara = F))
 
