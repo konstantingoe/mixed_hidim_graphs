@@ -23,13 +23,13 @@ if (detectCores() >= 100){
 
 print("Start with d=50, f_j(x) = x")
 
-plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+#plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-nonpara_comparison_1 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=30, matexport = F,
+nonpara_comparison_1 <- mclapply(mc.cores = numCores, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=30, matexport = F,
                           namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
                           unbalanced = .5, nonpara = F))
 
-plan(sequential)
+#plan(sequential)
 
 table_1 <- extract.nonpararesults(nonpara_comparison_1)
 stargazer(table_1, out = "table_1.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[1],"and d=",d[1],"under",sim, "simulation runs."))                    
