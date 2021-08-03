@@ -948,11 +948,12 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
   
   if (sum(factor_id) == 2){
     lord_estimator <- polycor::polychor(x[,1], x[,2])
+  } else if (sum(factor_id) == 0) {
+    lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
   } else {
-    
     ### retrieve numeric and discrete variable
     numeric_var <- x[,factor_id == F]
-    factor_var <- x[,factor_id == T]
+    factor_var <- as.numeric(x[,factor_id == T])
     
     ranky <- rank(numeric_var)
     rankmean <- (length(ranky)+1)/2
@@ -976,20 +977,20 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
       samplecorr <- sign(samplecorr) * maxcor
     
     lord_estimator <- samplecorr*s_X/lambda
-  }
-  if (lord_estimator < 0){
-    numeric_var <- -1*numeric_var
-    ranky <- rank(numeric_var)
-    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-    for (i in a_i){
-      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+    if (lord_estimator < 0){
+      numeric_var <- -1*numeric_var
+      ranky <- rank(numeric_var)
+      s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+      for (i in a_i){
+        b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+      }
+      lambda <- 1/(n*s_Y)*sum(b)
+      samplecorr <- spearman(numeric_var, factor_var)
+      if (abs(samplecorr) > maxcor) 
+        samplecorr <- sign(samplecorr) * maxcor
+      
+      lord_estimator <- -1*samplecorr*s_X/lambda
     }
-    lambda <- 1/(n*s_Y)*sum(b)
-    samplecorr <- spearman(numeric_var, factor_var)
-    if (abs(samplecorr) > maxcor) 
-      samplecorr <- sign(samplecorr) * maxcor
-    
-    lord_estimator <- -1*samplecorr*s_X/lambda
   }
   return(lord_estimator)
 }

@@ -15,7 +15,6 @@ param <- .1
 
 
 X <- rmvnorm(1000, mean = c(-40,40), sigma = matrix(c(1,-.98,-.98,1), nrow = 2, ncol = 2))
-
 cov(X[,1],X[,2])
 cov(X[,1][order(X[,1])],X[,2][order(X[,2])]) 
 
@@ -24,6 +23,3 @@ var(X[,1])
 
 
 cov(X[,1][order(X[,1])],X[,2][order(X[,2])]) < var(X[,1][order(X[,1])])
-
-
-
