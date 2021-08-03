@@ -338,7 +338,7 @@ mixed.omega.kendall <- function(data = data, verbose = T){
         bridge.func.case2 <- function(t){
           R_jk <- 4*pmvnorm(lower=-Inf,upper=c(delta_hat,0), corr= matrix(c(1,t/sqrt(2),t/sqrt(2),1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat) - cor1[i,j]
         }
-        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case2, c(-1,1))[[1]]
+        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case2, c(-1,1), extendInt = "yes")[[1]]
           ###
         #hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
           ###
