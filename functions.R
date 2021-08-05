@@ -338,10 +338,15 @@ mixed.omega.kendall <- function(data = data, verbose = T){
         bridge.func.case2 <- function(t){
           R_jk <- 4*pmvnorm(lower=-Inf,upper=c(delta_hat,0), corr= matrix(c(1,t/sqrt(2),t/sqrt(2),1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat) - cor1[i,j]
         }
-        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case2, c(-1,1), extendInt = "yes")[[1]]
-          ###
+        hatR[i,j] <- hatR[j,i] <- tryCatch(
+          expr = {uniroot(bridge.func.case2, c(-1,1))[[1]]},  
+          error = function(e){ 
+            #message('Caught an error!')
+            #message(e)
+            return(2^(1/2)*sin(cor1[i,j]*pi/2))})
+        ###
         #hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
-          ###
+        ###
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
         ### Fan et.al. ### population kendall's tau
@@ -358,7 +363,12 @@ mixed.omega.kendall <- function(data = data, verbose = T){
         bridge.func.case1 <- function(t){
           R_jk <- 2*pmvnorm(lower=-Inf,upper=c(delta_hat_i,delta_hat_j), corr= matrix(c(1,t,t,1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat_i)*pnorm(delta_hat_j) - tau[i,j]
         }
-        hatR[i,j] <- hatR[j,i] <- uniroot(bridge.func.case1, c(-1,1))[[1]]
+        hatR[i,j] <- hatR[j,i] <- tryCatch(
+                                  expr = {uniroot(bridge.func.case1, c(-1,1))[[1]]},  
+                                  error = function(e){ 
+                                  #message('Caught an error!')
+                                  #message(e)
+                                  return(sin(pi*tau[i,j]))})
         #hatR[i,j] <- hatR[j,i] <- sin(pi*tau[i,j])
         ###
       }
