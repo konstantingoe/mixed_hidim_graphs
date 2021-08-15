@@ -14,9 +14,15 @@ nlam <- 50 # number of tuning parameters for graphical lasso
 param <- .1
 
 
-X <- rmvnorm(1000, mean = c(-40,40), sigma = matrix(c(1,-.98,-.98,1), nrow = 2, ncol = 2))
+X <- rmvnorm(1000, mean = c(0,0), sigma = matrix(c(1,-.8,-.8,1), nrow = 2, ncol = 2))
 cov(X[,1],X[,2])
 cov(X[,1][order(X[,1])],X[,2][order(X[,2])]) 
+
+1/(1000-1)*(sum(X[,1]*X[,2]) - mean(X[,1])*mean(X[,2]))
+
+1/(1000-1)*(sum(X[,1][order(X[,1])]*X[,2][order(X[,2])]) - mean(X[,1])*mean(X[,2]))
+
+
 
 var(X[,1][order(X[,1])])
 var(X[,1])

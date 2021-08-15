@@ -10,8 +10,9 @@ n <- c(200,200,300,600) # sample size include high dimension only on cluster
 d <- c(50,250,750, 1500) # dimensionality --> include high dimension (1500) only on cluster 
 n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
-nlam <- 50 # number of tuning parameters for graphical lasso
+nlam <-30 # 50 # number of tuning parameters for graphical lasso
 param <- .1
+firstrun <- F
 
 print(paste0("number of available cores: ",detectCores()))
 if (detectCores() >= 100){
@@ -20,6 +21,7 @@ if (detectCores() >= 100){
   numCores <- detectCores()
 }
 
+if (firstrun == T){
 ##### d = 50 ####
 
 print("Start with d=50, f_j(x) = x")
@@ -72,7 +74,7 @@ plan(sequential)
 
 table_4 <- extract.kendall.nonpararesults(nonpara_comparison_4)
 stargazer(table_4, out = "table_4_binary.tex", summary = F, title=paste("Mixed binary data structure learning with $f_j(x) = x^3$, n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
-
+}
 ##### d = 750 #### 
 
 print("Start with d=750, f_j(x) = x")
