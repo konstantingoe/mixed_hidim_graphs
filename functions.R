@@ -742,69 +742,6 @@ thresholds <- function(vector){
 }
 
 
-# Input data should be a data frame or matrix where one column is numeric and the other one factor
-# or two vectors x and y
-pointpolynormal <- function(x, y, maxcor = 0.9999, verbose = T){
-  x <- if (missing(y)) 
-    x
-  else cbind(x, y)
-  
-  x <- as.data.frame(x)
-  
-  if (any(is.factor(x) == F)){
-    if (verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
-    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
-  } else {
-    factor_id <- sapply(x, is.factor)
-  }
-  
-  ### if both categorical perform polychoric correlation 
-  
-  if (sum(factor_id) == 2){
-    adhoc_nonpara <- polycor::polychor(x[,1], x[,2])
-  } else {
-    
-    ### retrieve numeric and discrete variable
-    numeric_var <- x[,factor_id == F]
-    factor_var <- x[,factor_id == T]
-    
-    
-    ### calculate threshold vector and attach infinity bounds for convenience
-    cumprop <- c(-Inf, thresholds(factor_var), Inf)
-    ### calculate rank correlation
-    samplecorr <- spearman(numeric_var, factor_var)
-    if (abs(samplecorr) > maxcor) 
-      samplecorr <- sign(samplecorr) * maxcor
-    ### calculate gaussian density evaluated at the estimated thresholds
-    densityprob <- dnorm(cumprop)
-    
-    
-    ### calculate sample variance 
-    
-    ### first P(Y = y_j)
-    p_hat <- vector(mode = "numeric", (length(cumprop)-1))
-    for (j in 2:length(cumprop)){
-      p_hat[j-1] <- pnorm(cumprop[j]) - pnorm(cumprop[j-1])
-    }  
-    
-    ### calulate sample mean
-    samplmean <- sum(as.numeric(levels(as.factor(factor_var)))*p_hat)
-    ### calculate sample variance
-    samplevar <- sum(as.numeric(levels(as.factor(factor_var)))^2*p_hat) - samplmean^2
-    
-    ### calculate weighting scheme in case levels are not consecutive
-    consecutive <- vector(mode = "numeric", length(head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)))
-    for (j in head(seq_along(as.numeric(levels(as.factor(factor_var)))),-1)){
-      consecutive[j] <- as.numeric(levels(as.factor(factor_var)))[j+1] - as.numeric(levels(as.factor(factor_var)))[j]
-    } 
-    
-    ### calculate adhoc nonparanormal point polyserial estimator
-    adhoc_nonpara <- samplecorr*sqrt(samplevar)/(sum(tail(head(densityprob, -1),-1)*(consecutive)))
-  }
-  return(adhoc_nonpara)
-}
-
-
 mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholding = F, param = .1){
   if (sum(sapply(data, is.factor)) == 0 & verbose == T){
     cat("Warning, there are no factors in the input data.
