@@ -38,3 +38,42 @@ n*cov(X[,1],X[,2])
 
 
 
+
+
+
+install.packages("BiocManager")
+install.packages("forcats")
+install.packages("stringr")
+install.packages("ggplot2")
+install.packages("ggrepel")
+install.packages("readr")
+install.packages("tidyr")
+install.packages("survminer")
+
+
+gse70353<- getGEO('GSE70353',GSEMatrix=TRUE)
+
+gse <- gse70353[[1]]
+show(pData(phenoData(gse))[1:5,c(1,6,8)])
+pData(gse) ## print the sample information
+fData(gse) ## print the gene annotation
+exprs(gse) ## print the expression data
+summary(exprs(gse))
+#exprs(gse) <- log2(exprs(gse))
+boxplot(exprs(gse)[,1:10],outline=FALSE)
+
+sampleInfo <- pData(gse)
+head(sampleInfo)
+
+data <- t(exprs(gse))
+n <- nrow(data)
+d <- ncol(data)
+
+
+head(Meta(gse))
+head(names(GSMList(gse)))
+
+
+data <- pData(phenoData(gse70353[[1]]))
+
+

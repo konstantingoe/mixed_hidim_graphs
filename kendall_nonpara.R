@@ -102,7 +102,7 @@ table_6 <- extract.kendall.nonpararesults(nonpara_comparison_6)
 stargazer(table_6, out = "table_6_binary.tex", summary = F, title=paste("Mixed binary data structure learning with $f_j(x) = x^3$, n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
 
 ##### d = 1500 #### 
-}
+
 print("Start with d=1500, f_j(x) = x")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
@@ -114,7 +114,7 @@ plan(sequential)
 
 table_7 <- extract.kendall.nonpararesults(nonpara_comparison_7)
 stargazer(table_7, out = "table_7_binary.tex", summary = F, title=paste("Mixed binary data structure learning comparison n=",n[4],"and d=",d[4],"under",sim, "simulation runs."))                    
-
+}
 print("continue with d=1500, f_j(x) = x^3")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
