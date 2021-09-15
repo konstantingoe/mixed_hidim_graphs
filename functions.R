@@ -945,8 +945,8 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
 
 nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
                               namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                              unbalanced = .5, low = .05, high = .1, sparsity = .1, nonpara = F){
-  data <- generate.data(t=t, n = 200, d = 50, mode = "fan")
+                              unbalanced = .5, low = .05, high = .1, sparsity = .1, nonpara = F, mode = mode){
+  data <- generate.data(t=t, n = n, d = d, mode = mode)
   data_0 <- data[[1]]
   Omega <- data[[2]]
   #data <- NULL

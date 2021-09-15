@@ -27,7 +27,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_1 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=30, matexport = F,
                           namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                          unbalanced = .5, nonpara = F))
+                          unbalanced = .5, mode = "fan", nonpara = F))
 
 plan(sequential)
 
@@ -40,7 +40,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_2 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[1], d=d[1], nlam=nlam, matexport = F,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = T))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
 plan(sequential)
 
 table_2 <- extract.nonpararesults(nonpara_comparison_2)
@@ -54,7 +54,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_3 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[2], d=d[2], nlam=nlam, matexport = F,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = F))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
 plan(sequential)
 
 table_3 <- extract.nonpararesults(nonpara_comparison_3)
@@ -66,7 +66,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_4 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[2], d=d[2], nlam=nlam, matexport = F,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = T))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
 plan(sequential)
 
 table_4 <- extract.nonpararesults(nonpara_comparison_4)
@@ -80,7 +80,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_5 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = F))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
 plan(sequential)
 
 table_5 <- extract.nonpararesults(nonpara_comparison_5)
@@ -92,7 +92,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_6 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = T))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
 plan(sequential)
 
 table_6 <- extract.nonpararesults(nonpara_comparison_6)
@@ -106,7 +106,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_7 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[4], d=d[4], nlam=nlam, matexport = F, sparsity = .5,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = F))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
 plan(sequential)
 
 table_7 <- extract.nonpararesults(nonpara_comparison_7)
@@ -118,7 +118,7 @@ plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
 nonpara_comparison_8 <- future_lapply(future.seed = T, 1:sim, function(k) nonparanormal_run(n=n[4], d=d[4], nlam=nlam, matexport = F, sparsity = .5,
                                                                                             namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
-                                                                                            unbalanced = .5, nonpara = T))
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
 plan(sequential)
 
 table_8 <- extract.nonpararesults(nonpara_comparison_8)
