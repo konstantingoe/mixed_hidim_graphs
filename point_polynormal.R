@@ -10,7 +10,7 @@ n <- c(200,200,300,600) # sample size include high dimension only on cluster
 d <- c(50,250,750, 1500) # dimensionality --> include high dimension (1500) only on cluster 
 n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
-nlam <- 30 #50 # number of tuning parameters for graphical lasso
+nlam <- 50 #50 # number of tuning parameters for graphical lasso
 
 print(paste0("number of available cores: ",detectCores()))
 if (detectCores() >= 100){
