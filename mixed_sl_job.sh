@@ -1,15 +1,16 @@
 #!/bin/bash
-#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/serverrun_nonpara.out
+#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_arbitrary_final.out
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
-#SBATCH -J "highdim"
+#SBATCH -J "mixed_arb"
 #SBATCH --get-user-env
-#SBATCH --clusters=cm2_tiny
-#SBATCH --cpus-per-task=20
+#SBATCH --clusters=inter
+#SBATCH --partition=teramem_inter
+#SBATCH --cpus-per-task=50
 #SBATCH --nodes=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE
-#SBATCH --time=72:00:00
+#SBATCH --time=200:00:00
 
 module load slurm_setup
 

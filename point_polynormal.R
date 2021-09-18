@@ -11,6 +11,7 @@ d <- c(50,250,750, 1500) # dimensionality --> include high dimension (1500) only
 n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 50 #50 # number of tuning parameters for graphical lasso
+firstrun <- F
 
 print(paste0("number of available cores: ",detectCores()))
 if (detectCores() >= 100){
@@ -19,6 +20,8 @@ if (detectCores() >= 100){
   numCores <- detectCores()
 }
 
+if (firstrun == T){
+  
 ##### d = 50 ####
 
 print("Start with d=50, f_j(x) = x")
@@ -71,7 +74,7 @@ plan(sequential)
 
 table_4 <- extract.nonpararesults(nonpara_comparison_4)
 stargazer(table_4, out = "table_4.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
-
+}
 ##### d = 750 #### 
 
 print("Start with d=750, f_j(x) = x")
