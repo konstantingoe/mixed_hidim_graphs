@@ -949,7 +949,7 @@ nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
   data <- generate.data(t=t, n = n, d = d, mode = mode)
   data_0 <- data[[1]]
   Omega <- data[[2]]
-  #data <- NULL
+  data <- NULL
   
   if (nonpara == F){
     data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high, f_j = 1)
@@ -958,15 +958,15 @@ nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
   }
   rho_latent <- mixed.omega(data_0, verbose = F) #oracle
   rho_nonpara_latent <- mixed.omega.kendall(data_0, verbose = F) #oracle with kendall's tau mapping
-  #data_0 <- NULL
+  data_0 <- NULL
   rho <- mixed.omega(data_mixed, verbose = F) #MLestimator
   rho_nonpara <- mixed.omega.paranormal(data_mixed, verbose = F) # adhoc nonparanormal estimator
-  #data_mixed <- NULL
+  data_mixed <- NULL
   
-  results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = .1)
-  results_latent_nonpara <- glasso.results(Sigma=rho_nonpara_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = .1)
-  results_ml <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
-  results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = .1)
+  results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = sparsity)
+  results_latent_nonpara <- glasso.results(Sigma=rho_nonpara_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = sparsity)
+  results_ml <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = sparsity)
+  results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = sparsity)
   
   results <- list("latent"=results_latent, "latent_nonpara"=results_latent_nonpara, "ML" = results_ml, "nonparanormal" = results_nonpara)
   return(results)
