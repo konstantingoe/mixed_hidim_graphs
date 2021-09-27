@@ -74,7 +74,7 @@ plan(sequential)
 
 table_4 <- extract.nonpararesults(nonpara_comparison_4)
 stargazer(table_4, out = "table_4.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
-}
+
 ##### d = 750 #### 
 
 print("Start with d=750, f_j(x) = x")
@@ -88,7 +88,7 @@ plan(sequential)
 
 table_5 <- extract.nonpararesults(nonpara_comparison_5)
 stargazer(table_5, out = "table_5.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
-
+}
 print("continue with d=750, f_j(x) = x^3")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
