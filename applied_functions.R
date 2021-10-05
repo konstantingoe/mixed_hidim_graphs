@@ -257,7 +257,7 @@ thresholds <- function(vector){
 }
 
 
-lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
+lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = F){
   x <- if (missing(y)){ 
     x
   } else {cbind(x, y)}
