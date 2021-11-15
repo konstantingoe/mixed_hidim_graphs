@@ -736,6 +736,23 @@ spearman <- function(x,y){
   return(rho)
 }
 
+spearman_noncontinuous <- function(x,y){
+  if (length(unique(x)) == length(x)){
+    rankx <- rank(x)
+  } else {
+    rankx <- R_x(x)
+  }
+  if (length(unique(y)) == length(y)){
+    ranky <- rank(y)
+  } else {
+    ranky <- R_x(y)
+  }
+  rankmean <- (length(rankx)+1)/2
+  
+  rho <- (sum((rankx - rankmean)*(ranky - rankmean)))/(sqrt(sum((rankx - rankmean)^2)*sum((ranky - rankmean)^2))) 
+  return(rho)
+}
+
 
 thresholds <- function(vector){
   cumprop <- as.numeric(qnorm(table(vector)[-1]/length(vector)))
@@ -875,6 +892,24 @@ mixed.omega.paranormal <- function(data=data, verbose = T){
   return(rho_pd)
 }
 
+R_x <- function(x){
+  if (is.factor(x)) 
+    x <- as.integer(x)
+  u_i <- sapply(seq_along(table(x)), 
+                function(i) (sum(table(x)[i])+1)/2)
+  
+  r_x <- u_i[1]
+  cum_u <- cumsum(table(x))
+  for (i in 2:length(unique(x))){
+    r_x <- c(r_x, cum_u[i-1] + u_i[i])
+  }
+  y <- x
+  for(i in seq_along(table(x))){
+    ind <- which(x == sort(unique(x))[i])
+    y[ind] <- r_x[i]
+  }
+  return(y)
+}
 
 
 lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
@@ -919,7 +954,7 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
     lambda <- 1/(n*s_Y)*sum(b)
     
     s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
-    samplecorr <- spearman(numeric_var, factor_var)
+    samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
     if (abs(samplecorr) > maxcor) 
       samplecorr <- sign(samplecorr) * maxcor
     
@@ -932,12 +967,84 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
         b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
       }
       lambda <- 1/(n*s_Y)*sum(b)
-      samplecorr <- spearman(numeric_var, factor_var)
+      samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
       if (abs(samplecorr) > maxcor) 
         samplecorr <- sign(samplecorr) * maxcor
       
       lord_estimator <- -1*samplecorr*s_X/lambda
     }
+  }
+  if (abs(lord_estimator) >= 1){
+    lord_estimator <- sign(lord_estimator)*.99
+  }
+  return(lord_estimator)
+}
+
+
+lord_nonparanormal_pearson <- function(x, y, maxcor = 0.9999, more_verbose = T){
+  x <- if (missing(y)){ 
+    x
+  } else {cbind(x, y)}
+  
+  x <- as.data.frame(x)
+  
+  if (any(is.factor(x) == F)){
+    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+  } else {
+    factor_id <- sapply(x, is.factor)
+  }
+  
+  ### if both categorical perform polychoric correlation 
+  
+  if (sum(factor_id) == 2){
+    lord_estimator <- polycor::polychor(x[,1], x[,2])
+  } else if (sum(factor_id) == 0) {
+    lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
+  } else {
+    ### retrieve numeric and discrete variable
+    numeric_var <- x[,factor_id == F]
+    factor_var <- as.numeric(x[,factor_id == T])
+    
+    ranky <- rank(numeric_var)
+    rankmean <- (length(ranky)+1)/2
+    n <- length(factor_var)
+    
+    cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
+    sumindex <- n*cummarg_propotions
+    
+    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+    
+    a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
+    b <- a_i
+    for (i in a_i){
+      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+    }
+    lambda <- 1/(n*s_Y)*sum(b)
+    
+    s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
+    samplecorr <- cor(numeric_var, factor_var, method = "pearson")
+    if (abs(samplecorr) > maxcor) 
+      samplecorr <- sign(samplecorr) * maxcor
+    
+    lord_estimator <- samplecorr*s_X/lambda
+    if (lord_estimator < 0){
+      numeric_var <- -1*numeric_var
+      ranky <- rank(numeric_var)
+      s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+      for (i in a_i){
+        b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+      }
+      lambda <- 1/(n*s_Y)*sum(b)
+      samplecorr <- cor(numeric_var, factor_var, method = "pearson")
+      if (abs(samplecorr) > maxcor) 
+        samplecorr <- sign(samplecorr) * maxcor
+      
+      lord_estimator <- -1*samplecorr*s_X/lambda
+    }
+  }
+  if (abs(lord_estimator) >= 1){
+    lord_estimator <- sign(lord_estimator)*.99
   }
   return(lord_estimator)
 }

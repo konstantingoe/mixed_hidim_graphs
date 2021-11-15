@@ -18,5 +18,7 @@ pacman::p_load(
   corpcor,
   cowplot,
   genscore,
+  VGAM,
+  reshape,
   plyr,
   ggplot2)
