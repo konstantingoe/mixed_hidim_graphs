@@ -182,9 +182,9 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,i], data[,j])
+          rho[i,j] <- rho[j,i] <- adhoc_lord(data[,i], data[,j])
         } else {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,j], data[,i])
+          rho[i,j] <- rho[j,i] <- adhoc_lord(data[,j], data[,i])
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -257,7 +257,7 @@ thresholds <- function(vector){
 }
 
 
-lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = F){
+adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
   x <- if (missing(y)){ 
     x
   } else {cbind(x, y)}
@@ -274,52 +274,35 @@ lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = F){
   ### if both categorical perform polychoric correlation 
   
   if (sum(factor_id) == 2){
-    lord_estimator <- polycor::polychor(x[,1], x[,2])
+    corr.hat <- polycor::polychor(x[,1], x[,2])
   } else if (sum(factor_id) == 0) {
-    lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
+    corr.hat <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
   } else {
     ### retrieve numeric and discrete variable
     numeric_var <- x[,factor_id == F]
     factor_var <- as.numeric(x[,factor_id == T])
     
-    ranky <- rank(numeric_var)
-    rankmean <- (length(ranky)+1)/2
     n <- length(factor_var)
-    
     cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
-    sumindex <- n*cummarg_propotions
+    threshold_estimate <- qnorm(cummarg_propotions)
     
-    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+    values <- sort(as.integer(unique(factor_var)))
     
-    a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
-    b <- a_i
-    for (i in a_i){
-      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-    }
-    lambda <- 1/(n*s_Y)*sum(b)
+    lambda <- as.numeric(values %*% sapply(seq_along(values), 
+                                           function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
     
-    s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
-    samplecorr <- spearman(numeric_var, factor_var)
-    if (abs(samplecorr) > maxcor) 
-      samplecorr <- sign(samplecorr) * maxcor
-    
-    lord_estimator <- samplecorr*s_X/lambda
-    if (lord_estimator < 0){
+    s_disc <- sd(factor_var) 
+    r <- npn.pearson(numeric_var,factor_var)
+    corr.hat <- r*s_disc/lambda
+    if (r < 0){
       numeric_var <- -1*numeric_var
-      ranky <- rank(numeric_var)
-      s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-      for (i in a_i){
-        b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-      }
-      lambda <- 1/(n*s_Y)*sum(b)
-      samplecorr <- spearman(numeric_var, factor_var)
-      if (abs(samplecorr) > maxcor) 
-        samplecorr <- sign(samplecorr) * maxcor
+      r <- npn.pearson(numeric_var,factor_var)
+      corr.hat <- -1*r*s_disc/lambda
       
-      lord_estimator <- -1*samplecorr*s_X/lambda
     }
   }
-  return(lord_estimator)
+  if (abs(corr.hat) >= 1){
+    corr.hat <- sign(corr.hat)*.99
+  }
+  return(corr.hat)
 }
-
-

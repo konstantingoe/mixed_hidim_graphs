@@ -313,63 +313,20 @@ mixed.omega.kendall <- function(data = data, verbose = T){
   }
   d <- ncol(data)
   n <- nrow(data)
-  cor1 <- hatR <- tau <- na <- nb <- nc <- nd <- matrix(1,d,d)
+  hatR <- matrix(1,d,d)
   
   for(i in 1:(d-1)) {
     for(j in (i+1):d){
       if (is.numeric(data[,i]) & is.numeric(data[,j])){
         ### Fan et.al.
-        cor1[j,i] <- cor1[i,j] <- cor(data[,i],data[,j],method="kendall")
-        hatR[i,j] <- hatR[j,i] <- sin(cor1[i,j]*pi/2)
+        hatR[i,j] <- hatR[j,i] <- sin(cor.fk(data[,i],data[,j])*pi/2)
         ###
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
-        if (is.factor(data[,j])) {
-          ### Fan et.al.
-          cor1[j,i] <- cor1[i,j] <- cor(data[,i], as.numeric(data[,j]), method="kendall")
-          delta_hat <- qnorm(1-mean(as.numeric(data[,j])-1))
-          
-        } else {
-          ### Fan et.al.
-          cor1[j,i] <- cor1[i,j] <- cor(data[,j],as.numeric(data[,i]),method="kendall")
-          delta_hat <- qnorm(1-mean(as.numeric(data[,i])-1))
-          
-        }
-        bridge.func.case2 <- function(t){
-          R_jk <- 4*pmvnorm(lower=-Inf,upper=c(delta_hat,0), corr= matrix(c(1,t/sqrt(2),t/sqrt(2),1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat) - cor1[i,j]
-        }
-        hatR[i,j] <- hatR[j,i] <- tryCatch(
-          expr = {uniroot(bridge.func.case2, c(-1,1))[[1]]},  
-          error = function(e){ 
-            #message('Caught an error!')
-            #message(e)
-            return(2^(1/2)*sin(cor1[i,j]*pi/2))})
-        ###
-        #hatR[i,j] <- hatR[j,i] <- 2^(1/2)*sin(cor1[i,j]*pi/2)
-        ###
+        hatR[i,j] <- hatR[j,i] <- fan.case.2(data[,i],data[,j])
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
-        ### Fan et.al. ### population kendall's tau
-        na[i,j] <- na[i,j] <- sum((data[,i] == 1)*(data[,j] == 1))
-        nb[i,j] <- nb[i,j] <- sum((data[,i] == 1)*(data[,j] == 0))
-        nc[i,j] <- nc[i,j] <- sum((data[,i] == 0)*(data[,j] == 1))
-        nd[i,j] <- nd[i,j] <- sum((data[,i] == 0)*(data[,j] == 0))
-        
-        tau[i,j] <- tau[j,i] <- 2*(na[i,j]*nd[i,j] - nb[i,j]*nc[i,j])/(n*(n-1))
-        
-        delta_hat_i <- qnorm(1-mean(as.numeric(data[,i])-1))
-        delta_hat_j <- qnorm(1-mean(as.numeric(data[,j])-1))
-        
-        bridge.func.case1 <- function(t){
-          R_jk <- 2*pmvnorm(lower=-Inf,upper=c(delta_hat_i,delta_hat_j), corr= matrix(c(1,t,t,1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat_i)*pnorm(delta_hat_j) - tau[i,j]
-        }
-        hatR[i,j] <- hatR[j,i] <- tryCatch(
-                                  expr = {uniroot(bridge.func.case1, c(-1,1))[[1]]},  
-                                  error = function(e){ 
-                                  #message('Caught an error!')
-                                  #message(e)
-                                  return(sin(pi*tau[i,j]))})
-        #hatR[i,j] <- hatR[j,i] <- sin(pi*tau[i,j])
+        hatR[i,j] <- hatR[j,i] <- fan.case.3(data[,i],data[,j])
         ###
       }
     }
@@ -530,53 +487,6 @@ extract.result <- function(results=results, which = c("F", "TPR", "FPR", "AUC"))
   return(extract)
 }
 
-
-mixed.omega_fast <- function(data=data, verbose = F){
-  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
-    cat("Warning, there are no factors in the input data.
-          Did you declare ordinal variables as factors?")
-  }
-  d <- ncol(data)
-  rho <- matrix(1,d,d)
-  
-  for (j in 1:(d-1)){
-    rho[(j+1):d,j] <- sapply(j:(d-1), function(i) 
-      mixed_corr(data[,j], data[,i+1]))
-  }
-  
-  upperTriangle(rho) <- lowerTriangle(rho, byrow=TRUE)
-  
-  
-  if (!is.positive.definite(rho)) {
-    rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
-  } else {
-    rho_pd <- rho
-  }
-  #diag(rho_pd) <- 1
-  return(rho_pd)
-}
-
-
-
-mixed_corr <- function(vec1, vec2){
-  
-  if (is.numeric(vec1) & is.numeric(vec2)){
-    corr <- cor(vec1,vec2, method = "pearson") 
-  }  
-  if ((is.factor(vec1) & is.numeric(vec2)) |  (is.numeric(vec1) & is.factor(vec2))) {
-    if (is.factor(vec2)) {
-      corr <- polyserial(vec1, vec2)
-    } else {
-      corr <- polyserial(vec2, vec1)
-    }
-  }  
-  if (is.factor(vec1) & is.factor(vec2)) {
-    corr <- polychor(vec1, vec2)
-  }
-  return(corr)
-}
-
-
 kendalls.results <- function(result_object = result_object){
   table <- rbind(
     c("kendall" = mean(sapply(1:sim, function(k) result_object[[k]][[1]][["Frobenius norm"]])),"kendall_sd" = sd(sapply(1:sim, function(k) result_object[[k]][[1]][["Frobenius norm"]])),
@@ -683,23 +593,6 @@ make.ordinal.general <- function(data = data, proportion = .5, namevector = c("b
   return(data_mixed)
 }
 
-### what we want is basically frobenius norm as a function of n and success probability:
-unbalanced.run <- function(mode = "fan", n=n, d=d, sparsity = .1, nlam=nlam, matexport = F, namevector = c("binary" = T, "ordinal" = F, "poisson" = F), 
-                           unbalanced = 0, low = .05, high = .1){
-  data <- generate.data(mode = mode, t=t, n = n, d = d, sparsity = sparsity)
-  data_0 <- data[[1]]
-  Omega <- data[[2]]
-  data <- NULL
-  ### here at this point generate a range of make.ordinals!
-  data_mixed <- make.ordinal.general(data_0, namevector = namevector, unbalanced = unbalanced, low = low, high = high)
-  data_0 <- NULL
-  rho_poly <- mixed.omega(data_mixed)
-  data_mixed <- NULL
-  results_poly <- glasso.results(Sigma=rho_poly, Omega=Omega, nlam=nlam, n=n, matexport = matexport)
-
-  return(results_poly)
-}
-
 
 results_generator <- function(results_object){
     table <- round(as_tibble(rbind(
@@ -736,24 +629,6 @@ spearman <- function(x,y){
   return(rho)
 }
 
-spearman_noncontinuous <- function(x,y){
-  if (length(unique(x)) == length(x)){
-    rankx <- rank(x)
-  } else {
-    rankx <- R_x(x)
-  }
-  if (length(unique(y)) == length(y)){
-    ranky <- rank(y)
-  } else {
-    ranky <- R_x(y)
-  }
-  rankmean <- (length(rankx)+1)/2
-  
-  rho <- (sum((rankx - rankmean)*(ranky - rankmean)))/(sqrt(sum((rankx - rankmean)^2)*sum((ranky - rankmean)^2))) 
-  return(rho)
-}
-
-
 thresholds <- function(vector){
   cumprop <- as.numeric(qnorm(table(vector)[-1]/length(vector)))
 }
@@ -783,9 +658,9 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,i], data[,j])
+          rho[i,j] <- rho[j,i] <- adhoc_lord_sim(data[,i], data[,j])
         } else {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,j], data[,i])
+          rho[i,j] <- rho[j,i] <- adhoc_lord_sim(data[,j], data[,i])
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -863,9 +738,9 @@ mixed.omega.paranormal <- function(data=data, verbose = T){
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
         if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,i], data[,j], more_verbose = F)
+          rho[i,j] <- rho[j,i] <- adhoc_lord_sim(data[,i], data[,j])
         } else {
-          rho[i,j] <- rho[j,i] <- lord_nonparanormal(data[,j], data[,i], more_verbose = F)
+          rho[i,j] <- rho[j,i] <- adhoc_lord_sim(data[,j], data[,i])
         }
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
@@ -1167,5 +1042,189 @@ extract.kendall.nonpararesults <- function(object){
   rownames(table) <- c("Frobenius", "sd_F", "FPR", "sd_{FPR}", "TPR", "sd_{TPR}", "AUC", "sd_{AUC}")
   colnames(table) <- c("Oracle", "Oracle nonparanormal", "Kenall", "Polyserial ML", "Polyserial nonparanormal")
   return(table)
+}
+
+
+
+adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
+  x <- if (missing(y)){ 
+    x
+  } else {cbind(x, y)}
+  
+  x <- as.data.frame(x)
+  
+  if (any(is.factor(x) == F)){
+    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+  } else {
+    factor_id <- sapply(x, is.factor)
+  }
+  
+  ### if both categorical perform polychoric correlation 
+  
+  if (sum(factor_id) == 2){
+    corr.hat <- polycor::polychor(x[,1], x[,2])
+  } else if (sum(factor_id) == 0) {
+    corr.hat <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
+  } else {
+    ### retrieve numeric and discrete variable
+    numeric_var <- x[,factor_id == F]
+    factor_var <- as.numeric(x[,factor_id == T])
+    
+    n <- length(factor_var)
+    cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
+    threshold_estimate <- qnorm(cummarg_propotions)
+    
+    values <- sort(as.integer(unique(factor_var)))
+    
+    lambda <- as.numeric(values %*% sapply(seq_along(values), 
+                                           function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
+    
+    s_disc <- sd(factor_var) 
+    r <- npn.pearson(numeric_var,factor_var)
+    corr.hat <- r*s_disc/lambda
+    if (r < 0){
+      numeric_var <- -1*numeric_var
+      r <- npn.pearson(numeric_var,factor_var)
+      corr.hat <- -1*r*s_disc/lambda
+      
+    }
+  }
+  if (abs(corr.hat) >= 1){
+    corr.hat <- sign(corr.hat)*.99
+  }
+  return(corr.hat)
+}
+
+adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999, more_verbose = F){
+  disc <- as.integer(disc)
+  n <- length(disc)
+  cummarg_propotions <- c(0,cumsum(table(disc)/n))
+  threshold_estimate <- qnorm(cummarg_propotions)
+  
+  values <- sort(as.integer(unique(disc)))
+  
+  lambda <- as.numeric(values %*% sapply(seq_along(values), 
+                                         function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
+  
+  s_disc <- sd(disc) 
+  r <- npn.pearson(cont,disc)
+  if (r < 0){
+    r <- npn.pearson(-1*cont,disc)
+    corr.hat <- -1*r*s_disc/lambda
+  } else {
+    corr.hat <- r*s_disc/lambda
+  }
+  if (abs(corr.hat) >= 1){
+    corr.hat <- sign(corr.hat)*.99
+  }
+  return(corr.hat)
+}
+
+# kendall's tau with corrections for ties!
+kendall.a = function(x,y){
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  n = length(x) 
+  n0 = n*(n - 1)/2
+  n_1 = n_x(x, n)
+  n_2 = n_x(y, n)  
+  n_sqrt = sqrt(n0 - c(n_1,n_2))
+  kendall = pcaPP::cor.fk(x,y) # takes care of ties, so we need to backtransform
+  ties = prod(n_sqrt)/n0
+  kendall.a = kendall*ties
+  return(kendall.a)
+}
+
+n_x = function(x, n) {
+  if (length(unique(x) != n)) {
+    x.info = rle(sort(x))
+    t_x = x.info$lengths[x.info$lengths > 1]
+    n_x = sum(t_x * (t_x - 1) / 2)
+  } else {
+    n_x = 0
+  }
+  return(n_x)
+}
+
+
+fan.case.3 <- function(x,y){
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  tau <- kendall.a(x,y)
+  #tau <- cor.fk(x,y)
+  x.help <- x 
+  x.help[x.help == min(x.help)] <- 0
+  x.help[x.help == max(x.help)] <- 1
+  
+  y.help <- y
+  y.help[y.help == min(y.help)] <- 0
+  y.help[y.help == max(y.help)] <- 1
+  
+  delta_hat_x <- qnorm(1-mean(x.help))
+  delta_hat_y <- qnorm(1-mean(y.help))
+  
+  bridge.func.case1 <- function(t){
+    R_jk <- (2*pmvnorm(lower=-Inf,upper=c(delta_hat_x,delta_hat_y), corr= matrix(c(1,t,t,1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat_x)*pnorm(delta_hat_y) - tau)^2
+  }
+  hatR <- tryCatch(
+    expr = {optimize(bridge.func.case1, lower = -0.999, upper = 0.999, tol = 1e-8)[1]},  
+    error = function(e){ 
+      #message('Caught an error!')
+      #message(e)
+      return(sin(pi*tau))})
+  return(as.numeric(hatR))
+}
+
+f.hat <- function(x){
+  n <- length(x)
+  npn.thresh <- 1/(4 * (n^0.25) * sqrt(pi * log(n)))
+  x <- qnorm(pmin(pmax(rank(x)/n, npn.thresh), 
+                  1 - npn.thresh))
+  x <- x/sd(x)
+  #rm(n, npn.thresh)
+  #gc()
+  return(x)
+}
+
+npn.pearson <- function(cont,disc){
+  f.x <- f.hat(cont)
+  y <- as.integer(disc)
+  r <- cor(f.x,y, method = "pearson")
+  return(r)
+}
+
+kf <- function(z){
+  return(dnorm(z)*z)
+}
+
+
+fan.case.2 <- function(x,y){
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  tau <- kendall.a(x, y) # need this otherwise Kendall's tau is too expensive here
+  #tau <- cor.fk(x, y) # need this otherwise Kendall's tau is too expensive here
+  
+  if (length(unique(x)) == 2){
+    x.help <- x
+    x.help[x.help == min(x.help)] <- 0
+    x.help[x.help == max(x.help)] <- 1
+    delta_hat <- qnorm(1-mean(x.help))
+  } else if (length(unique(y)) == 2){
+    y.help <- y
+    y.help[y.help == min(y.help)] <- 0
+    y.help[y.help == max(y.help)] <- 1
+    delta_hat <- qnorm(1-mean(y.help))
+  }
+  bridge.func.case2 <- function(t){
+    R_jk <- (4*pmvnorm(lower=-Inf,upper=c(delta_hat,0), corr= matrix(c(1,t/sqrt(2),t/sqrt(2),1), nrow = 2, ncol = 2)) - 2*pnorm(delta_hat) - tau)^2
+  }
+  hatR <- tryCatch(
+    expr = {optimize(bridge.func.case2, lower = -0.999, upper = 0.999, tol = 1e-8)[1]},  
+    error = function(e){ 
+      #message('Caught an error!')
+      #message(e)
+      return(2^(1/2)*sin(tau*pi/2))})
+  return(as.numeric(hatR))
 }
 
