@@ -12,13 +12,13 @@ n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we wan
 t <- .15 # signal strength
 nlam <-30 # 50 # number of tuning parameters for graphical lasso
 param <- .1
-firstrun <- F
+firstrun <- T
 
-print(paste0("number of available cores: ",availableCores()))
-if (availableCores() >= 100){
+print(paste0("number of available cores: ",availableCores(methods = "SLURM")))
+if (availableCores(methods = "SLURM") >= 100){
   numCores <-  100
 } else {
-  numCores <- availableCores()
+  numCores <- availableCores(methods = "SLURM")
 }
 
 if (firstrun == T){
