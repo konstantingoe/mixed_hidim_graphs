@@ -14,14 +14,7 @@ nlam <-30 # 50 # number of tuning parameters for graphical lasso
 param <- .1
 firstrun <- T
 
-print(paste0("number of available cores: ",detectCores()))
-if (detectCores(methods = "SLURM") >= 100){
-  numCores <-  100
-} else {
-  numCores <- availableCores(methods = "SLURM")
-}
-
-numCores <- 50
+numCores <- 28
 
 if (firstrun == T){
 ##### d = 50 ####
