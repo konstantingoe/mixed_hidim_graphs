@@ -12,9 +12,9 @@ n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we wan
 t <- .15 # signal strength
 nlam <-30 # 50 # number of tuning parameters for graphical lasso
 param <- .1
-firstrun <- T
+firstrun <- F
 
-numCores <- 28
+numCores <- 50
 
 if (firstrun == T){
 ##### d = 50 ####
@@ -69,7 +69,7 @@ plan(sequential)
 
 table_4 <- extract.kendall.nonpararesults(nonpara_comparison_4)
 stargazer(table_4, out = "table_4_binary.tex", summary = F, title=paste("Mixed binary data structure learning with $f_j(x) = x^3$, n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
-
+}
 ##### d = 750 #### 
 
 print("Start with d=750, f_j(x) = x")
@@ -109,7 +109,7 @@ plan(sequential)
 
 table_7 <- extract.kendall.nonpararesults(nonpara_comparison_7)
 stargazer(table_7, out = "table_7_binary.tex", summary = F, title=paste("Mixed binary data structure learning comparison n=",n[4],"and d=",d[4],"under",sim, "simulation runs."))                    
-}
+
 print("continue with d=1500, f_j(x) = x^3")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
