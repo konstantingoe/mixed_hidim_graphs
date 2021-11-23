@@ -1096,7 +1096,7 @@ adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
   return(corr.hat)
 }
 
-adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999, more_verbose = F){
+adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999){
   disc <- as.integer(disc)
   n <- length(disc)
   cummarg_propotions <- c(0,cumsum(table(disc)/n))
@@ -1104,9 +1104,10 @@ adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999, more_verbose = F){
   
   values <- sort(as.integer(unique(disc)))
   
-  lambda <- as.numeric(values %*% sapply(seq_along(values), 
-                                         function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
-  
+  #lambda <- as.numeric(values %*% sapply(seq_along(values), 
+  #                                       function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
+  #if (is.null(lambda)) {
+  lambda <- sum(dnorm(tail(head(threshold_estimate, -1),1)*diff(values))) #}
   s_disc <- sd(disc) 
   r <- npn.pearson(cont,disc)
   if (r < 0){
@@ -1118,6 +1119,7 @@ adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999, more_verbose = F){
   if (abs(corr.hat) >= 1){
     corr.hat <- sign(corr.hat)*.99
   }
+  if (is.null(corr.hat)){corr.hat <- polycor::polyserial(cont, disc)}
   return(corr.hat)
 }
 
