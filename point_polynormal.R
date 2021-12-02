@@ -123,3 +123,4 @@ table_8 <- extract.nonpararesults(nonpara_comparison_8)
 stargazer(table_8, out = "table_8.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[4],"and d=",d[4],"under",sim, "simulation runs."))                    
 
 
+# done
