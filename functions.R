@@ -1083,15 +1083,9 @@ adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
     s_disc <- sd(factor_var) 
     r <- npn.pearson(numeric_var,factor_var)
     corr.hat <- r*s_disc/lambda
-    if (r < 0){
-      numeric_var <- -1*numeric_var
-      r <- npn.pearson(numeric_var,factor_var)
-      corr.hat <- -1*r*s_disc/lambda
-      
-    }
   }
   if (abs(corr.hat) >= 1){
-    corr.hat <- sign(corr.hat)*.99
+    corr.hat <- sign(corr.hat)*maxcor
   }
   return(corr.hat)
 }
@@ -1110,14 +1104,10 @@ adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999){
   lambda <- sum(dnorm(tail(head(threshold_estimate, -1),1)*diff(values))) #}
   s_disc <- sd(disc) 
   r <- npn.pearson(cont,disc)
-  if (r < 0){
-    r <- npn.pearson(-1*cont,disc)
-    corr.hat <- -1*r*s_disc/lambda
-  } else {
-    corr.hat <- r*s_disc/lambda
-  }
+  corr.hat <- r*s_disc/lambda
+  
   if (abs(corr.hat) >= 1){
-    corr.hat <- sign(corr.hat)*.99
+    corr.hat <- sign(corr.hat)*maxcor
   }
   if (is.null(corr.hat)){corr.hat <- polycor::polyserial(cont, disc)}
   return(corr.hat)

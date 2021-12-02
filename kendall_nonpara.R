@@ -1,7 +1,7 @@
 rm(list = ls())
 source("packages.R")
 source("functions.R")
-source("applied_functions.R")
+#source("applied_functions.R")
 
 set.seed(1221)
 
