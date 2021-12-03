@@ -1101,7 +1101,7 @@ adhoc_lord_sim <- function(cont, disc, maxcor = 0.9999){
   #lambda <- as.numeric(values %*% sapply(seq_along(values), 
   #                                       function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
   #if (is.null(lambda)) {
-  lambda <- sum(dnorm(tail(head(threshold_estimate, -1),1)*diff(values))) #}
+  lambda <- sum(dnorm(head(threshold_estimate, -1)[-1]*diff(values))) #}
   s_disc <- sd(disc) 
   r <- npn.pearson(cont,disc)
   corr.hat <- r*s_disc/lambda
