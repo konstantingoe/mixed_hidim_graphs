@@ -11,6 +11,8 @@ pacman::p_load(
   stats,
   MASS,
   mvtnorm,
+  mnormt,
+  fMultivar,
   gdata,
   Matrix,
   stringr,

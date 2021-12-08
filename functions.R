@@ -786,144 +786,144 @@ R_x <- function(x){
   return(y)
 }
 
-
-lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
-  x <- if (missing(y)){ 
-    x
-  } else {cbind(x, y)}
-  
-  x <- as.data.frame(x)
-  
-  if (any(is.factor(x) == F)){
-    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
-    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
-  } else {
-    factor_id <- sapply(x, is.factor)
-  }
-  
-  ### if both categorical perform polychoric correlation 
-  
-  if (sum(factor_id) == 2){
-    lord_estimator <- polycor::polychor(x[,1], x[,2])
-  } else if (sum(factor_id) == 0) {
-    lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
-  } else {
-    ### retrieve numeric and discrete variable
-    numeric_var <- x[,factor_id == F]
-    factor_var <- as.numeric(x[,factor_id == T])
-    
-    ranky <- rank(numeric_var)
-    rankmean <- (length(ranky)+1)/2
-    n <- length(factor_var)
-    
-    cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
-    sumindex <- n*cummarg_propotions
-    
-    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-    
-    a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
-    b <- a_i
-    for (i in a_i){
-      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-    }
-    lambda <- 1/(n*s_Y)*sum(b)
-    
-    s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
-    samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
-    if (abs(samplecorr) > maxcor) 
-      samplecorr <- sign(samplecorr) * maxcor
-    
-    lord_estimator <- samplecorr*s_X/lambda
-    if (lord_estimator < 0){
-      numeric_var <- -1*numeric_var
-      ranky <- rank(numeric_var)
-      s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-      for (i in a_i){
-        b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-      }
-      lambda <- 1/(n*s_Y)*sum(b)
-      samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
-      if (abs(samplecorr) > maxcor) 
-        samplecorr <- sign(samplecorr) * maxcor
-      
-      lord_estimator <- -1*samplecorr*s_X/lambda
-    }
-  }
-  if (abs(lord_estimator) >= 1){
-    lord_estimator <- sign(lord_estimator)*.99
-  }
-  return(lord_estimator)
-}
-
-
-lord_nonparanormal_pearson <- function(x, y, maxcor = 0.9999, more_verbose = T){
-  x <- if (missing(y)){ 
-    x
-  } else {cbind(x, y)}
-  
-  x <- as.data.frame(x)
-  
-  if (any(is.factor(x) == F)){
-    if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
-    factor_id <- sapply(x, function(id) length(unique(id)) < 20)
-  } else {
-    factor_id <- sapply(x, is.factor)
-  }
-  
-  ### if both categorical perform polychoric correlation 
-  
-  if (sum(factor_id) == 2){
-    lord_estimator <- polycor::polychor(x[,1], x[,2])
-  } else if (sum(factor_id) == 0) {
-    lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
-  } else {
-    ### retrieve numeric and discrete variable
-    numeric_var <- x[,factor_id == F]
-    factor_var <- as.numeric(x[,factor_id == T])
-    
-    ranky <- rank(numeric_var)
-    rankmean <- (length(ranky)+1)/2
-    n <- length(factor_var)
-    
-    cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
-    sumindex <- n*cummarg_propotions
-    
-    s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-    
-    a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
-    b <- a_i
-    for (i in a_i){
-      b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-    }
-    lambda <- 1/(n*s_Y)*sum(b)
-    
-    s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
-    samplecorr <- cor(numeric_var, factor_var, method = "pearson")
-    if (abs(samplecorr) > maxcor) 
-      samplecorr <- sign(samplecorr) * maxcor
-    
-    lord_estimator <- samplecorr*s_X/lambda
-    if (lord_estimator < 0){
-      numeric_var <- -1*numeric_var
-      ranky <- rank(numeric_var)
-      s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
-      for (i in a_i){
-        b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
-      }
-      lambda <- 1/(n*s_Y)*sum(b)
-      samplecorr <- cor(numeric_var, factor_var, method = "pearson")
-      if (abs(samplecorr) > maxcor) 
-        samplecorr <- sign(samplecorr) * maxcor
-      
-      lord_estimator <- -1*samplecorr*s_X/lambda
-    }
-  }
-  if (abs(lord_estimator) >= 1){
-    lord_estimator <- sign(lord_estimator)*.99
-  }
-  return(lord_estimator)
-}
-
+# 
+# lord_nonparanormal <- function(x, y, maxcor = 0.9999, more_verbose = T){
+#   x <- if (missing(y)){ 
+#     x
+#   } else {cbind(x, y)}
+#   
+#   x <- as.data.frame(x)
+#   
+#   if (any(is.factor(x) == F)){
+#     if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+#     factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+#   } else {
+#     factor_id <- sapply(x, is.factor)
+#   }
+#   
+#   ### if both categorical perform polychoric correlation 
+#   
+#   if (sum(factor_id) == 2){
+#     lord_estimator <- polycor::polychor(x[,1], x[,2])
+#   } else if (sum(factor_id) == 0) {
+#     lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
+#   } else {
+#     ### retrieve numeric and discrete variable
+#     numeric_var <- x[,factor_id == F]
+#     factor_var <- as.numeric(x[,factor_id == T])
+#     
+#     ranky <- rank(numeric_var)
+#     rankmean <- (length(ranky)+1)/2
+#     n <- length(factor_var)
+#     
+#     cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
+#     sumindex <- n*cummarg_propotions
+#     
+#     s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+#     
+#     a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
+#     b <- a_i
+#     for (i in a_i){
+#       b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+#     }
+#     lambda <- 1/(n*s_Y)*sum(b)
+#     
+#     s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
+#     samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
+#     if (abs(samplecorr) > maxcor) 
+#       samplecorr <- sign(samplecorr) * maxcor
+#     
+#     lord_estimator <- samplecorr*s_X/lambda
+#     if (lord_estimator < 0){
+#       numeric_var <- -1*numeric_var
+#       ranky <- rank(numeric_var)
+#       s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+#       for (i in a_i){
+#         b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+#       }
+#       lambda <- 1/(n*s_Y)*sum(b)
+#       samplecorr <- spearman_noncontinuous(numeric_var, factor_var)
+#       if (abs(samplecorr) > maxcor) 
+#         samplecorr <- sign(samplecorr) * maxcor
+#       
+#       lord_estimator <- -1*samplecorr*s_X/lambda
+#     }
+#   }
+#   if (abs(lord_estimator) >= 1){
+#     lord_estimator <- sign(lord_estimator)*.99
+#   }
+#   return(lord_estimator)
+# }
+# 
+# 
+# lord_nonparanormal_pearson <- function(x, y, maxcor = 0.9999, more_verbose = T){
+#   x <- if (missing(y)){ 
+#     x
+#   } else {cbind(x, y)}
+#   
+#   x <- as.data.frame(x)
+#   
+#   if (any(is.factor(x) == F)){
+#     if (more_verbose == T) cat("No factor variable specified. I'm taking the one that has fewer than 20 unique values!")
+#     factor_id <- sapply(x, function(id) length(unique(id)) < 20)
+#   } else {
+#     factor_id <- sapply(x, is.factor)
+#   }
+#   
+#   ### if both categorical perform polychoric correlation 
+#   
+#   if (sum(factor_id) == 2){
+#     lord_estimator <- polycor::polychor(x[,1], x[,2])
+#   } else if (sum(factor_id) == 0) {
+#     lord_estimator <- 2*sin(pi/6 *spearman(x[,1], x[,2]))
+#   } else {
+#     ### retrieve numeric and discrete variable
+#     numeric_var <- x[,factor_id == F]
+#     factor_var <- as.numeric(x[,factor_id == T])
+#     
+#     ranky <- rank(numeric_var)
+#     rankmean <- (length(ranky)+1)/2
+#     n <- length(factor_var)
+#     
+#     cummarg_propotions <- c(0,cumsum(table(factor_var)/n))
+#     sumindex <- n*cummarg_propotions
+#     
+#     s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+#     
+#     a_i <- seq_along(as.numeric(levels(as.factor(factor_var))))
+#     b <- a_i
+#     for (i in a_i){
+#       b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+#     }
+#     lambda <- 1/(n*s_Y)*sum(b)
+#     
+#     s_X <- sqrt(1/(n)*sum((factor_var - mean(factor_var))^2))
+#     samplecorr <- cor(numeric_var, factor_var, method = "pearson")
+#     if (abs(samplecorr) > maxcor) 
+#       samplecorr <- sign(samplecorr) * maxcor
+#     
+#     lord_estimator <- samplecorr*s_X/lambda
+#     if (lord_estimator < 0){
+#       numeric_var <- -1*numeric_var
+#       ranky <- rank(numeric_var)
+#       s_Y <- sqrt(1/(n)*sum((ranky - rankmean)^2))
+#       for (i in a_i){
+#         b[i] <- a_i[i]*sum(ranky[order(ranky)[(1+sumindex[i]):sumindex[i+1]]] - rankmean)
+#       }
+#       lambda <- 1/(n*s_Y)*sum(b)
+#       samplecorr <- cor(numeric_var, factor_var, method = "pearson")
+#       if (abs(samplecorr) > maxcor) 
+#         samplecorr <- sign(samplecorr) * maxcor
+#       
+#       lord_estimator <- -1*samplecorr*s_X/lambda
+#     }
+#   }
+#   if (abs(lord_estimator) >= 1){
+#     lord_estimator <- sign(lord_estimator)*.99
+#   }
+#   return(lord_estimator)
+# }
+# 
 
 nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
                               namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
@@ -954,7 +954,7 @@ nonparanormal_run <- function(n=n, d=d, nlam=nlam, matexport = F,
   return(results)
 }
 
-extract.nonpararesults <- function(object){
+extract.ternary.results <- function(object){
   table <-  cbind(c(mean(sapply(1:sim, function(k) object[[k]][[1]][[1]])),
                       sd(sapply(1:sim, function(k) object[[k]][[1]][[1]]))),
                     c(mean(sapply(1:sim, function(k) object[[k]][[2]][[1]])),
@@ -977,7 +977,7 @@ extract.nonpararesults <- function(object){
   }
   
   rownames(table) <- c("Frobenius", "sd_F", "FPR", "sd_{FPR}", "TPR", "sd_{TPR}", "AUC", "sd_{AUC}")
-  colnames(table) <- c("Oracle", "Oracle nonparanormal", "Polyserial ML", "Polyserial nonparanormal")
+  colnames(table) <- c("Oracle", "Kendall ternary", "ML", "Nonparanormal ad-hoc")
   return(table)
 }
 
@@ -1217,6 +1217,203 @@ fan.case.2 <- function(x,y){
       #message('Caught an error!')
       #message(e)
       return(2^(1/2)*sin(tau*pi/2))})
+  return(as.numeric(hatR))
+}
+
+
+ternary.kendall <- function(data=data, verbose = T){
+  if (sum(sapply(data, is.factor)) == 0 & verbose == T){
+    cat("Warning, there are no factors in the input data.
+          Did you declare ordinal variables as factors?")
+  }
+  d <- ncol(data)
+  rho <- matrix(1,d,d)
+  
+  for(i in 1:(d-1)) {
+    for(j in (i+1):d){
+      if (is.numeric(data[,i]) & is.numeric(data[,j])){
+        rho[i,j] <- rho[j,i] <- sin(pi/2*kendall.a(data[,i], data[,j]))
+      }
+      if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
+        if (is.factor(data[,j])) {
+          if (length(unique(data[,j])) == 2){
+            rho[i,j] <- rho[j,i] <- fan.case.2(data[,i], data[,j])
+          } else if (length(unique(data[,j])) == 3){
+            rho[i,j] <- rho[j,i] <- ternery.cont(data[,i], data[,j])
+          }
+        } else if (is.factor(data[,i])) {
+          if (length(unique(data[,i])) == 2){
+            rho[i,j] <- rho[j,i] <- fan.case.2(data[,j],data[,i])
+          } else if (length(unique(data[,i])) == 3){
+            rho[i,j] <- rho[j,i] <- ternery.cont(data[,j], data[,i])
+          }
+        }
+      }
+      if (is.factor(data[,i]) & is.factor(data[,j])) {
+        if (length(unique(data[,i])) == 2 & length(unique(data[,j])) == 2){
+          rho[i,j] <- rho[j,i] <- fan.case.3(data[,i], data[,j])
+        } else if (length(unique(data[,i])) == 3 & length(unique(data[,j])) == 2){
+          rho[i,j] <- rho[j,i] <- ternery.binary(data[,i], data[,j])
+        } else if (length(unique(data[,i])) == 2 & length(unique(data[,j])) == 3){
+          rho[i,j] <- rho[j,i] <- ternery.binary(data[,j], data[,i])
+        } else if (length(unique(data[,i])) == 3 & length(unique(data[,j])) == 3){
+          rho[i,j] <- rho[j,i] <- ternery.ternery(data[,i], data[,j])
+        }  
+      }
+    }
+  }    
+  
+  if (!requireNamespace("stringr", quietly=TRUE))
+    stop("Please install package \"stringr\".")
+  pair <- rho[lower.tri(rho)]
+  if(any(abs(pair) > .9)) 
+    sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
+                                                                                               str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
+                                                                                                                        arr.ind = T)[,1]), collapse = ",")),
+                                                                                        ' in the nonparanormal estimate is close to the boundary. Inverse might be misleading. '))    
+  if (!is.positive.definite(rho)) {
+    rho_pd <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
+  } else {
+    rho_pd <- rho
+  }
+  #diag(rho_pd) <- 1
+  return(rho_pd)
+}
+
+ternary_run <- function(n=n, d=d, nlam=nlam, matexport = F,
+                        namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                        unbalanced = .5, low = .05, high = .1, sparsity = .1, nonpara = F, mode = mode){
+  
+  data <- generate.data(t=t, n = n, d = d, mode = mode)
+  data_0 <- data[[1]]
+  Omega <- data[[2]]
+  data <- NULL
+  
+  if (nonpara == F){
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, num_breaks = 3, unbalanced = unbalanced, low = low, high = high, f_j = 1)
+  } else if (nonpara == T){
+    data_mixed <- make.ordinal.general(data_0, namevector = namevector, num_breaks = 3, unbalanced = unbalanced, low = low, high = high, f_j = 3)
+  }
+  rho_latent <- mixed.omega(data_0, verbose = F) #oracle
+  data_0 <- NULL
+  rho_kendall <- ternary.kendall(data_mixed, verbose = F) #kendall's tau mapping to ternary
+  rho <- mixed.omega(data_mixed, verbose = F) #MLestimator
+  rho_nonpara <- mixed.omega.paranormal(data_mixed, verbose = F) # adhoc nonparanormal estimator
+  data_mixed <- NULL
+  
+  results_latent <- glasso.results(Sigma=rho_latent, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = sparsity)
+  results_kendall_ternary <- glasso.results(Sigma=rho_kendall, Omega=Omega, nlam=nlam, n=n, matexport = matexport, param = sparsity)
+  results_ml <- glasso.results(Sigma=rho, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = sparsity)
+  results_nonpara <- glasso.results(Sigma=rho_nonpara, Omega=Omega, nlam=nlam, n=n, matexport = matexport,  param = sparsity)
+  
+  results <- list("latent"=results_latent, "kendall_ternary"=results_kendall_ternary, "ML" = results_ml, "nonparanormal" = results_nonpara)
+  return(results)
+}
+
+
+
+ternery.cont <- function(cont,ter){
+  x <- as.numeric(ter)
+  y <- as.numeric(cont)
+  tau <- kendall.a(x,y)
+  #tau <- cor.fk(x,y)
+  
+  x.help <- x 
+  x.help[x.help == min(x.help)] <- 0
+  x.help[x.help != min(x.help) & x.help != max(x.help)] <- 1
+  x.help[x.help == max(x.help)] <- 2
+  
+  delta_1 <- qnorm(mean(x.help==0))
+  delta_2 <- qnorm(1-mean(x.help==2))
+  
+  bridge.30 <- function(t){
+    mat = matrix(c(1, 0, t/sqrt(2), 0, 1, -t/sqrt(2), t/sqrt(2), -t/sqrt(2), 1), nrow = 3)
+    
+    R_jk <- (as.numeric(4*fMultivar::pnorm2d(delta_2, 0, rho = t/sqrt(2)) - 2*pnorm(delta_2)
+                        + 2*(mnormt::pmnorm(c(delta_1, delta_2, 0), mean = rep(0, 3), varcov = mat) - mnormt::pmnorm(c(delta_2, delta_1, 0), mean = rep(0, 3), varcov = mat)))
+             - tau)^2
+  }
+  
+  hatR <- tryCatch(
+    expr = {optimize(bridge.30, lower = -0.999, upper = 0.999, tol = 1e-8)[1]},  
+    error = function(e){ 
+      #message('Caught an error!')
+      #message(e)
+      return(sin(pi*tau))})
+  return(as.numeric(hatR))
+}
+
+
+
+ternery.ternery <- function(ter1,ter2){
+  x <- as.numeric(ter1)
+  y <- as.numeric(ter2)
+  tau <- kendall.a(x,y)
+  #tau <- cor.fk(x,y)
+  
+  x.help <- x 
+  x.help[x.help == min(x.help)] <- 0
+  x.help[x.help != min(x.help) & x.help != max(x.help)] <- 1
+  x.help[x.help == max(x.help)] <- 2
+  
+  y.help <- y
+  y.help[y.help == min(y.help)] <- 0
+  y.help[y.help != min(y.help) & y.help != max(y.help)] <- 1
+  y.help[y.help == max(y.help)] <- 2
+  
+  delta_x_1 <- qnorm(mean(x.help==0))
+  delta_x_2 <- qnorm(1-mean(x.help==2))
+  delta_y_1 <- qnorm(mean(y.help==0))
+  delta_y_2 <- qnorm(1-mean(y.help==2))
+  
+  bridge.33 <- function(t){
+    R_jk <- (as.numeric(2*fMultivar::pnorm2d(delta_x_2, delta_y_2, rho = t)*fMultivar::pnorm2d(-delta_x_1, -delta_y_1, rho = t)
+                        - 2*((pnorm(delta_x_2)-fMultivar::pnorm2d(delta_x_2, delta_y_1, rho = t))*(pnorm(delta_y_2)-fMultivar::pnorm2d(delta_x_1, delta_y_2, rho = t))))
+             - tau)^2
+  }
+  
+  hatR <- tryCatch(
+    expr = {optimize(bridge.33, lower = -0.999, upper = 0.999, tol = 1e-8)[1]},  
+    error = function(e){ 
+      #message('Caught an error!')
+      #message(e)
+      return(sin(pi*tau))})
+  return(as.numeric(hatR))
+}
+
+
+ternery.binary<- function(ter,bin){
+  x <- as.numeric(ter)
+  y <- as.numeric(bin)
+  tau <- kendall.a(x,y)
+  #tau <- cor.fk(x,y)
+  
+  x.help <- x 
+  x.help[x.help == min(x.help)] <- 0
+  x.help[x.help != min(x.help) & x.help != max(x.help)] <- 1
+  x.help[x.help == max(x.help)] <- 2
+  
+  y.help <- y
+  y.help[y.help == min(y.help)] <- 0
+  y.help[y.help == max(y.help)] <- 1
+  
+  delta_x_1 <- qnorm(mean(x.help==0))
+  delta_x_2 <- qnorm(1-mean(x.help==2))
+  delta_y_1 <- qnorm(1-mean(y.help))
+  
+  
+  bridge.32 <- function(t){
+    R_jk <- (as.numeric(2*fMultivar::pnorm2d(delta_y_1, delta_x_2, rho = t)*(1-pnorm(delta_x_1))
+                        -2*pnorm(delta_x_2)(pnorm(delta_y_1)-fMultivar::pnorm2d(delta_y_1, delta_x_1, rho = t)))
+             - tau)^2
+  }
+  
+  hatR <- tryCatch(
+    expr = {optimize(bridge.32, lower = -0.999, upper = 0.999, tol = 1e-8)[1]},  
+    error = function(e){ 
+      #message('Caught an error!')
+      #message(e)
+      return(sin(pi*tau))})
   return(as.numeric(hatR))
 }
 

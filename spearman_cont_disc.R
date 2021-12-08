@@ -1,90 +1,125 @@
-#### simulating spearman's rho ####
-
 rm(list = ls())
 source("packages.R")
 source("functions.R")
-#
-set.seed(1234)
-sim <- 200
-n <- 100000
-grid <- seq(-.9,.9,.1)
-breaks <- runif(5)
-sum_breaks <- sum(breaks)
-breaks_norm <- sort(breaks)/sum_breaks
-cum.mat <- c(0,cumsum(breaks_norm))
-run <- list()
+#source("applied_functions.R")
 
-Sigma <- lapply(seq_along(grid), function(i) matrix(c(1,grid[i], grid[i], 1), nrow = 2, ncol = 2, byrow = T))
+set.seed(131)
 
-for (k in 1:sim){
-  Z_X <- lapply(seq_along(grid), function(i) mvrnorm(n=n, mu = c(0,0), Sigma = Sigma[[i]]))
-  X_x <- lapply(seq_along(grid), function(i) (Z_X[[i]]))
-  continuous <- lapply(seq_along(grid), function(i) (X_x[[i]][,2]))
-  ordinal <- lapply(seq_along(grid), function(i) 
-              cut(pnorm(scale(X_x[[i]][,1])), breaks = cum.mat, 
-                  include.lowest = T, ordered_result = T, labels = 1:(length(cum.mat)-1)))
-  
-  run[[k]] <- sapply(seq_along(grid), function(i) 
-    adhoc_lord_sim(continuous[[i]], ordinal[[i]])-grid[i])
-}
+sim <- 100 # simulation runs
+n <- c(200,200,300,600) # sample size include high dimension only on cluster
+d <- c(50,250,750, 1500) # dimensionality --> include high dimension (1500) only on cluster 
+n_E <- c(200,250,750,1500) # sparsity level of the graph: amount of edges we want to introduce 
+t <- .15 # signal strength
+nlam <- 30 #50 # number of tuning parameters for graphical lasso
+firstrun <- T
 
-### now for plotting
+numCores <- 50
 
-dataset <- sapply(1:sim, function(k) run[[k]][1])
+print("Start with d=50, f_j(x) = x")
 
-for (i in 2:length(grid)){
-  dataset <- cbind(dataset, sapply(1:sim, function(k) run[[k]][i]))
-}
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-dataset <- as.data.frame(dataset)
-colnames(dataset) <- grid
-library(reshape) 
-plotdata <- melt(dataset)
+nonpara_comparison_1 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[1], d=d[1], nlam=nlam, matexport = F,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
 
-linear <- ggplot(plotdata, aes(x=variable, y=value)) + 
-          geom_boxplot() +
-          geom_hline(yintercept=0, linetype='dotted', col = 'red')+
-          xlab(expression(rho["latent"])) + 
-          ylab(expression(hat(rho)["polyserial"]-rho["latent"]))  
-linear  
+plan(sequential)
 
-breaks <- runif(9)
-sum_breaks <- sum(breaks)
-breaks_norm <- sort(breaks)/sum_breaks
-cum.mat <- c(0,cumsum(breaks_norm))
+table_1 <- extract.ternary.results(nonpara_comparison_1)
+stargazer(table_1, out = "table_1.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[1],"and d=",d[1],"under",sim, "simulation runs."))                    
 
-#vec <- vector(length = 100)
-#for (i in 1:100){
-a = 0.15; b = 0.5; c =1.5
-library(MASS)
-#set.seed(2021)
-Z = (mvrnorm(n = 1E6, rep(0, 2), matrix(c(1,a,a,1),2,2)))
-z_j = Z[,1]
-z_k = Z[,2]
-funs <- function (t){
-  if (t <= b) {res=0}
-  else {res=1}
-  return (res)
-}
-u <- 
-x_k <- cut(pnorm(scale(z_k)), breaks = cum.mat, include.lowest = T, ordered_result = T, labels = 1:(length(cum.mat)-1))
+print("continue with d=50, f_j(x) = x^3")
 
-x_k =  #sapply(z_k, funs)
-vec[i] <- adhoc_lord_sim(z_j,x_k)
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_2 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[1], d=d[1], nlam=nlam, matexport = F,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
+plan(sequential)
+
+table_2 <- extract.ternary.results(nonpara_comparison_2)
+stargazer(table_2, out = "table_2.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[1],"and d=",d[1],"under",sim, "simulation runs."))                    
+
+##### d = 250 ####
+
+print("Start with d=250, f_j(x) = x")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_3 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[2], d=d[2], nlam=nlam, matexport = F,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
+plan(sequential)
+
+table_3 <- extract.ternary.results(nonpara_comparison_3)
+stargazer(table_3, out = "table_3.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
+
+print("continue with d=250, f_j(x) = x^3")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_4 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[2], d=d[2], nlam=nlam, matexport = F,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
+plan(sequential)
+
+table_4 <- extract.ternary.results(nonpara_comparison_4)
+stargazer(table_4, out = "table_4.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[2],"and d=",d[2],"under",sim, "simulation runs."))                    
+
+##### d = 750 #### 
+
+print("Start with d=750, f_j(x) = x")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_5 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
+plan(sequential)
+
+table_5 <- extract.ternary.results(nonpara_comparison_5)
+stargazer(table_5, out = "table_5.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
+
+print("continue with d=750, f_j(x) = x^3")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_6 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
+plan(sequential)
+
+table_6 <- extract.ternary.results(nonpara_comparison_6)
+stargazer(table_6, out = "table_6.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
+
+##### d = 1500 #### 
+
+print("Start with d=1500, f_j(x) = x")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_7 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[4], d=d[4], nlam=nlam, matexport = F, sparsity = .5,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
+plan(sequential)
+
+table_7 <- extract.ternary.results(nonpara_comparison_7)
+stargazer(table_7, out = "table_7.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[4],"and d=",d[4],"under",sim, "simulation runs."))                    
+
+print("continue with d=1500, f_j(x) = x^3")
+
+plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+
+nonpara_comparison_8 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[4], d=d[4], nlam=nlam, matexport = F, sparsity = .5,
+                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
+plan(sequential)
+
+table_8 <- extract.ternary.results(nonpara_comparison_8)
+stargazer(table_8, out = "table_8.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[4],"and d=",d[4],"under",sim, "simulation runs."))                    
 
 
-funs <- function (t){
-  if (t <= c) {res=1}
-  else {res=2}
-  return (res)
-}
-x_j = sapply(z_j, funs)
+# done
 
-cor(z_j,z_k)
 
-polyserial(z_j,x_k)
-fan.case.2(z_j,x_k)
-
-adhoc_lord(z_j,x_k)
-adhoc_lord_sim(z_j,x_k)
 
