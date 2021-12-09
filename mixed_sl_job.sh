@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_general_nonparanormal.out
+#SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_ternary_nonparanormal.out
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 #SBATCH -J "mixed_kendall"
 #SBATCH --get-user-env
@@ -24,4 +24,4 @@ module load r
 
 cd /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 
-Rscript point_polynormal.R
+Rscript ternary_run.R

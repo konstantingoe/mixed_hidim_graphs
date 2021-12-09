@@ -9,6 +9,8 @@ pacman::p_load(
   stringr,
   compareGroups,
   hrbrthemes,
+  lmtest,
+  sandwich,
   missForest,
   stats,
   MASS,
@@ -272,8 +274,10 @@ table <- compareGroups(group ~ sex + age + py + zig + bop_t01 + bop_t02 + bop_t0
                               bmi_t01 + bmi_t02 + bmi_t03 + whr_t01 + whr_t02 + whr_t03 + 
                               `pisa-score_t01` + `pisa-score_t02` + `pisa-score_t03`, 
                               data = desc.data, method = NA)
-createTable(table)
-
+descr.table <- createTable(table)
+export2word(descr.table, file='table1.docx')
+#export2xls(restab, file='table1.xlsx')
+#export2csv(restab, file='table1.csv')
 ### even more detailed
 
 summary(table)
@@ -315,6 +319,114 @@ p18 <- ggplot(pisadata, aes(x=Time, y=PisaScore, fill=Group)) +
   geom_boxplot() +
   facet_wrap(~Group)
 
+
+
+#### Regression Analysis ####
+reg.data <- data.complete
+reg.data <- reg.data %>% 
+  mutate(group = factor(reg.data$g, levels = c(2,1), labels = c("Control", "Treat")),
+         sex = factor(reg.data$sexe, levels = c(1,2), labels = c("Male", "Female")))
+reg.data <- dplyr::rename(reg.data, pisa_score_t01 = `pisa-score_t01`,
+       pisa_score_t02 = `pisa-score_t02`,
+       pisa_score_t03 = `pisa-score_t03`)
+
+
+frml1 <- as.formula(bop_t01 ~ group + sex + age + py + zig + 
+          pcr_t01 + st_t01 +
+          hb1_t01 + glu_t01 + 
+          bmi_t01 + whr_t01 + 
+          pisa_score_t01)
+
+frml2 <- as.formula(bop_t02 ~ group + sex + age + py + zig + 
+                      bop_t01 + pcr_t01 + st_t01 +
+                      hb1_t01 + glu_t01 + 
+                      bmi_t01 + whr_t01 + 
+                      pisa_score_t01 + pcr_t02 + st_t02 +
+                      hb1_t02 + glu_t02 + 
+                      bmi_t02 + whr_t02 + 
+                      pisa_score_t02)
+
+frml3 <- as.formula(bop_t03 ~ group + sex + age + py + zig + 
+                      bop_t02 + bop_t01 + pcr_t01 + st_t01 +
+                      hb1_t01 + glu_t01 + 
+                      bmi_t01 + whr_t01 + 
+                      pisa_score_t01 + pcr_t02 + st_t02 +
+                      hb1_t02 + glu_t02 + 
+                      bmi_t02 + whr_t02 + 
+                      pisa_score_t02 + pcr_t03 + st_t03 +
+                      hb1_t03 + glu_t03 + 
+                      bmi_t03 + whr_t03 + 
+                      pisa_score_t03)
+
+lm_mod1 <- lm(frml1, data = reg.data)
+summary(lm_mod1)
+
+stargazer(lm_mod1, out = "reg1.txt", type = "text")
+
+lm_mod2 <- lm(frml2, data = reg.data)
+summary(lm_mod2)
+
+stargazer(lm_mod2, out = "reg2.txt", type = "text")
+
+lm_mod3 <- lm(frml3, data = reg.data)
+summary(lm_mod3)
+
+
+stargazer(lm_mod3, out = "reg3.txt", type = "text")
+
+
+frml.new1 <- as.formula(bop_t01 ~ group + age + py + nu + whr_t01 + 
+                          pcr_t01 + sf_t01 + hb1c_t01 + tag_t01 + crp_t01 +aasi_t01)
+
+lm_mod.new1 <- lm(frml.new1, data = reg.data)
+summary(lm_mod.new1)
+coeftest(lm_mod.new1, vcov = vcovHC(lm_mod.new1, type = "HC5")) 
+
+#frml.new2 <- as.formula(bop_t02 ~ group + age + py + nu + whr_t01 + whr_t02+ 
+#                          pcr_t01 + pcr_t02 + sf_t01 + sf_t02 + hb1c_t01 + hb1c_t02 +
+#                          tag_t01 + tag_t02 + crp_t01 + crp_t02 +
+#                          aasi_t01 + aasi_t02)
+frml.new2 <- as.formula(bop_t02 ~ group + age + py + nu + 
+                          whr_t02 + 
+                          pcr_t02 + 
+                          sf_t02 + 
+                          hb1c_t02 +
+                          tag_t02 +
+                          crp_t02 + 
+                          aasi_t02)
+
+lm_mod.new2 <- lm(frml.new2, data = reg.data)
+summary(lm_mod.new2)
+# robust version due to likely present heteroskedasticity
+coeftest(lm_mod.new2, vcov = vcovHC(lm_mod.new2, type = "HC5")) 
+
+
+#frml.new3 <- as.formula(bop_t03 ~ group + age + py + #nu + 
+#                          whr_t01 + whr_t02 + whr_t03 + 
+#                          pcr_t01 + pcr_t02 + pcr_t03+ 
+#                          sf_t01 + sf_t02 + sf_t03 + 
+#                          hb1c_t01 + hb1c_t02 + hb1c_t03 +
+#                          tag_t01 + tag_t02 + tag_t03 +
+#                          crp_t01 + crp_t02 + crp_t03 + 
+#                          aasi_t01 + aasi_t02 + aasi_t03)
+
+frml.new3 <- as.formula(bop_t03 ~ group + age + py  + nu +
+                          whr_t03 + 
+                          pcr_t03 + 
+                          sf_t03 + 
+                          hb1c_t03 +
+                          tag_t03 +
+                          crp_t03 + 
+                          aasi_t03)
+
+lm_mod.new3 <- lm(frml.new3, data = reg.data)
+summary(lm_mod.new3)
+# robust version due to likely present heteroskedasticity and leverage points
+coeftest(lm_mod.new3, vcov = vcovHC(lm_mod.new3, type = "HC5")) 
+
+
+### turns out: nu alters treatment effect insignificant and smaller but still consistently negative
+### couldn't use bu (Bauchumfang) as this is not in the dataset. I used the whr instead.
 
 
 
