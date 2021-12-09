@@ -3,7 +3,7 @@ source("packages.R")
 source("functions.R")
 #source("applied_functions.R")
 
-set.seed(131)
+set.seed(13311)
 
 sim <- 100 # simulation runs
 n <- c(200,200,300) # sample size include high dimension only on cluster

@@ -1339,7 +1339,7 @@ ternery.cont <- function(cont,ter){
     error = function(e){ 
       #message('Caught an error!')
       #message(e)
-      return(sin(pi*tau))})
+      return(sin(pi/2*tau))})
   return(as.numeric(hatR))
 }
 
