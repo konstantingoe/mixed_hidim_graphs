@@ -3,14 +3,14 @@
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
 #SBATCH -J "mixed_kendall"
 #SBATCH --get-user-env
-#SBATCH --clusters=inter
-#SBATCH --partition=teramem_inter
-#SBATCH --cpus-per-task=50
+#SBATCH --clusters=cm2_tiny
+#SBATCH --partition=cm2_tiny
+#SBATCH --cpus-per-task=28
 #SBATCH --nodes=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE
-#SBATCH --time=200:00:00
+#SBATCH --time=72:00:00
 
 module load slurm_setup
 

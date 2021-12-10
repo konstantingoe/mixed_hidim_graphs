@@ -12,7 +12,7 @@ n_E <- c(200,250,750) # sparsity level of the graph: amount of edges we want to 
 t <- .15 # signal strength
 nlam <- 30 #50 # number of tuning parameters for graphical lasso
 
-numCores <- 50
+numCores <- 28
 
 print("Start with d=50, f_j(x) = x")
 
