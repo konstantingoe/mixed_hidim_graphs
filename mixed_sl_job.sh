@@ -4,7 +4,6 @@
 #SBATCH -J "mixed_kendall"
 #SBATCH --get-user-env
 #SBATCH --clusters=mpp3
-#SBATCH --partition=teramem_inter
 #SBATCH --ntasks-per-node=50
 #SBATCH --nodes=1
 #SBATCH --mail-type=end
