@@ -13,7 +13,7 @@ t <- .15 # signal strength
 nlam <- 30 #50 # number of tuning parameters for graphical lasso
 firstrun <- F
 numCores <- 50
-if (firstrun = T){
+if (firstrun == T){
 print("Start with d=50, f_j(x) = x")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
