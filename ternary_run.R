@@ -71,9 +71,9 @@ print("Start with d=750, f_j(x) = x")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-nonpara_comparison_5 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
-                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
-                                                                                            unbalanced = .5, mode = "fan", nonpara = F))
+nonpara_comparison_5 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
+                                                                                      namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                      unbalanced = .5, mode = "fan", nonpara = F))
 plan(sequential)
 
 table_5 <- extract.ternary.results(nonpara_comparison_5)
@@ -83,9 +83,9 @@ print("continue with d=750, f_j(x) = x^3")
 
 plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-nonpara_comparison_6 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F, sparsity = .5,
-                                                                                            namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
-                                                                                            unbalanced = .5, mode = "fan", nonpara = T))
+nonpara_comparison_6 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
+                                                                                      namevector = c("binary" = T, "ordinal" = T, "poisson" = F),
+                                                                                      unbalanced = .5, mode = "fan", nonpara = T))
 plan(sequential)
 
 table_6 <- extract.ternary.results(nonpara_comparison_6)
