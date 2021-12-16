@@ -1,10 +1,11 @@
 #!/bin/bash
 #SBATCH -o /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning/mixed_ternary_inter.out
 #SBATCH -D /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
-#SBATCH -J "mixed_kendall"
+#SBATCH -J "mixed_ternary"
 #SBATCH --get-user-env
-#SBATCH --clusters=mpp3
-#SBATCH --ntasks-per-node=50
+#SBATCH --clusters=inter
+#SBATCH --partition=teramem_inter
+#SBATCH --cpus-per-task=50
 #SBATCH --nodes=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
