@@ -75,7 +75,7 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
   
   adj_estimate <- abs(Omega_hat) > 0
   
-  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjecency Matrix" = adj_estimate,
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjacency Matrix" = adj_estimate,
                  "Sample Correlation Matrix" = rho_pd, "Edgenumber" = number_edges, "Max Degree" = max_degree)  
   return(output)
 }
@@ -117,7 +117,7 @@ omega.select <- function(x, param, n){
 }
 
 
-omega.select.drton <- function(x, param, n, s){
+omega.select.drton <- function(x=x, param = param, n=n, s = s, partial = F){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlambda <- length(x$lambda)
@@ -132,10 +132,15 @@ omega.select.drton <- function(x, param, n, s){
   }  
   
   Omega_hat <- x$icov[[which.min(eBIC)]]
-  Omega_hat.standardized <- cov2cor(Omega_hat)
-  
+  if (partial == T){
+    Omega_hat.standardized <- -1*cov2cor(Omega_hat)
+    diag(Omega_hat.standardized) <- -1*diag(Omega_hat.standardized)
+  } else {
+    Omega_hat.standardized <- cov2cor(Omega_hat)
+  }
   return(Omega_hat.standardized)
 }
+
 
 #### write data generating function ####
 #### inputs:
@@ -712,13 +717,13 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
   
   adj_estimate <- abs(Omega_hat) > 0
   
-  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjecency Matrix" = adj_estimate,
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjacency Matrix" = adj_estimate,
                  "Sample Correlation Matrix" = rho_pd, "Edgenumber" = number_edges, "Max Degree" = max_degree, "initial_mat_singular" = initial_mat_singular)  
   return(output)
 }
 
 
-#### mixed omega function for paranormal
+#### mixed omega function for nonparanormal
 
 mixed.omega.paranormal <- function(data=data, verbose = T){
   if (sum(sapply(data, is.factor)) == 0 & verbose == T){

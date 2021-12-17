@@ -125,7 +125,7 @@ omega.select <- function(x=x, param = param, n=n){
 }
 
 
-omega.select.drton <- function(x=x, param = param, n=n, s = s){
+omega.select.drton <- function(x=x, param = param, n=n, s = s, partial = T){
   stopifnot((class(x)=="huge"))
   d=dim(x$data)[1]
   nlambda <- length(x$lambda)
@@ -140,8 +140,12 @@ omega.select.drton <- function(x=x, param = param, n=n, s = s){
   }  
   
   Omega_hat <- x$icov[[which.min(eBIC)]]
-  Omega_hat.standardized <- -1*cov2cor(Omega_hat)
-  diag(Omega_hat.standardized) <- -1*diag(Omega_hat.standardized)
+  if (partial == T){
+    Omega_hat.standardized <- -1*cov2cor(Omega_hat)
+    diag(Omega_hat.standardized) <- -1*diag(Omega_hat.standardized)
+  } else {
+    Omega_hat.standardized <- cov2cor(Omega_hat)
+  }
   return(Omega_hat.standardized)
 }
 
@@ -181,11 +185,7 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
         rho[i,j] <- rho[j,i] <- 2*sin(pi/6 *spearman(data[,i], data[,j]))
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
-        if (is.factor(data[,j])) {
-          rho[i,j] <- rho[j,i] <- adhoc_lord(data[,i], data[,j])
-        } else {
-          rho[i,j] <- rho[j,i] <- adhoc_lord(data[,j], data[,i])
-        }
+        rho[i,j] <- rho[j,i] <- adhoc_lord(data[,i], data[,j])
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
         rho[i,j] <- rho[j,i] <- polycor::polychor(data[,i], data[,j])
@@ -196,7 +196,7 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
   if (!requireNamespace("stringr", quietly=TRUE))
     stop("Please install package \"stringr\".")
   pair <- rho[lower.tri(rho)]
-  if(any(abs(pair) > .9)) 
+  if (any(abs(pair) > .9)) 
     sapply(seq_along(rho[lower.tri(rho)][which(abs(pair) > .95)]), function (k) warning(paste0('Correlation of the pair ', 
            str_c(as.character(which(rho[lower.tri(rho)][which(abs(pair) > .9)][k] == rho,
                                     arr.ind = T)[,1]), collapse = ",")),
@@ -287,22 +287,16 @@ adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
     threshold_estimate <- qnorm(cummarg_propotions)
     
     values <- sort(as.integer(unique(factor_var)))
-    
-    lambda <- as.numeric(values %*% sapply(seq_along(values), 
-                                           function(i) integrate(kf, threshold_estimate[i], threshold_estimate[i+1])$value))
-    
+  
+    lambda <- sum(dnorm(head(threshold_estimate, -1)[-1]*diff(values))) 
     s_disc <- sd(factor_var) 
     r <- npn.pearson(numeric_var,factor_var)
     corr.hat <- r*s_disc/lambda
-    if (r < 0){
-      numeric_var <- -1*numeric_var
-      r <- npn.pearson(numeric_var,factor_var)
-      corr.hat <- -1*r*s_disc/lambda
-      
+    
+    if (abs(corr.hat) >= 1){
+      corr.hat <- sign(corr.hat)*maxcor
     }
-  }
-  if (abs(corr.hat) >= 1){
-    corr.hat <- sign(corr.hat)*.99
+    if (is.null(corr.hat)){corr.hat <- polycor::polyserial(numeric_var, factor_var)}
   }
   return(corr.hat)
 }
