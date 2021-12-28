@@ -119,6 +119,3 @@ stargazer(table_6, out = "table_6.tex", summary = F, title=paste("Mixed data str
 # 
 
 # done
-
-
-# good talk with Dafni 
