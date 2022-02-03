@@ -11,7 +11,7 @@ d <- c(50,250,750) # dimensionality --> include high dimension (1500) only on cl
 n_E <- c(200,250,750) # sparsity level of the graph: amount of edges we want to introduce 
 t <- .15 # signal strength
 nlam <- 30 #50 # number of tuning parameters for graphical lasso
-firstrun <- F
+firstrun <- T
 numCores <- 50
 if (firstrun == T){
   print("Start with d=50, f_j(x) = x")
