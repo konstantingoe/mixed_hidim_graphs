@@ -19,7 +19,9 @@ export R_LIBS_USER
 R_LIBS_SITE="/dss/dsshome1/lrz/sys/spack/release/19.2/opt/x86_avx2/r/3.6.0-gcc-eujetj3/rlib/R/library"
 export R_LIBS_SITE
 
-
+module unload intel-mpi
+module unload intel
+module load gcc
 module load r
 
 cd /dss/dsshome1/lxc0A/ge43doh2/mixed/mixed_structure_learning
