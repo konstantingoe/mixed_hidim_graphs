@@ -69,24 +69,24 @@ if (firstrun == T){
 
   print("Start with d=750, f_j(x) = x")
   
-  plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+  #plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
   
-  nonpara_comparison_5 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
+  nonpara_comparison_5 <- lapply(1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
                                                                                         namevector = c("binary" = T, "ordinal" = F, "poisson" = F),
                                                                                         unbalanced = .5, mode = "fan", nonpara = F))
-  plan(sequential)
+  #plan(sequential)
   
   table_5 <- extract.ternary.results(nonpara_comparison_5)
   stargazer(table_5, out = "table_5.tex", summary = F, title=paste("Mixed data structure learning comparison n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
 
 print("continue with d=750, f_j(x) = x^3")
 
-plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
+#plan(multisession, workers = numCores) ## Run in parallel on Linux cluster
 
-nonpara_comparison_6 <- future_lapply(future.seed = T, 1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
+nonpara_comparison_6 <- lapply(1:sim, function(k) ternary_run(n=n[3], d=d[3], nlam=nlam, matexport = F,
                                                                                       namevector = c("binary" = T, "ordinal" = F, "poisson" = F),
                                                                                       unbalanced = .5, mode = "fan", nonpara = T))
-plan(sequential)
+#plan(sequential)
 
 table_6 <- extract.ternary.results(nonpara_comparison_6)
 stargazer(table_6, out = "table_6.tex", summary = F, title=paste("Mixed data structure learning with $f_j(x) = x^3$, n=",n[3],"and d=",d[3],"under",sim, "simulation runs."))                    
