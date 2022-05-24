@@ -206,7 +206,7 @@ generate.data <- function(mode = mode, t=.15, n = 200, d = 50, sparsity = sparsi
 # proportion of data that should be converted to ordinal
 # number of levels for all ordinal variables (could also think of a vector of size d/2 here)
 # allow for a mix of 20-leveled discrete variables (count variables) and 3-leveled ones
-
+### not used anymore
 make.ordinal <- function(data = data, proportion = .5, n_O = 3, countvar = F, p_count = proportion*1/3, f_j = 1){
   d <-  ncol(data)
   d_1 <- d*proportion
@@ -309,7 +309,7 @@ mixed.omega <- function(data=data, verbose = T){
 }
 
 #### Mixed Tau for Fan et.al. Method:
-
+### also not used anymore
 mixed.omega.kendall <- function(data = data, verbose = T){
   
   if (sum(sapply(data, is.factor)) == 0 & verbose == T){
@@ -508,6 +508,9 @@ kendalls.results <- function(result_object = result_object){
   )
   return(table)
 }
+
+
+#### used now
 
 make.ordinal.general <- function(data = data, proportion = .5, namevector = c("binary" = T, "ordinal" = T, "poisson" = T), unbalanced = .2, low = .05, high =.1, lambda = 6, num_breaks = round(runif(1,3,10)), f_j = 1){
   d <-  ncol(data)

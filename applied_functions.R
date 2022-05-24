@@ -185,7 +185,7 @@ mixed.nonpara.graph <- function(data = data, verbose = T, nlam = 50, thresholdin
         rho[i,j] <- rho[j,i] <- 2*sin(pi/6 *spearman(data[,i], data[,j]))
       }
       if ((is.factor(data[,i]) & is.numeric(data[,j])) |  (is.numeric(data[,i]) & is.factor(data[,j]))) {
-        rho[i,j] <- rho[j,i] <- adhoc_lord(data[,i], data[,j])
+        rho[i,j] <- rho[j,i] <- adhoc_polyserial(data[,i], data[,j])
       }
       if (is.factor(data[,i]) & is.factor(data[,j])) {
         rho[i,j] <- rho[j,i] <- polycor::polychor(data[,i], data[,j])
@@ -257,7 +257,7 @@ thresholds <- function(vector){
 }
 
 
-adhoc_lord <- function(x, y, maxcor = 0.9999, more_verbose = F){
+adhoc_polyserial <- function(x, y, maxcor = 0.9999, more_verbose = F){
   x <- if (missing(y)){ 
     x
   } else {cbind(x, y)}
