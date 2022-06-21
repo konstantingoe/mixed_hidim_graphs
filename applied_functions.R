@@ -300,3 +300,21 @@ adhoc_polyserial <- function(x, y, maxcor = 0.9999, more_verbose = F){
   }
   return(corr.hat)
 }
+
+f.hat <- function(x){
+  n <- length(x)
+  npn.thresh <- 1/(4 * (n^0.25) * sqrt(pi * log(n)))
+  x <- qnorm(pmin(pmax(rank(x)/n, npn.thresh),
+                  1 - npn.thresh))
+  x <- x/sd(x)
+  #rm(n, npn.thresh)
+  #gc()
+  return(x)
+}
+
+npn.pearson <- function(cont,disc){
+  f.x <- f.hat(cont)
+  y <- as.integer(disc)
+  r <- cor(f.x,y, method = "pearson")
+  return(r)
+}
