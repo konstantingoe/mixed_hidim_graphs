@@ -4,4 +4,4 @@
 
 In order to run an example simulation use ./Simulation/example_sim.R
 
-For more description and use-cases see the R-Package hume on \url{https://github.com/konstantingoe/hume}
+For more description and use-cases see the R-Package hume on https://github.com/konstantingoe/hume
