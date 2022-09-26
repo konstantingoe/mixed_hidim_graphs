@@ -87,7 +87,7 @@ mixed.undir.graph <- function(data = data, verbose = T, nlam = 50, thresholding 
   
   adj_estimate <- abs(Omega_hat) > 0
   
-  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjecency Matrix" = adj_estimate,
+  output <- list("Estimated Precision Matrix" = Omega_hat, "Adjacency Matrix" = adj_estimate,
                  "Sample Correlation Matrix" = rho_pd, "Edgenumber" = number_edges, "Max Degree" = max_degree, "initial_mat_singular" = initial_mat_singular)  
   return(output)
 }
