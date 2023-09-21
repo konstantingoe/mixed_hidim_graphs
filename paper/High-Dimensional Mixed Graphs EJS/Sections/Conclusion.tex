@@ -1,0 +1,24 @@
+
+
+Estimating high-dimensional undirected graphs from general mixed data is a challenging task.
+We propose an approach for this problem that combines classical, generalized correlation measures, and in particular polychoric and polyserial correlations, with recent ideas from high-dimensional graphical modelling and copulas. 
+
+In particular, we make the simple but we think relevant observation that polychoric and polyserial correlations   
+can be usefully considered via a latent Gaussian copula model. While it requires some care to tailor the polyserial correlation to the nonparanormal case, the polychoric correlation does not require any adjustments.   The resulting estimators enjoy favorable theoretical properties (also in high dimensions) and show very good empirical performance in our simulation study. 
+
+The framework we advocate for builds on a line of work that extends the graphical lasso for Gaussian observations to nonparanormal models and then mixed data as in the work of \citet{Fan17} and later \cite{Quan18} and \citet{Feng19}. A key distinction is that in our approach there is no need to specify bridge functions, and we can directly cope with general types of mixed data with no additional effort on the user's part, as we illustrated in an analysis of phenotyping data from the UK Biobank.
+
+
+%while in these previous papers bridge functions between Kendall's tau and the latent correlation parameter were used to avoid estimating the monotone transformation functions arising from the Gaussian copula. However, their uses are limited in practice as bridge functions have to be found case-by-case for each discrete variable with unique level sets. So far this method is applicable only to binary and ternary mixed data. 
+% We showed that the estimators we propose enjoy favorable theoretical properties (also in high dimensions) and very good empirical performance.  We illustrated the use  show also an illustrative analysis of phenotyping data from the UK Biobank.
+
+%We propose two estimators that are based on polychoric and polyserial correlations. The first one is a ML estimator and is only appropriate when the latent continuous variables are jointly Gaussian. The second one can be used under the nonparanormal assumption without the need for a case-by-case derivation of bridge functions. We show that both estimators exhibit excellent theoretical properties as well as favorable performance in an extensive simulation study.
+
+%Since bio-medical data often comes in a mixed form we demonstrate the uses of our method by identifying potential risk factors regarding the severity of a Covid-19 infection with data from the UK-Biobank. 
+
+%Future directions...
+
+
+%joint pooling/GM estimation
+
+%use within testing, clustering etc.

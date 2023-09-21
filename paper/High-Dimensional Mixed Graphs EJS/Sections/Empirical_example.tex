@@ -1,0 +1,36 @@
+
+In this section, we present results of an analysis of real-world health data (from the UK Biobank). We are interested in investigating associations between the severity of a COVID-19 infection and a variety of potential risk factors.
+This analysis is intended to illustrate the use of the proposed methods in a real-world, mixed variable type example. 
+\input{Tables/real_data_table}
+
+\subsection{Data set and variables}
+
+We first describe the data set used here which is a part of the UK Biobank COVID-19 resource in which UK Biobank data were linked to clinical COVID data. In order to construct an indicator of COVID-19 severity we consider subjects who were tested positive for COVID-19 at some point in 2020.  Based on that, we created an indicator variable (Covid severity) to capture whether each subject had a severe outcome within 6 weeks of infection (meaning either hospitalised, hospitalised receiving critical care or died). Around $14\%$ experienced such a severe outcome. \begin{figure}[ht]
+    \centering
+   %\includegraphics[width=1.00\textwidth]{Figures/corrplot_admat_A.pdf}
+    \includegraphics[scale=.6]{Figures/corrplot_admat_A.pdf}
+    \caption{Plot of the estimated adjacency matrix of data set A.}
+    \label{fig:corrplot_admat_A}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=.6]{Figures/corrplot_omega_A.pdf}
+    \caption{Plot of the estimated precision matrix of data set A.}
+    \label{fig:corrplot_omega_A}
+\end{figure}
+Overall the analysis includes $n=8672$ observations on $d=712$ variables (risk factors and covariates with less than 40\% missingness). Missing values were imputed using \texttt{missForest} R-package using  default settings. Variables expressing more than $20$ states were treated as continuous. The remaining data include $665$ binary variables, $25$ count variables and $8$ categorical variables. Many of the binary variables represent the status for relatively rare conditions. This means that the share of minority class of these indicators 
+(i.e. the fraction of samples with the least frequent value of the variable)
+can often be very small. 
+To understand the effects of such rare events on the analysis, we defined 
+ three data sets (named A, B, and C) with inclusion rules requiring respectively at least a $25\%, 2\%, 1\%$ share of observations falling into the minority class.
+
+\subsection{Results}
+ 
+We present results of a joint analysis of the variables considered, using the real data. 
+However, we emphasize that the analysis is aimed at illustrating behaviour of the proposed estimators and not at fully understanding risk factors for severe COVID-19. There has been much work done on factors influencing risk of severe COVID-19 and on its treatment
+\citep[see, among others,][]{williamson2020,berlin2020}
+and we direct the interested reader to the references for further information.
+
+Table \ref{tab:covid_associations} gives a summary of the estimated links (indicated as a visualization of the partial correlations) between the variables (including COVID-19 severity). Considering in particular links to COVID-19 severity, we see that \texttt{age}, \texttt{waist circ.}, \texttt{hypertension}, \texttt{heart attack} and \texttt{diabetes} are quite stable links throughout the different data sets. The effect sizes in terms of partial correlations are penalized and should be interpreted in relative terms. However, in particular \texttt{age} retains a relatively large signal which is in line with the known strong influence of age on COVID-19 severity \citep[see e.g][]{williamson2020}.
+
+Finally, we present more detailed results of the analysis of data set A. Figure \ref{fig:corrplot_admat_A} shows the estimated adjacency matrix and Figure \ref{fig:corrplot_omega_A} depicts the estimated precision matrix $\hat{\boldsymbol\Omega}_{A}$. These results highlight the type of output, spanning different kinds of variables, that is readily available from the proposed method.

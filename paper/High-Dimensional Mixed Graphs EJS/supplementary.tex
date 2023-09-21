@@ -1,0 +1,142 @@
+% Template for the submittion to:
+%  Electronic Journal of Statistics  [ejs]
+%
+% Author: In this template, the places where you need to add information
+%         (or delete line) are indicated by {???}.  Mostly the information
+%         required is obvious, but some explanations are given in lines starting
+% Author:
+% All other lines should be ignored.  After editing, there should be
+% no instances of ??? after this line.
+
+\documentclass[ejs]{imsart}
+
+\RequirePackage{amsthm,amsmath,bm}
+\RequirePackage[numbers]{natbib}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+% will be filled by editor:
+\doi{10.1214/154957804100000000}
+\pubyear{0000}
+\volume{0}
+\firstpage{1}
+\lastpage{1}
+%\arxiv{}
+
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{bbm}
+\usepackage{comment}
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{floatrow}
+\floatsetup[longtable]{LTcapwidth=table}
+
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+% put your definitions there:
+\startlocaldefs
+    \newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+    
+    \DeclareMathOperator*{\argmax}{arg\,max}
+    \DeclareMathOperator*{\argmin}{arg\,min}
+    \DeclarePairedDelimiter\Abs{\lvert}{\rvert}%
+    \DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
+    
+    %%%%%%%%%%%%%%%%%%%%Theorem Definition
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem{definition}{Definition}
+    \newtheorem{assumption}{Assumption}
+    \newtheorem{condition}[theorem]{Condition}
+    \newtheorem{corollary}[theorem]{Corollary}
+\endlocaldefs
+
+
+%\usepackage{xr}
+%\makeatletter
+%%\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+%  \typeout{(#1)}
+%%  \@addtofilelist{#1}
+%  \IfFileExists{#1}{}{\typeout{No file #1.}}
+%}
+%\makeatother
+
+%\newcommand*{\myexternaldocument}[1]{%
+%    \externaldocument{#1}%
+%    \addFileDependency{#1.tex}%
+%    \addFileDependency{#1.aux}%
+%}
+%\myexternaldocument{ejs-template}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+% "Title of the Paper"
+\title{High-Dimensional Undirected Graphical Models for Arbitrary Mixed Data}
+\runtitle{High-Dimensional Mixed Graphs}
+
+% indicate corresponding author with \corref{}
+\begin{aug}
+\author{\fnms{Konstantin} \snm{Göbler}
+\ead[label=e1]{konstantin.goebler@tum.de}}
+
+
+\address{Technical University of Munich \\
+TUM School of Computation, Information and Technology \\
+\printead{e1}}
+
+\author{\fnms{Anne} \snm{Miloschewski}
+\ead[label=e2]{anne.miloschwski@dzne.de}}
+
+\address{German Center for Neurodegenerative Diseases\\
+Bonn, Germany\\
+\printead{e2}}
+
+\author{\fnms{Mathias} \snm{Drton}
+\ead[label=e3]{mathias.drton@tum.de}}
+
+\address{Technical University of Munich \\
+TUM School of Computation, Information and Technology\\
+\printead{e3}}
+
+\author{\fnms{Sach} \snm{Mukherjee}
+\ead[label=e4]{sach.mukherjee@dzne.de}}
+
+\address{German Center for Neurodegenerative Diseases\\
+Bonn, Germany \\}
+\address{
+University of Cambridge \\
+MRC Biostatistics Unit \\
+\printead{e4}}
+
+\runauthor{K. Göbler et al.}
+
+\end{aug}
+
+% history:
+% \received{\smonth{1} \syear{0000}}
+
+%\tableofcontents
+
+\end{frontmatter}
+
+% Main text entry area
+
+\section*{Supplementary Materials}
+\label{secsupp}
+\input{Sections/Appendix}
+\clearpage\newpage
+%% if your bibliography is in bibtex format, uncomment commands:
+\bibliographystyle{imsart-nameyear} % Style BST file (imsart-number.bst or imsart-nameyear.bst)
+\bibliography{refs}       % Bibliography file (usually '*.bib')
+
+\end{document}

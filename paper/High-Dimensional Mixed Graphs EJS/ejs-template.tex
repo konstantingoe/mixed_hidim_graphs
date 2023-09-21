@@ -1,0 +1,235 @@
+% Template for the submittion to:
+%  Electronic Journal of Statistics  [ejs]
+%
+% Author: In this template, the places where you need to add information
+%         (or delete line) are indicated by {???}.  Mostly the information
+%         required is obvious, but some explanations are given in lines starting
+% Author:
+% All other lines should be ignored.  After editing, there should be
+% no instances of ??? after this line.
+
+\documentclass[ejs]{imsart}
+
+\RequirePackage{amsthm,amsmath,bm}
+\RequirePackage[numbers]{natbib}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+% will be filled by editor:
+\doi{10.1214/154957804100000000}
+\pubyear{0000}
+\volume{0}
+\firstpage{1}
+\lastpage{1}
+%\arxiv{}
+
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{bbm}
+\usepackage{comment}
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{floatrow}
+\floatsetup[longtable]{LTcapwidth=table}
+
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+% put your definitions there:
+\startlocaldefs
+    \newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+    
+    \DeclareMathOperator*{\argmax}{arg\,max}
+    \DeclareMathOperator*{\argmin}{arg\,min}
+    \DeclarePairedDelimiter\Abs{\lvert}{\rvert}%
+    \DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
+    
+    %%%%%%%%%%%%%%%%%%%%Theorem Definition
+    \theoremstyle{plain}
+
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem{definition}{Definition}[section]
+    \newtheorem{assumption}{Assumption}[section]
+    \newtheorem{condition}[theorem]{Condition}
+    \newtheorem{corollary}[theorem]{Corollary}
+\endlocaldefs
+
+
+%\usepackage{xr}
+%\makeatletter
+%\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+%%  \typeout{(#1)}
+%  \@addtofilelist{#1}
+%  \IfFileExists{#1}{}{\typeout{No file #1.}}
+%}
+%\makeatother
+
+%\newcommand*{\myexternaldocument}[1]{%
+%    \externaldocument{#1}%
+%    \addFileDependency{#1.tex}%
+%    \addFileDependency{#1.aux}%
+%}
+%\myexternaldocument{supplementary}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+% "Title of the Paper"
+\title{High-Dimensional Undirected Graphical Models for Arbitrary Mixed Data}
+\runtitle{High-Dimensional Mixed Graphs}
+
+% indicate corresponding author with \corref{}
+\begin{aug}
+\author{\fnms{Konstantin} \snm{Göbler}
+\ead[label=e1]{konstantin.goebler@tum.de}}
+
+
+\address{Technical University of Munich \\
+TUM School of Computation, Information and Technology \\
+\printead{e1}}
+
+\author{\fnms{Anne} \snm{Miloschewski}
+\ead[label=e2]{anne.miloschwski@dzne.de}}
+
+\address{German Center for Neurodegenerative Diseases\\
+Bonn, Germany\\
+\printead{e2}}
+
+\author{\fnms{Mathias} \snm{Drton}
+\ead[label=e3]{mathias.drton@tum.de}}
+
+\address{Technical University of Munich \\
+TUM School of Computation, Information and Technology\\
+\printead{e3}}
+
+\author{\fnms{Sach} \snm{Mukherjee}
+\ead[label=e4]{sach.mukherjee@dzne.de}}
+
+\address{German Center for Neurodegenerative Diseases\\
+Bonn, Germany \\}
+\address{
+University of Cambridge \\
+MRC Biostatistics Unit \\
+\printead{e4}}
+
+\runauthor{K. Göbler et al.}
+
+\end{aug}
+
+
+\begin{abstract}
+{\input{Sections/Abstract}}
+%{Generalized correlation; high-dimensional statistics; latent Gaussian copula; mixed data; polychoric/polyserial correlation, undirected graphical models}
+\end{abstract}
+
+\begin{keyword}
+\kwd{Generalized correlation}
+\kwd{high-dimensional statistics}
+\kwd{latent Gaussian copula}
+\kwd{mixed data}
+\kwd{polychoric/polyserial correlation}
+\kwd{undirected graphical models}
+\end{keyword}
+
+% history:
+% \received{\smonth{1} \syear{0000}}
+
+%\tableofcontents
+
+\end{frontmatter}
+
+% Main text entry area
+
+
+\section{Introduction}
+\label{sec::intro}
+
+\input{Sections/Introduction}
+
+\section{Background and model set-up}
+\label{sec::gaussian}
+
+\input{Sections/Latent_Gaussian}
+
+\section{Latent Gaussian Copula Models}
+\label{sec::nonparanormal}
+
+\input{Sections/Nonparanormal}
+
+\section{Experimental Setup}\label{sec::setup}
+
+\input{Sections/Setup}
+
+\section{Simulation Results}\label{sec::results}
+
+\input{Sections/Results}
+
+\section{Application to COVID-19 data}\label{sec::empirical_application}
+
+\input{Sections/Empirical_example}
+
+\section{Conclusion}\label{sec::conclusions}
+
+\input{Sections/Conclusion}
+
+\section{Software}\label{sec5}
+
+Software in the form of the \texttt{R} package \pkg{hume} is available on the corresponding author's github page (\url{https://github.com/konstantingoe/hume}). The \texttt{R}-code in order to run the simulation study conducted in the paper including a small sample simulation is available under \url{https://github.com/konstantingoe/mixed_hidim_graphs}
+
+\section*{Supplementary Materials}\label{sec::sm}
+
+The reader is referred to the Supplementary Materials for technical appendices, as well as proofs of theorems and lemmas in the main manuscript. Additionally, we present further simulation results and details regarding the real-world data application. 
+
+\section*{Funding}
+
+This work was supported by the Helmholtz AI project 
+``Scalable and Interpretable Models for Complex And Structured Data'' (SIMCARD), 
+the Medical Research Council [programme number 
+MC UU 00002/17] and the National Institute for Health Research (NIHR) Cambridge Biomedical Research Centre.
+%This research has been conducted using the UK Biobank. 
+\\
+
+\noindent This project also received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme [grant agreement No 883818].
+
+%\section*{Acknowledgments}
+
+%The authors thank the anonymous reviewers for their helpful comments that improved the paper substantially.\\
+%Funding for the project was provided by....\\
+%{\it Conflict of Interest}: None declared.
+
+
+
+\begin{acks}[Acknowledgments]
+    {\it Conflict of Interest}: None declared.
+\end{acks}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Supplementary Material, if any, should   %%
+%% be provided in {supplement} environment  %%
+%% with title and short description.        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\clearpage
+%\newpage
+%\appendix
+%\renewcommand{\thesection}{SM} % change the numbering scheme
+%\section*{Supplementary Materials}
+%\begin{supplement}
+%\input{Sections/Appendix}
+%\end{supplement}
+
+%\clearpage\newpage
+%% if your bibliography is in bibtex format, uncomment commands:
+\bibliographystyle{imsart-nameyear} % Style BST file (imsart-number.bst or imsart-nameyear.bst)
+\bibliography{refs}       % Bibliography file (usually '*.bib')
+
+
+\end{document}
