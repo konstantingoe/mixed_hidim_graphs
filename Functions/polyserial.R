@@ -10,19 +10,29 @@ cor(transformed_data)
 x <- transformed_data[, 1]
 y <- transformed_data[, 2]
 
-levels <- runif(num_levels)
-sum_levels <- sum(levels)
-levels_norm <- sort(levels) / sum_levels
-cum_levels <- c(0, cumsum(levels_norm))
-u <- pnorm(scale(y))
-ordinal <- cut(u,
-    breaks = cum_levels,
-    include.lowest = T,
-    ordered_result = T,
-    labels = 1:(length(cum_levels) - 1)
-)
 
-y_disc <- factor(ordinal, ordered = TRUE)
+
+latent_ordinalize <- function(x, num_levels = 2, unbalanced = FALSE) {
+    if (unbalanced) {
+        levels <- runif(num_levels)
+        sum_levels <- sum(levels)
+        levels_norm <- sort(levels) / sum_levels
+        cum_levels <- c(0, cumsum(levels_norm))
+    } else {
+        cum_levels <- seq(0, 1, length.out = num_levels + 1)
+    }
+    u <- pnorm(scale(x))
+    ordinal <- cut(u,
+        breaks = cum_levels,
+        include.lowest = T,
+        ordered_result = T,
+        labels = 1:(length(cum_levels) - 1)
+    )
+
+    return(factor(ordinal, ordered = TRUE))
+}
+
+y_disc <- latent_ordinalize(y)
 
 polyserial_mle <- function(cont_var, disc_var, maxcor = 0.999, nonparanormal = FALSE) {
     x <- cont_var
@@ -140,6 +150,48 @@ polyserial_closedform_mle <- function(cont_var, disc_var, maxcorr = 0.999, nonpa
 system.time(polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
 system.time(adhoc_lord_sim(cont = x, disc = y_disc))
 system.time(polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
+
 adhoc_lord_sim(cont = x, disc = y_disc)
 polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
-polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = FALSE)
+polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
+
+corr_comp <- function(rho, transform = function(x) 5 * x^5) {
+    data <- mvtnorm::rmvnorm(1000, c(0, 0), matrix(c(1, rho, rho, 1), 2, 2))
+    transformed_data <- transform(data) # .5 * data^5
+    x <- transformed_data[, 1]
+    y <- latent_ordinalize(transformed_data[, 2])
+
+    adhoc <- adhoc_lord_sim(cont = x, disc = y)
+    closed_form <- polyserial_closedform_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
+    obj_func <- polyserial_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
+
+    return(c("adhoc" = adhoc, "closed_form" = closed_form, "obj_func" = obj_func))
+}
+
+run_corr_sim <- function(sim, rho = .5) {
+    intermdediate <- do.call(rbind, lapply(seq_len(sim), function(s) corr_comp(rho = rho)))
+    mean_sims <- colMeans(intermdediate)
+    sd_sims <- apply(intermdediate, 2, sd)
+    new_names <- paste(names(sd_sims), "sd", sep = "_")
+    names(sd_sims) <- new_names
+    return(c(mean_sims, sd_sims))
+}
+
+run_corr_sim(sim = 100, rho = .99)
+corr_seq <- seq(-.98, .98, length.out = 100)
+
+final_corr <- data.frame(cbind(
+    corr_seq,
+    do.call(rbind, lapply(
+        corr_seq,
+        function(k) run_corr_sim(sim = 100, rho = k)
+    ))
+))
+
+final_corr_melt <- melt(final_corr, id.vars = "corr_seq")
+
+ggplot(final_corr_melt, aes(y = corr_seq, x = value, colour = variable)) +
+    geom_point() +
+    geom_line() +
+    geom_abline() +
+    geom_errorbar(aes(xmin = corr_seq - value, xmax = corr_seq + value, colour = variable), width = .3)
