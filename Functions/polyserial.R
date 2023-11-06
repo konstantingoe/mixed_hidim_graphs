@@ -147,14 +147,6 @@ polyserial_closedform_mle <- function(cont_var, disc_var, maxcorr = 0.999, nonpa
     return(res$x)
 }
 
-system.time(polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
-system.time(adhoc_lord_sim(cont = x, disc = y_disc))
-system.time(polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
-
-adhoc_lord_sim(cont = x, disc = y_disc)
-polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
-polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
-
 corr_comp <- function(rho, transform = function(x) 5 * x^5) {
     data <- mvtnorm::rmvnorm(1000, c(0, 0), matrix(c(1, rho, rho, 1), 2, 2))
     transformed_data <- transform(data) # .5 * data^5
@@ -177,10 +169,8 @@ run_corr_sim <- function(sim, rho = .5) {
     return(c(mean_sims, sd_sims))
 }
 
-run_corr_sim(sim = 100, rho = .99)
-corr_seq <- seq(-.98, .98, length.out = 100)
-
-final_corr <- data.frame(cbind(
+corr_seq <- seq(0, .98, length.out = 50)
+test_corr <- data.frame(cbind(
     corr_seq,
     do.call(rbind, lapply(
         corr_seq,
@@ -188,10 +178,28 @@ final_corr <- data.frame(cbind(
     ))
 ))
 
-final_corr_melt <- melt(final_corr, id.vars = "corr_seq")
+test_long_df <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc", "closed_form", "obj_func"))
+interim <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc_sd", "closed_form_sd", "obj_func_sd"))
+melt_df <- cbind(test_long_df, interim[, "value"])
+names(melt_df) <- c("corr_seq", "variable", "value", "value_sd")
+head(melt_df)
 
-ggplot(final_corr_melt, aes(y = corr_seq, x = value, colour = variable)) +
-    geom_point() +
-    geom_line() +
-    geom_abline() +
-    geom_errorbar(aes(xmin = corr_seq - value, xmax = corr_seq + value, colour = variable), width = .3)
+ggplot(melt_df) +
+    geom_line(aes(y = corr_seq - value, x = corr_seq, colour = variable)) +
+    geom_point(aes(y = corr_seq - value, x = corr_seq, colour = variable)) +
+    geom_ribbon(aes(
+        ymin = corr_seq - value - value_sd, ymax = corr_seq - value + value_sd,
+        x = corr_seq, colour = variable
+    ), alpha = .2) +
+    ylab(TeX("difference betweem true $\\rho$ and estimated $\\hat{\\rho}$")) +
+    xlab(TeX("true $\\rho$")) +
+    labs(colour = "Estimation method")
+
+
+system.time(polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
+system.time(adhoc_lord_sim(cont = x, disc = y_disc))
+system.time(polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
+
+adhoc_lord_sim(cont = x, disc = y_disc)
+polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
+polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
