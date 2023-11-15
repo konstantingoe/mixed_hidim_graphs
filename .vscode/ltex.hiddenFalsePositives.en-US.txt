@@ -1,0 +1,1 @@
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QA large part of the graphical models literature has focused on the case in which either only continuous variables or only discrete variables are present.\\E$"}

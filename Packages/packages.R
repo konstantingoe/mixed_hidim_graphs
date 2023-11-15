@@ -1,4 +1,3 @@
-
 # Packages
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
@@ -18,10 +17,13 @@ pacman::p_load(
   polycor,
   corpcor,
   cowplot,
+  latex2exp,
+  microbenchmark,
   genscore,
   nleqslv,
   pcaPP,
   VGAM,
   reshape,
   plyr,
-  ggplot2)
+  ggplot2
+)

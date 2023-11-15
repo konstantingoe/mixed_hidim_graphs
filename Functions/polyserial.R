@@ -2,15 +2,8 @@ rm(list = ls())
 source("Packages/packages.R")
 source("Functions/functions.R")
 
-num_levels <- 4
-data <- rmvnorm(1000, c(0, 0), matrix(c(1, -.27, -.27, 1), 2, 2))
-transformed_data <- .5 * data^5
-cor(transformed_data)
-
-x <- transformed_data[, 1]
-y <- transformed_data[, 2]
-
-
+# The palette with grey:
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999")
 
 latent_ordinalize <- function(x, num_levels = 2, unbalanced = FALSE) {
     if (unbalanced) {
@@ -31,8 +24,6 @@ latent_ordinalize <- function(x, num_levels = 2, unbalanced = FALSE) {
 
     return(factor(ordinal, ordered = TRUE))
 }
-
-y_disc <- latent_ordinalize(y)
 
 polyserial_mle <- function(cont_var, disc_var, maxcor = 0.999, nonparanormal = FALSE) {
     x <- cont_var
@@ -91,13 +82,6 @@ f_hat <- function(x) {
     # gc()
     return(x)
 }
-
-cor(x, y) # sample correlation
-
-polyserial(x, y_disc, ML = TRUE, std.err = TRUE)
-polyserial(x, y_disc, ML = F, std.err = F)
-polyserial_mle(cont_var = x, disc_var = y_disc)
-
 
 polyserial_closedform_mle <- function(cont_var, disc_var, maxcorr = 0.999, nonparanormal = FALSE) {
     x <- cont_var
@@ -178,11 +162,11 @@ test_corr <- data.frame(cbind(
     ))
 ))
 
+
 test_long_df <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc", "closed_form", "obj_func"))
 interim <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc_sd", "closed_form_sd", "obj_func_sd"))
 melt_df <- cbind(test_long_df, interim[, "value"])
 names(melt_df) <- c("corr_seq", "variable", "value", "value_sd")
-head(melt_df)
 
 ggplot(melt_df) +
     geom_line(aes(y = corr_seq - value, x = corr_seq, colour = variable)) +
@@ -193,13 +177,80 @@ ggplot(melt_df) +
     ), alpha = .2) +
     ylab(TeX("difference betweem true $\\rho$ and estimated $\\hat{\\rho}$")) +
     xlab(TeX("true $\\rho$")) +
-    labs(colour = "Estimation method")
+    labs(colour = "Estimation method") +
+    scale_colour_manual(values = cbPalette)
+
+#### Some microbenchmarks ####
 
 
-system.time(polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
-system.time(adhoc_lord_sim(cont = x, disc = y_disc))
-system.time(polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE))
+corr_timing <- function(rho, transform = function(x) 5 * x^5, sample_size = 1000) {
+    data <- mvtnorm::rmvnorm(sample_size, c(0, 0), matrix(c(1, rho, rho, 1), 2, 2))
+    transformed_data <- transform(data) # .5 * data^5
+    x <- transformed_data[, 1]
+    y <- latent_ordinalize(transformed_data[, 2])
+    test_bm <- microbenchmark::microbenchmark(
+        unit = "milliseconds",
+        adhoc = {
+            adhoc_lord_sim(cont = x, disc = y)
+        },
+        closed_form = {
+            polyserial_closedform_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
+        },
+        obj_func = {
+            polyserial_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
+        }
+    )
 
-adhoc_lord_sim(cont = x, disc = y_disc)
-polyserial_closedform_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
-polyserial_mle(cont_var = x, disc_var = y_disc, nonparanormal = TRUE)
+    return(summary(test_bm))
+}
+
+n_seq <- seq(from = 50, to = 10000, by = 50)
+final_seq <- rep(n_seq, each = 3)
+
+sample_size_corr <- data.frame(cbind(
+    final_seq,
+    do.call(rbind, lapply(
+        n_seq, function(k) {
+            corr_timing(
+                rho = .47, sample_size = k
+            )
+        }
+    ))
+))
+
+ggplot(sample_size_corr) +
+    geom_line(aes(y = median, x = final_seq, colour = expr)) +
+    geom_ribbon(aes(
+        ymin = lq, ymax = uq,
+        x = final_seq, colour = expr
+    ), alpha = .2) +
+    ylab("milliseconds") +
+    xlab("sample size") +
+    labs(colour = "Estimation method") +
+    scale_colour_manual(values = cbPalette)
+
+
+corr_seq <- seq(-.89, .98, length.out = 200)
+corr_seq_final <- rep(corr_seq, each = 3)
+corr_corr <- data.frame(cbind(
+    corr_seq_final,
+    do.call(rbind, lapply(
+        corr_seq, function(k) {
+            corr_timing(
+                rho = k, sample_size = 1000
+            )
+        }
+    ))
+))
+
+
+ggplot(corr_corr) +
+    geom_line(aes(y = median, x = corr_seq_final, colour = expr)) +
+    geom_ribbon(aes(
+        ymin = lq, ymax = uq,
+        x = corr_seq_final, colour = expr
+    ), alpha = .2) +
+    ylab(TeX("milliseconds")) +
+    xlab(TeX("\\rho")) +
+    labs(colour = "Estimation method") +
+    scale_colour_manual(values = cbPalette)

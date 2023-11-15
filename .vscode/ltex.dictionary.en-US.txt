@@ -1,0 +1,5 @@
+polychoric
+polyserial
+tetrachoric
+biserial
+glasso
