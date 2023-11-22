@@ -3,3 +3,8 @@ polyserial
 tetrachoric
 biserial
 glasso
+nonparanormal
+semiparametric
+Eq
+independencies
+identifiability
