@@ -10,11 +10,11 @@
 
 \documentclass[ejs]{imsart}
 
-\RequirePackage{amsthm,amsmath,bm}
+\RequirePackage{amsthm, amsmath, bm}
 \RequirePackage[numbers]{natbib}
 \RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
 
-% will be filled by editor:
+% will be filled by the editor:
 \doi{10.1214/154957804100000000}
 \pubyear{0000}
 \volume{0}
@@ -30,7 +30,7 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-
+\usepackage{todonotes}
 \usepackage{enumitem}
 \usepackage{longtable}
 \usepackage{array}
@@ -41,15 +41,15 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-% put your definitions there:
+% Put your definitions there:
 \startlocaldefs
     \newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
-    
+
     \DeclareMathOperator*{\argmax}{arg\,max}
     \DeclareMathOperator*{\argmin}{arg\,min}
     \DeclarePairedDelimiter\Abs{\lvert}{\rvert}%
     \DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
-    
+
     %%%%%%%%%%%%%%%%%%%%Theorem Definition
     \theoremstyle{plain}
 
@@ -183,7 +183,7 @@ MRC Biostatistics Unit \\
 
 \section{Software}\label{sec5}
 
-Software in the form of the \texttt{R} package \pkg{hume} is available on the corresponding author's github page (\url{https://github.com/konstantingoe/hume}). The \texttt{R}-code in order to run the simulation study conducted in the paper including a small sample simulation is available under \url{https://github.com/konstantingoe/mixed_hidim_graphs}
+Software in the form of the \texttt{R} package \pkg{hume} is available on the corresponding author's GitHub page (\url{https://github.com/konstantingoe/hume}). The \texttt{R}-code to run the simulation study conducted in the paper including a small sample simulation is available under \url{https://github.com/konstantingoe/mixed_hidim_graphs}
 
 \section*{Supplementary Materials}\label{sec::sm}
 
@@ -228,8 +228,8 @@ MC UU 00002/17] and the National Institute for Health Research (NIHR) Cambridge 
 %\end{supplement}
 
 %\clearpage\newpage
-%% if your bibliography is in bibtex format, uncomment commands:
-\bibliographystyle{imsart-nameyear} % Style BST file (imsart-number.bst or imsart-nameyear.bst)
+%% If your bibliography is in BibTeX format, uncomment commands:
+\bibliographystyle{imsart-nameyear}
 \bibliography{refs}       % Bibliography file (usually '*.bib')
 
 

@@ -1,93 +1,95 @@
 
-\citet{Fan17} propose a special case of the latent Gaussian copula model in Definition \ref{latent_gaussian_cm} where they consider a mix of binary and continuous variables. In the spirit of the nonparanormal SKEPTIC \citep{Liu12} they avoid estimating the monotone transformation functions $\{f_j\}_{j=1}^d$ directly by making use of rank correlation measures such as Kendall's tau or Spearman's rho. These measures are invariant under monotone transformations and for case I there exists a well-known mapping between Kendall's tau and Spearman's rho and the underlying Pearson correlation coefficient $\Sigma_{jk}^*$. Consequently, the main contribution of \citet{Fan17} is the derivation of corresponding bridge functions for cases II and III. When pondering the general mixed case, they recommend binarizing all ordinal variables.
+% \citet{Fan17} propose a special case of the LGCM introduced in Definition \ref{latent_gaussian_cm} where they consider a mix of binary and continuous variables. In the spirit of the nonparanormal SKEPTIC \citep{Liu12} they avoid estimating the monotone transformation functions $\{f_j\}_{j=1}^d$ directly by making use of rank correlation measures such as Kendall's tau or Spearman's rho. These measures are invariant under monotone transformations and for \textit{Case I} there exists a well-known mapping between Kendall's tau and Spearman's rho and the underlying Pearson correlation coefficient $\Sigma_{jk}$. Consequently, the main contribution of \citet{Fan17} is the derivation of corresponding bridge functions for cases II and III. When pondering the general mixed case, they recommend binarizing all ordinal variables.
 
-This thought has been taken up by \citet{Feng19} who propose to first binarize all ordinal variables to form preliminary estimators and subsequently combine them meaningfully by some weighted aggregate.  
- 
-In an attempt to work on generalizations regarding the bridge functions, \citet{Quan18} extended the binary latent Gaussian copula model to the setting where a mix of continuous, binary, and ternary variables is present. However, a considerable drawback of this procedure becomes apparent. While for the binary-continuous mix three bridge functions were needed -- one for each case -- the number of mappings increases for each discrete variable with distinct state space. Indeed, a mix of continuous variables and discrete variables with say $5$ different state spaces already requires $\binom{5+2}{2} = 21$ bridge functions.   
- 
-For this reason, we take a different avenue to the latent Gaussian copula model for general mixed data where the discrete variables are allowed to have any number of states. In this approach, the number of cases we need to consider remains exactly three as already introduced in the previous section. 
+\citet{Fan17} propose the binary LGCM a special case of the LGCM allowing for the presence of binary and continuous variables. Following the approach of the nonparanormal SKEPTIC \citep{Liu12}, they circumvent the direct estimation of monotone transformation functions $\{f_j\}_{j=1}^d$ by employing rank correlation measures, such as Kendall's tau or Spearman's rho. These measures remain invariant under monotone transformations. Notably, for \textit{Case I}, a well-known mapping exists between Kendall's tau, Spearman's rho, and the underlying Pearson correlation coefficient $\Sigma{jk}$. As a result, the primary contribution of \citet{Fan17} lies in deriving corresponding bridge functions for cases II and III. When considering the general mixed case, they advocate for binarizing all ordinal variables.
 
-\subsection{Nonparanormal Case I}\label{sec::nonparanormal_case1} 
+% This thought has been taken up by \citet{Feng19} who propose to first binarize all ordinal variables to form preliminary estimators and subsequently combine them meaningfully by some weighted aggregate. In an attempt to work on generalizations regarding the bridge functions, \citet{Quan18} extended the binary latent Gaussian copula model to the setting where a mix of continuous, binary, and ternary variables is present. However, a considerable drawback of this procedure becomes apparent. While for the binary-continuous mix, three bridge functions were needed -- one for each case -- the number of mappings increases for each discrete variable with distinct state space. Indeed, a mix of continuous variables and discrete variables with $k$ different state spaces requires $\binom{k+2}{2}$ bridge functions.
 
-For case I, the mapping between $\Sigma_{jk}^*$ and the population versions of Spearman's rho and Kendall's tau is well known \citep{Liu09}. Here we make use of Spearman's rho $\rho^{\text{\textit{Sp}}}_{jk} = corr(F_j(X_j),F_k(X_k))$ with $F_j$ and $F_k$ denoting the cumulative distribution functions (CDFs) of $X_j$ and $X_k$, respectively. Then $\Sigma_{jk}^* = 2\sin{\frac{\pi}{6} \rho^{\text{\textit{Sp}}}_{jk}} \quad \text{for } d_1  < j < k \leq d_2$. In practice, we use the sample estimate 
+This concept has been embraced by \citet{Feng19}, who suggest an initial step of binarizing all ordinal variables to create preliminary estimators. Subsequently, these estimators are meaningfully combined using a weighted aggregate. To extend the binary latent Gaussian copula model and explore generalizations regarding bridge functions, \citet{Quan18} ventured into scenarios where a combination of continuous, binary, and ternary variables is present. However, a notable drawback of this approach becomes evident. While dealing with a mix of binary and continuous variables required three bridge functions -- one for each case -- the complexity grows as discrete variables introduce distinct state spaces. In fact, a combination of continuous variables and discrete variables with $k$ different state spaces necessitates $\binom{k+2}{2}$ bridge functions.
+
+For this reason, we adopt an alternative approach to the latent Gaussian copula model when dealing with general mixed data, allowing discrete variables to possess any number of states. In this strategy, the number of cases to be considered remains consistent at three, as already introduced in the preceding section.
+
+\subsection{Nonparanormal Case I}\label{sec::nonparanormal_case1}
+
+For \textit{Case I}, the mapping between $\Sigma_{jk}$ and the population versions of Spearman's rho and Kendall's tau is well known \citep{Liu09}. Here we make use of Spearman's rho $\rho^{\text{\textit{Sp}}}_{jk} = corr(F_j(X_j),F_k(X_k))$ with $F_j$ and $F_k$ denoting the cumulative distribution functions (CDFs) of $X_j$ and $X_k$, respectively. Then $\Sigma_{jk} = 2\sin{\frac{\pi}{6} \rho^{\text{\textit{Sp}}}_{jk}} \quad \text{for } d_1  < j < k \leq d_2$. In practice, we use the sample estimate
 \begin{equation*}
     \hat{\rho}^{\text{\textit{Sp}}}_{jk} = \frac{\sum_{i=1}^n (R_{ji} - \Bar{R}_{j}) (R_{ki} - \Bar{R}_{k})}{\sqrt{\sum_{i=1}^n(R_{ji} - \Bar{R}_{j})^2\sum_{i=1}^n(R_{ki} - \Bar{R}_{k})^2}},
 \end{equation*}
-with $R_{ji}$ corresponding to the rank of $X_{ji}$ among $X_{j1}, \dots, X_{jn}$ and $\Bar{R}_{j} = 1/n \sum_{i=1}^n R_{ji} = (n+1)/2$ \citep[similar setup as][]{Liu12}. From this we obtain the following estimator:
-\begin{definition}[Estimator $\hat{\boldsymbol{\Sigma}}^{(n)}$ of $\boldsymbol{\Sigma}^*$; Case I nonparanormal]\label{case1_nonpara}
-    The estimator $\hat{\boldsymbol{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j, k\leq d}$ of the correlation matrix $\Sigma^*$ is defined by:
+with $R_{ji}$ corresponding to the rank of $X_{ji}$ among $X_{j1}, \dots, X_{jn}$ and $\Bar{R}_{j} = 1/n \sum_{i=1}^n R_{ji} = (n+1)/2$; compare \cite{Liu12}. From this, we obtain the following estimator:
+\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; Case I nonparanormal]\label{case1_nonpara}
+    The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{d_1 < j< k\leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
-            \hat{\Sigma}_{jk}^{(n)} = 2\sin{\frac{\pi}{6} \hat{\rho}^{\text{\textit{Sp}}}_{jk}}
+            \hat{\Sigma}_{jk}^{(n)} = 2\sin{\frac{\pi}{6} \hat{\rho}^{\text{\textit{Sp}}}_{jk}},
     \end{equation}
     for all $d_1 < j < k \leq d_2$.
 \end{definition}
 
-\subsection{Nonparanormal Case II}\label{sec::nonparanormal_case2} 
+\subsection{Nonparanormal Case II}\label{sec::nonparanormal_case2}
 
-For case II, matters become more involved. In order to make use of the rank-based approach regarding the nonparanormal model the ML procedure can no longer be applied as we do not observe the continuous variable in its Gaussian form.  Instead, we will proceed by suitably modifying other approaches that address the Gaussian case through more direct examination of
-% Indeed, parallel to the advancements in developing ML solutions for the polyserial correlation a small number of contributions exploit 
-the relationship between $\Sigma_{jk}^*$ and the point polyserial correlation \citep{Bedrick92,Bedrick96}. 
+For \textit{Case II}, matters become more involved.\todo{Add here the discussion about the MLE and the plugged-in estimated f?} To make use of the rank-based approach regarding the nonparanormal model the ML procedure can no longer be applied as we do not observe the continuous variable in its Gaussian form.\todo{Rephrase to fit the comment} Instead, we will proceed by suitably modifying other approaches that address the Gaussian case through more direct examination of
+% Indeed, parallel to the advancements in developing ML solutions for the polyserial correlation a small number of contributions exploit
+the relationship between $\Sigma_{jk}$ and the point polyserial correlation \citep{Bedrick92,Bedrick96}.
 
-In what follows, in the interest of readability we omit the index in the monotone transformation functions but explicitly allow them to vary among the $\boldsymbol{Z}$. According to Defintion \ref{def1}, we have the following Gaussian conditional expectation  
+In what follows, in the interest of readability, we omit the index in the monotone transformation functions but explicitly allow them to vary among the $\mathbf{Z}$. According to Definition \ref{def1}, we have the following Gaussian conditional expectation
 \begin{equation}
-    E[f(X_k) \mid f(Z_j)] = \mu_{f(X_k)} + \Sigma_{jk}^*\sigma_{f(X_k)} f(Z_j), \quad \text{for } 1 \leq j \leq d_1 < k \leq d_2,
+    E[f(X_k) \mid f(Z_j)] = \mu_{f(X_k)} + \Sigma_{jk}\sigma_{f(X_k)} f(Z_j), \quad \text{for } 1 \leq j \leq d_1 < k \leq d_2,
 \end{equation}
-where we can assume w.l.o.g. that $\mu_{f(X_k)} = 0$. After multiplying both sides with the discrete variable $X_j$ we move it into the expectation on the left hand side of the equation. This is permissible as $X_j$ is a function of $f(Z_j)$, i.e.
+where we can assume w.l.o.g. that $\mu_{f(X_k)} = 0$. After multiplying both sides with the discrete variable $X_j$ we move it into the expectation on the left-hand side of the equation. This is permissible as $X_j$ is a function of $f(Z_j)$, i.e.
 \begin{equation*}
-    E[f(X_k)X_j \mid f(Z_j)] = \Sigma_{jk}^*\sigma_{f(X_k)} f(Z_j)X_j.
+    E[f(X_k)X_j \mid f(Z_j)] = \Sigma_{jk}\sigma_{f(X_k)} f(Z_j)X_j.
 \end{equation*}
 Now let us take again the expectation on both sides, rearrange and expand by $\sigma_{X_j}$, yielding
 \begin{equation}\label{population_polyserial_nonpara}
-        \Sigma_{jk}^* = \frac{E[f(X_k)X_j]}{\sigma_{f(X_k)} E[f(Z_j)X_j]} = \frac{r_{f(X_k)X_j}\sigma_{X_j}}{E[f(Z_j)X_j]},
+        \Sigma_{jk} = \frac{E[f(X_k)X_j]}{\sigma_{f(X_k)} E[f(Z_j)X_j]} = \frac{r_{f(X_k)X_j}\sigma_{X_j}}{E[f(Z_j)X_j]},
 \end{equation}
-where $r_{f(X_k)X_j}$ is the product-moment correlation between the Gaussian (unobserved) variable $f(X_k)$ and the observed discretized variable $X_j$. 
+where $r_{f(X_k)X_j}$ is the product-moment correlation between the Gaussian (unobserved) variable $f(X_k)$ and the observed discretized variable $X_j$.
 
-All that remains is to find sample versions of each of the three components in Eq. \eqref{population_polyserial_nonpara}. Let us start with the expectation in the denominator $E[f(Z_j)X_j]$. By assumption $f(\boldsymbol{Z}) \sim \text{N}(\boldsymbol{0},\boldsymbol{\Sigma^*})$ and therefore w.l.o.g. $f(Z_j) \sim N(0,1)$ for all $j \in 1, \dots, d$. Consequently, we have:
+All that remains is to find sample versions of each of the three components in Eq. \eqref{population_polyserial_nonpara}. Let us start with the expectation in the denominator $E[f(Z_j)X_j]$. By assumption $f(\mathbf{Z}) \sim \text{N}(\mathbf{0},\mathbf{\Sigma})$ and therefore w.l.o.g. $f(Z_j) \sim \text{N}(0,1)$ for all $j \in 1, \dots, d_1$. Consequently, we have:
 \begin{equation}
     \begin{split}
-        E[f(Z_j)X_j] &= \sum_{r=1}^{l_{X_j}} x_r^j \int_{\gamma^j_{r-1}}^{\gamma^j_{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{X_j}} x_r^j \int_{\gamma^j_{r-1}}^{\gamma^j_{r}} f(z_j) \phi(f(z_j)) dz_j \\
-        &= \sum_{r=1}^{l_{X_j}} x_r^j \bigg(\phi(\gamma^j_r) - \phi(\gamma^j_{r-1}) \bigg) = \sum_{r=1}^{l_{X_j}-1} (x_{r+1}^j - x_r^j)\phi(\gamma^j_r)    
+        E[f(Z_j)X_j] &= \sum_{r=1}^{l_{j}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{j}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) \phi(f(z_j)) dz_j \\
+        &= \sum_{r=1}^{l_{j}} x^r_j \bigg(\phi(\Gamma_j^r) - \phi(\Gamma_j^{r-1}) \bigg) = \sum_{r=1}^{l_{j}-1} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r),
     \end{split}
 \end{equation}
-where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states are consecutive integers we have $\sum_{r=1}^{l_{X_j}-1}\phi(\gamma^j_r)$. Based on this derivation it is straightforward to give an estimate of $E[f(Z_j)X_j]$, once estimates of the thresholds $\gamma_r^j$ have been formed (see Section \ref{sec::thresholds} for more details). Let us turn to the numerator of Eq. \eqref{population_polyserial_nonpara}. The standard deviation of $X_j$ does not require any special treatment, and we simply use $\sigma^{(n)}_{X_j} = \sqrt{1/n \sum_{i=1}^n (X_{ji} - \bar{X}_{j})^2}$ in order to be able to treat discrete variables with a general number of states. However, the product moment correlation $r_{f(X_k),X_j}$ is inherently more challenging as it involves the (unobserved) back-transformed version of the continuous variables. Therefore, we proceed to estimate the back-transformation. 
+where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states are consecutive integers we have $\sum_{r=1}^{l_{j}-1} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r) = \sum_{r=1}^{l_{j}-1}\phi(\Gamma_j^r)$. Based on this derivation it is straightforward to give an estimate of $E[f(Z_j)X_j]$, once estimates of the thresholds $\Gamma_j$ have been formed (see Section \ref{sec::thresholds} for more details). Let us turn to the numerator of Eq. \eqref{population_polyserial_nonpara}. The standard deviation of $X_j$ does not require any special treatment, and we simply use $\sigma^{(n)}_{X_j} = \sqrt{1/n \sum_{i=1}^n (X_{ij} - \bar{X}_{j})^2}$ to be able to treat discrete variables with a general number of states. However, the product-moment correlation $r_{f(X_k), X_j}$ is inherently more challenging as it involves the (unobserved) transformed version of the continuous variables. Therefore, we proceed to estimate the transformation.
 
-To this end, consider the marginal distribution function of $X_k$, namely $F_{X_k}(x)=P(X_k \leq x) = P(f(X_k) \leq f(x)) = \Phi(f(x))$ such that $f(x) = \Phi^{-1}(F_{X_k}(x))$. In this setting, \citet{Liu09} propose to evaluate the quantile function of the standard normal at a Winsorized version of the empirical distribution function. This is necessary as the standard Gaussian quantile function diverges quickly when evaluated at the boundaries of the $[0,1]$ interval. More precisely, consider $\hat{f}(u) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(u)])$, where $\Phi^{-1}(\cdot)$ is again the quantile function of the standard normal and $W_{\delta_n}$ is a Winsorization operator, i.e. $W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n))$. The truncation constant $\delta_n$ can be chosen in several ways. 
-%In the low-dimensional scheme, \citet{Klaassen97} derive efficiency results by setting $\delta_n = 1/(n+1)$. As this does not translate to high-dimensional frameworks 
-\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off. Thus, equipped with an estimator for the transformation functions, the product moment correlation is obtained the usual way, i.e.
+To this end, consider the marginal distribution function of $X_k$, namely $F_{X_k}(x)=P(X_k \leq x) = P(f(X_k) \leq f(x)) = \Phi(f(x))$ such that $f(x) = \Phi^{-1}(F_{X_k}(x))$. In this setting, \citet{Liu09} propose to evaluate the quantile function of the standard normal at a Winsorized version of the empirical distribution function. This is necessary as the standard Gaussian quantile function $\Phi^{-1}(\cdot)$ diverges quickly when evaluated at the boundaries of the $[0,1]$ interval. More precisely, consider $\hat{f}(u) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(u)])$,where $W_{\delta_n}$ is a Winsorization operator, i.e. $W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n))$. The truncation constant $\delta_n$ can be chosen in several ways.
+%In the low-dimensional scheme, \citet{Klaassen97} derive efficiency results by setting $\delta_n = 1/(n+1)$. As this does not translate to high-dimensional frameworks
+\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off. Thus, equipped with an estimator for the transformation functions, the product-moment correlation is obtained the usual way, i.e.
 \begin{equation*}
-    r^{(n)}_{\hat{f}(X_k),X_j} = \frac{\sum_{i=1}^n (\hat{f}(X_{ki}) - \mu(\hat{f}))(X_{ji} - \mu(X_j)}{\sqrt{\sum_{i=1}^n \Big(\hat{f}(X_{ki}) - \mu(\hat{f})\Big)^2}\sqrt{\sum_{i=1}^n \Big(X_{ji} - \mu(X_j)\Big)^2}},
+    r^{(n)}_{\hat{f}(X_k),X_j} = \frac{\sum_{i=1}^n (\hat{f}(X_{ik}) - \mu(\hat{f}))(X_{ij} - \mu(X_j)}{\sqrt{\sum_{i=1}^n \Big(\hat{f}(X_{ik}) - \mu(\hat{f})\Big)^2}\sqrt{\sum_{i=1}^n \Big(X_{ij} - \mu(X_j)\Big)^2}},
 \end{equation*}
-where $\mu(\hat{f}) \equiv 1/n\sum_{i=1}^n \hat{f}(X_{ki})$ and $\mu(X_j) \equiv 1/n\sum_{i=1}^n X_{ji}$. The resulting estimator is a double-two-step estimator of the mixed couple $X_j$ and $X_k$.
+where $\mu(\hat{f}) \equiv 1/n\sum_{i=1}^n \hat{f}(X_{ik})$ and $\mu(X_j) \equiv 1/n\sum_{i=1}^n X_{ij}$. The resulting estimator is a double-two-step estimator of the mixed couple $X_j$ and $X_k$.
 \begin{definition}
-    [Estimator $\hat{\boldsymbol{\Sigma}}^{(n)}$ of $\boldsymbol{\Sigma}^*$; Case II nonparanormal]
-    The estimator $\hat{\boldsymbol{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j, k\leq d}$ of the correlation matrix $\boldsymbol{\Sigma}^*$ is defined by:
+    [Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II} nonparanormal]
+    The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
 \begin{equation}
-    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{X_j}-1} \phi(\hat{\gamma}^j_r)(x^j_{r+1} - x^j_r)}
+    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}-1} \phi(\hat{\Gamma}^j_r)(x_j^{r+1} - x_j^r)}
 \end{equation}
-    for all $1 < j \leq d_1 < k \leq d_2$. 
+    for all $1 < j \leq d_1 < k \leq d_2$.
 \end{definition}
 
 
 
 \subsection{Nonparanormal Case III}\label{sec::nonparanormal_case3} 
 
-Lastly, let us turn to case III where both $X_j$ and $X_k$ are discrete but they might differ in their respective state spaces. In the previous section the ML procedure could no longer be applied because we do not observe the continuous variable in its Gaussian form. In case III however, we only observe the discrete variables generated by the latent scheme outlined in Definition \ref{def1}. Due to the monotonicity of the transformation functions the ML procedure for case III from Section \ref{sec::latent_gaussian} can still be applied i.e.
+Lastly, let us turn to \textit{Case III} where both $X_j$ and $X_k$ are discrete, but they might differ in their respective state spaces. In the previous section, the ML procedure could no longer be applied because we do not observe the continuous variable in its Gaussian form.\todo{This is not completely true. Make the appropriate changes!} In \textit{Case III} however, we only observe the discrete variables generated by the latent scheme outlined in Definition \ref{def1}. Due to the monotonicity of the transformation functions the ML procedure for \textit{Case III} from Section \ref{sec::latent_gaussian} can still be applied i.e.
 
-\begin{definition}[Estimator $\hat{\boldsymbol{\Sigma}}^{(n)}$ of $\boldsymbol{\Sigma}^*$; Case III nonparanormal]
-    The estimator $\hat{\boldsymbol{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j, k\leq d}$ of the correlation matrix $\boldsymbol{\Sigma}^*$ is defined by:
+\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III} nonparanormal]
+    The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
-            \hat{\Sigma}_{jk}^{(n)} = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)
+            \hat{\Sigma}_{jk}^{(n)} = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)
     \end{equation}
-    for all $1 < j < k \leq d_1 $. 
+    for all $1 < j < k \leq d_1 $.
 \end{definition}
 
-In summary, the estimator $\hat{\boldsymbol{\Sigma}}^{(n)}$ under the latent Gaussian copula model is a simple but important tool for flexible mixed graph learning. By using ideas from polyserial and polychoric correlation measures, we not only have an easy-to-calculate estimator but also overcome the issue of finding bridge functions between all different kinds of discrete variables.
+In summary, the estimator $\hat{\mathbf{\Sigma}}^{(n)}$ under the latent Gaussian copula model is a simple but important tool for flexible mixed graph learning. By using ideas from polyserial and polychoric correlation measures, we not only have an easy-to-calculate estimator but also overcome the issue of finding bridge functions between all different kinds of discrete variables.
 
 \subsection{Threshold estimation}\label{sec::thresholds}
 
-The unknown threshold parameters $\boldsymbol{\Gamma}$ play a key role in linking the observed discrete to the latent continuous variables. Therefore, being able to form an accurate estimate of the $(\boldsymbol{\gamma}^1, \dots, \boldsymbol{\gamma}^{d_1})$ is crucial for both the likelihood-based procedures as well as the nonparanormal estimator outlined above. 
+The unknown threshold parameters $\mathbf{\Gamma}$ play a key role in linking the observed discrete to the latent continuous variables. Therefore, being able to form an accurate estimate of the $(\mathbf{\gamma}^1, \dots, \mathbf{\gamma}^{d_1})$ is crucial for both the likelihood-based procedures as well as the nonparanormal estimator outlined above. 
 
-We start by highlighting that we set the model up such that for each $\gamma_r^j, \ r = 1, \dots l_{X_j}-1$ there exists a constant $G$ such that $\abs{\gamma_r^j} \leq G$ for all $r = 1, \dots, l_{X_j}-1$, i.e. the estimable thresholds are bounded away from infinity. Let us define the cumulative probability vector $\boldsymbol{\pi}^j = (\pi_1^j, \dots, \pi_{l_{X_j}-1}^j)$. Then, by Eq. \eqref{latent_ordered}, it is easy to see that 
+We start by highlighting that we set the model up such that for each $\gamma_r^j, \ r = 1, \dots l_{X_j}-1$ there exists a constant $G$ such that $\abs{\gamma_r^j} \leq G$ for all $r = 1, \dots, l_{X_j}-1$, i.e. the estimable thresholds are bounded away from infinity. Let us define the cumulative probability vector $\mathbf{\pi}^j = (\pi_1^j, \dots, \pi_{l_{X_j}-1}^j)$. Then, by Eq. \eqref{latent_ordered}, it is easy to see that 
 \begin{equation*}\label{thresholds_identity}
     \pi_r^j = \sum_{i=1}^r P(X_j = x_i^j)  = P(X_j \leq x_r^j) = P(Z_j \leq \gamma^j_r) = \Phi(\gamma_r^j), 
 \end{equation*}
@@ -192,14 +194,14 @@ of the Supplementary Materials. With regards to the scaling of the dimension in 
 
 \subsection{Estimating the precision matrix}\label{sec:precision_matrix}
 
-Similar to \citet{Fan17}, we plug our estimate of the sample correlation matrix into existing routines for estimating $\boldsymbol{\Omega}^*$. In particular, we employ the graphical lasso (glasso) estimator \citep{Friedman08}, i.e.
+Similar to \citet{Fan17}, we plug our estimate of the sample correlation matrix into existing routines for estimating $\mathbf{\Omega}^*$. In particular, we employ the graphical lasso (glasso) estimator \citep{Friedman08}, i.e.
 \begin{equation}\label{glasso}
     \hat{\Omega} = \argmin_{\Omega \succeq 0} \big[\text{tr}(\hat{\Sigma}^{(n)}\Omega) - \log\Abs{\Omega} + \lambda \sum_{j\neq k}\Abs{\Omega_{jk}}\big], 
 \end{equation}
-where $\lambda > 0$ is a regularization parameter. As $\hat{\boldsymbol\Sigma}^{(n)}$ exhibits at worst the same theoretical properties as established in %\citet{Ravikumar11,Yuan10,Cai11}, convergence rate as well as graph selection behave as if we had actually observed the latent variables. 
+where $\lambda > 0$ is a regularization parameter. As $\hat{\mathbf\Sigma}^{(n)}$ exhibits at worst the same theoretical properties as established in %\citet{Ravikumar11,Yuan10,Cai11}, convergence rate as well as graph selection behave as if we had actually observed the latent variables. 
 \citet{Liu09}, convergence rate and graph selection results follow immediately. 
 
-We do not penalize diagonal entries of $\Omega$ and therefore have to make sure that $\hat{\boldsymbol\Sigma}^{(n)}$ is at least positive semidefinite to establish convergence in Eq. \eqref{glasso}. Hence, we need to project $\hat{\Sigma}^{(n)}$ into the cone of positive semidefinite matrices \citep[compare also][]{Liu12, Fan17}. In practice, we use an efficient implementation of the alternating projections method proposed by \citet{Higham88}.      
+We do not penalize diagonal entries of $\Omega$ and therefore have to make sure that $\hat{\mathbf\Sigma}^{(n)}$ is at least positive semidefinite to establish convergence in Eq. \eqref{glasso}. Hence, we need to project $\hat{\Sigma}^{(n)}$ into the cone of positive semidefinite matrices \citep[compare also][]{Liu12, Fan17}. In practice, we use an efficient implementation of the alternating projections method proposed by \citet{Higham88}.      
 
 In order to select the tuning parameter in Eq. \eqref{glasso}
 %\citet{Fan17} recommend to use the high dimensional Bayesian information criterion (BIC) proposed by \citet{Fan12,Wang13}. In a similar fashion, 

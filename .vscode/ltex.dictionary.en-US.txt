@@ -8,3 +8,10 @@ semiparametric
 Eq
 independencies
 identifiability
+binarizing
+binarize
+Nonparanormal
+Winsorized
+Winsorization
+hume
+monotonicity
