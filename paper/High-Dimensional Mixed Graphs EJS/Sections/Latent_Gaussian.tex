@@ -38,7 +38,7 @@ For the remainder of the paper assume we observe an independent $n$-sample of th
 
 \subsection{Maximum-likelihood estimation under the latent Gaussian model}\label{sec::latent_gaussian}
 
-At the outset, we examine each of the three cases under the latent Gaussian model. Consider \textit{Case I}, where both $X_j$ and $X_k$ are continuous. This corresponds to the regular Gaussian graphical model set-up discussed thoroughly for instance in \citet{Ravikumar11}. Hence, the estimator for $\mathbf\Sigma$ when both $X_j$ and $X_k$ are continuous is:
+At the outset, we examine each of the three cases under the latent Gaussian model, a special case of the LGCM where all transformations are identity functions. Consider \textit{Case I}, where both $X_j$ and $X_k$ are continuous. This corresponds to the regular Gaussian graphical model set-up discussed thoroughly for instance in \citet{Ravikumar11}. Hence, the estimator for $\mathbf\Sigma$ when both $X_j$ and $X_k$ are continuous is:
 \begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case I}]\label{def1}
     Let $\Bar{x}_j$ denote the sample mean of $X_j$. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{d_1 < j < k\leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
@@ -48,54 +48,53 @@ At the outset, we examine each of the three cases under the latent Gaussian mode
 \end{definition}
 This is the Pearson product-moment correlation coefficient which of course coincides with the maximum likelihood estimator (MLE) for the bivariate normal couple $\{(X_j, X_k)\}_{i=1}^n$.
 
-Turning to \textit{Case II}, let $X_j$ be ordinal and $X_k$ be continuous. We are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (see Eq. \eqref{latent_ordered}). This is called the \textit{polyserial} correlation \citep{Olsson82}. The likelihood of the $n$-sample is defined by:
+Turning to \textit{Case II}, let $X_j$ be ordinal and $X_k$ be continuous. We are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (see Eq. \eqref{latent_ordered}). This is called the \textit{polyserial} correlation \citep{Olsson82}. The likelihood and log-likelihood of the $n$-sample are defined by:
 \begin{equation}\label{polyserial_likelihood}
-        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) = \prod_{i=1}^n p(x^r_{ij},x_{ik}, \Sigma_{jk}) = \prod_{i=1}^n p(x_{ik})p(x^r_{ij} \mid x_{ik}, \Sigma_{jk})
+    \begin{split}
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) &= \prod_{i=1}^n p(x^r_{ij},x_{ik}, \Sigma_{jk}) = \prod_{i=1}^n p(x_{ik})p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}) \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) &= \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}))\big],
+    \end{split}
 \end{equation}
-where $p(x^j_{ir},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$. MLEs are obtained by differentiating the log of the likelihood in Eq. \eqref{polyserial_likelihood} with respect to the unknown parameters, setting the partial derivatives to zero, and solving the system of equations for $\Sigma_{jk}, \mu, \sigma^2$, and $\Gamma^j_r, r = 1, \dots, l_j-1$. Under the latent Gaussian model, \(\Gamma^j_r = \gamma^j_r\).
+where $p(x^j_{ir},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$. MLEs are obtained by differentiating the log of the likelihood in Eq. \eqref{polyserial_likelihood} with respect to the unknown parameters, setting the partial derivatives to zero, and solving the system of equations for $\Sigma_{jk}, \mu, \sigma^2$, and $\Gamma^j_r, r = 1, \dots, l_j-1$. Under the latent Gaussian model we have the special case that the thresholds are identifiable from the observed data as \(\Gamma^j_r = \gamma^j_r\).
 
 \begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II}]\label{definition_case2}
-    Consider the log-likelihood
-    \begin{equation*}
-        \ell^{(n)}(\Sigma_{jk}, x^r_j,x_k) = \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}))\big].
-    \end{equation*}
-    The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ is defined by:
+    Recall the log-likelihood in Eq. \eqref{polyserial_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ is defined by:
     \begin{equation}
         \begin{split}
-            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell^{(n)}(\Sigma_{jk}, x^r_j,x_k) \\
-            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell^{(n)}(\Sigma_{jk}, x^r_j,x_k)
+            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) \\
+            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k)
         \end{split}
     \end{equation}
     for all $1 < j \leq d_1 < k \leq d_2$.
 \end{definition}
 \noindent Regularity conditions ensuring consistency and asymptotic efficiency, as well as asymptotic normality can be verified to hold here \citep{Cox74}.
 
-Lastly, consider case III, where both $X_j$ and $X_k$ are ordinal. Consider the probability of an observation with $X_j = x_r^j$ and $X_k = x_s^k$:
+Lastly, consider \textit{Case III}, where both $X_j$ and $X_k$ are ordinal. The probability of an observation with $X_j = x^r_j$ and $X_k = x^s_k$ is given by
 \begin{equation}\label{cell_probabilities}
     \begin{split}
-        \pi_{rs} &\coloneqq p(X_j = x_r^j, X_k = x_s^k) \\
-        &= p(\gamma^j_{r-1} \leq Z_j < \gamma^j_r, \gamma^k_{s-1} \leq Z_k < \gamma^k_s) \\
-        &= \int_{\gamma^j_{r-1}}^{\gamma^j_{r}} \int_{\gamma^k_{s-1}}^{\gamma^k_{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
+        \pi_{rs} &\coloneqq p(X_j = x^r_j, X_k = x^s_k) \\
+        &= p(\Gamma_j^{r-1} \leq Z_j < \Gamma_j^r, \Gamma_k^{s-1} \leq Z_k < \Gamma_k^s) \\
+        &= \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} \int_{\Gamma_k^{s-1}}^{\Gamma_k^{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
     \end{split}
 \end{equation}
-where $r = 1, \dots, l_{X_j}-1$ and $s = 1, \dots, l_{X_k}-1$ and $\phi(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as outlined by \citet{Olsson79} the likelihood and log-likelihood of the $n$-sample are defined as:
+where $r = 1, \dots, l_j-1$ and $s = 1, \dots, l_k-1$ and $\phi(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as outlined by \citet{Olsson79} the likelihood and log-likelihood of the $n$-sample are defined as:
 \begin{equation}\label{polychoric_likelihood}
     \begin{split}
-        L^{(n)}(\Sigma_{jk}, x^j_r,x^k_s) &= C \prod_{r=1}^{l_{X_{j}}} \prod_{s=1}^{l_{X_{k}}} \pi_{rs}^{n_{rs}}, \\
-        \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s) &= \log(C) + \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} n_{rs} \log(\pi_{rs}).
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= C \prod_{r=1}^{l_{{j}}} \prod_{s=1}^{l_{{k}}} \pi_{rs}^{n_{rs}}, \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= \log(C) + \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{k}} n_{rs} \log(\pi_{rs}),
     \end{split}
 \end{equation}
-where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x_r^j$ and $X_k = x_s^k$ in a sample of size $n= \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} n_{rs}$.Differentiating the log-likelihood, setting it to zero, and solving for the unknown parameters yields the estimator for $\Sigma^*$ for case III:
-\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}^*$; Case III]\label{definition_case3}
-    Recall the log-likelihood in Eq. \eqref{polychoric_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j, k\leq d}$ of the correlation matrix $\Sigma^*$ is defined by:
+where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^r_j$ and $X_k = x^s_k$ in a sample of size $n= \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs}$. Differentiating the log-likelihood, setting it to zero, and solving for the unknown parameters yields the estimator for $\Sigma$ for \textit{Case III}:
+\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III}]\label{definition_case3}
+    Recall the log-likelihood in Eq. \eqref{polychoric_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
         \begin{split}
-            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s) \\
-            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)
+            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) \\
+            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s),
         \end{split}
     \end{equation}
     for all $1 < j < k \leq d_1 $.
 \end{definition}
 \noindent Regularity conditions ensuring consistency and asymptotic efficiency, as well as asymptotic normality can again be verified to hold here \citep{Wallentin17}.
 
-Summing up, under the latent Gaussian model $\hat{\mathbf{\Sigma}}^{(n)}$ is a consistent and asymptotically efficient estimator for the underlying latent correlation matrix $\mathbf{\Sigma}^{*}$. Corresponding concentration results are derived in Section \ref{sec::convergence_results}.
+Summing up, under the latent Gaussian model, a special case of the LGCM, $\hat{\mathbf{\Sigma}}^{(n)}$ is a consistent and asymptotically efficient estimator for the underlying latent correlation matrix $\mathbf{\Sigma}$. Corresponding concentration results are derived in Section \ref{sec::convergence_results}.
