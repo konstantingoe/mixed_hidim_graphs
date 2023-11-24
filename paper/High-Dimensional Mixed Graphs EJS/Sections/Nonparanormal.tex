@@ -1,7 +1,7 @@
 
 % \citet{Fan17} propose a special case of the LGCM introduced in Definition \ref{latent_gaussian_cm} where they consider a mix of binary and continuous variables. In the spirit of the nonparanormal SKEPTIC \citep{Liu12} they avoid estimating the monotone transformation functions $\{f_j\}_{j=1}^d$ directly by making use of rank correlation measures such as Kendall's tau or Spearman's rho. These measures are invariant under monotone transformations and for \textit{Case I} there exists a well-known mapping between Kendall's tau and Spearman's rho and the underlying Pearson correlation coefficient $\Sigma_{jk}$. Consequently, the main contribution of \citet{Fan17} is the derivation of corresponding bridge functions for cases II and III. When pondering the general mixed case, they recommend binarizing all ordinal variables.
 
-\citet{Fan17} propose the binary LGCM a special case of the LGCM allowing for the presence of binary and continuous variables. Following the approach of the nonparanormal SKEPTIC \citep{Liu12}, they circumvent the direct estimation of monotone transformation functions $\{f_j\}_{j=1}^d$ by employing rank correlation measures, such as Kendall's tau or Spearman's rho. These measures remain invariant under monotone transformations. Notably, for \textit{Case I}, a well-known mapping exists between Kendall's tau, Spearman's rho, and the underlying Pearson correlation coefficient $\Sigma{jk}$. As a result, the primary contribution of \citet{Fan17} lies in deriving corresponding bridge functions for cases II and III. When considering the general mixed case, they advocate for binarizing all ordinal variables.
+\citet{Fan17} propose the binary LGCM a special case of the LGCM allowing for the presence of binary and continuous variables. Following the approach of the nonparanormal SKEPTIC \citep{Liu12}, they circumvent the direct estimation of monotone transformation functions $\{f_j\}_{j=1}^d$ by employing rank correlation measures, such as Kendall's tau or Spearman's rho. These measures remain invariant under monotone transformations. Notably, for \textit{Case I}, a well-known mapping exists between Kendall's tau, Spearman's rho, and the underlying Pearson correlation coefficient $\Sigma_{jk}$. As a result, the primary contribution of \citet{Fan17} lies in deriving corresponding bridge functions for cases II and III. When considering the general mixed case, they advocate for binarizing all ordinal variables.
 
 % This thought has been taken up by \citet{Feng19} who propose to first binarize all ordinal variables to form preliminary estimators and subsequently combine them meaningfully by some weighted aggregate. In an attempt to work on generalizations regarding the bridge functions, \citet{Quan18} extended the binary latent Gaussian copula model to the setting where a mix of continuous, binary, and ternary variables is present. However, a considerable drawback of this procedure becomes apparent. While for the binary-continuous mix, three bridge functions were needed -- one for each case -- the number of mappings increases for each discrete variable with distinct state space. Indeed, a mix of continuous variables and discrete variables with $k$ different state spaces requires $\binom{k+2}{2}$ bridge functions.
 
@@ -47,15 +47,15 @@ where $r_{f(X_k)X_j}$ is the product-moment correlation between the Gaussian (un
 All that remains is to find sample versions of each of the three components in Eq. \eqref{population_polyserial_nonpara}. Let us start with the expectation in the denominator $E[f(Z_j)X_j]$. By assumption $f(\mathbf{Z}) \sim \text{N}(\mathbf{0},\mathbf{\Sigma})$ and therefore w.l.o.g. $f(Z_j) \sim \text{N}(0,1)$ for all $j \in 1, \dots, d_1$. Consequently, we have:
 \begin{equation}
     \begin{split}
-        E[f(Z_j)X_j] &= \sum_{r=1}^{l_{j}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{j}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) \phi(f(z_j)) dz_j \\
-        &= \sum_{r=1}^{l_{j}} x^r_j \bigg(\phi(\Gamma_j^r) - \phi(\Gamma_j^{r-1}) \bigg) = \sum_{r=1}^{l_{j}-1} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r),
+        E[f(Z_j)X_j] &= \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) \phi(f(z_j)) dz_j \\
+        &= \sum_{r=1}^{l_{j+1}} x^r_j \bigg(\phi(\Gamma_j^r) - \phi(\Gamma_j^{r-1}) \bigg) = \sum_{r=1}^{l_{j}} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r),
     \end{split}
 \end{equation}
-where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states are consecutive integers we have $\sum_{r=1}^{l_{j}-1} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r) = \sum_{r=1}^{l_{j}-1}\phi(\Gamma_j^r)$. Based on this derivation it is straightforward to give an estimate of $E[f(Z_j)X_j]$, once estimates of the thresholds $\Gamma_j$ have been formed (see Section \ref{sec::thresholds} for more details). Let us turn to the numerator of Eq. \eqref{population_polyserial_nonpara}. The standard deviation of $X_j$ does not require any special treatment, and we simply use $\sigma^{(n)}_{X_j} = \sqrt{1/n \sum_{i=1}^n (X_{ij} - \bar{X}_{j})^2}$ to be able to treat discrete variables with a general number of states. However, the product-moment correlation $r_{f(X_k), X_j}$ is inherently more challenging as it involves the (unobserved) transformed version of the continuous variables. Therefore, we proceed to estimate the transformation.
+where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states are consecutive integers we have $\sum_{r=1}^{l_{j}} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r) = \sum_{r=1}^{l_{j}}\phi(\Gamma_j^r)$. Based on this derivation it is straightforward to give an estimate of $E[f(Z_j)X_j]$, once estimates of the thresholds $\Gamma_j$ have been formed (see Section \ref{sec::thresholds} for more details). Let us turn to the numerator of Eq. \eqref{population_polyserial_nonpara}. The standard deviation of $X_j$ does not require any special treatment, and we simply use $\sigma^{(n)}_{X_j} = \sqrt{1/n \sum_{i=1}^n (X_{ij} - \bar{X}_{j})^2}$ to be able to treat discrete variables with a general number of states. However, the product-moment correlation $r_{f(X_k), X_j}$ is inherently more challenging as it involves the (unobserved) transformed version of the continuous variables. Therefore, we proceed to estimate the transformation.
 
-To this end, consider the marginal distribution function of $X_k$, namely $F_{X_k}(x)=P(X_k \leq x) = P(f(X_k) \leq f(x)) = \Phi(f(x))$ such that $f(x) = \Phi^{-1}(F_{X_k}(x))$. In this setting, \citet{Liu09} propose to evaluate the quantile function of the standard normal at a Winsorized version of the empirical distribution function. This is necessary as the standard Gaussian quantile function $\Phi^{-1}(\cdot)$ diverges quickly when evaluated at the boundaries of the $[0,1]$ interval. More precisely, consider $\hat{f}(u) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(u)])$,where $W_{\delta_n}$ is a Winsorization operator, i.e. $W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n))$. The truncation constant $\delta_n$ can be chosen in several ways.
+To this end, consider the marginal distribution function of $X_k$, namely \[F_{X_k}(x)=P(X_k \leq x) = P(f(X_k) \leq f(x)) = \Phi(f(x)),\] such that $f(x) = \Phi^{-1}(F_{X_k}(x))$. In this setting, \citet{Liu09} propose to evaluate the quantile function of the standard normal at a Winsorized version of the empirical distribution function. This is necessary as the standard Gaussian quantile function $\Phi^{-1}(\cdot)$ diverges quickly when evaluated at the boundaries of the $[0,1]$ interval. More precisely, consider $\hat{f}(u) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(u)])$,where $W_{\delta_n}$ is a Winsorization operator, i.e. \[W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n)).\] The truncation constant $\delta_n$ can be chosen in several ways.
 %In the low-dimensional scheme, \citet{Klaassen97} derive efficiency results by setting $\delta_n = 1/(n+1)$. As this does not translate to high-dimensional frameworks
-\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off. Thus, equipped with an estimator for the transformation functions, the product-moment correlation is obtained the usual way, i.e.
+\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off.\todo{Ask Mathias, is this not very conservative?} Thus, equipped with an estimator for the transformation functions, the product-moment correlation is obtained the usual way, i.e.
 \begin{equation*}
     r^{(n)}_{\hat{f}(X_k),X_j} = \frac{\sum_{i=1}^n (\hat{f}(X_{ik}) - \mu(\hat{f}))(X_{ij} - \mu(X_j)}{\sqrt{\sum_{i=1}^n \Big(\hat{f}(X_{ik}) - \mu(\hat{f})\Big)^2}\sqrt{\sum_{i=1}^n \Big(X_{ij} - \mu(X_j)\Big)^2}},
 \end{equation*}
@@ -64,7 +64,7 @@ where $\mu(\hat{f}) \equiv 1/n\sum_{i=1}^n \hat{f}(X_{ik})$ and $\mu(X_j) \equiv
     [Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II} nonparanormal]
     The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
 \begin{equation}
-    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}-1} \phi(\hat{\Gamma}^j_r)(x_j^{r+1} - x_j^r)}
+    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}} \phi(\hat{\Gamma}_j^r)(x_j^{r+1} - x_j^r)}
 \end{equation}
     for all $1 < j \leq d_1 < k \leq d_2$.
 \end{definition}
@@ -87,41 +87,40 @@ In summary, the estimator $\hat{\mathbf{\Sigma}}^{(n)}$ under the latent Gaussia
 
 \subsection{Threshold estimation}\label{sec::thresholds}
 
-The unknown threshold parameters $\mathbf{\Gamma}$ play a key role in linking the observed discrete to the latent continuous variables. Therefore, being able to form an accurate estimate of the $(\mathbf{\gamma}^1, \dots, \mathbf{\gamma}^{d_1})$ is crucial for both the likelihood-based procedures as well as the nonparanormal estimator outlined above. 
+The unknown threshold parameters $\Gamma_j$ for \(j \in [d_1]\) play a key role in linking the observed discrete to the latent continuous variables. Therefore, being able to form accurate estimates of the $\Gamma_j$ is crucial for both the likelihood-based procedures and the nonparanormal estimators outlined above.
 
-We start by highlighting that we set the model up such that for each $\gamma_r^j, \ r = 1, \dots l_{X_j}-1$ there exists a constant $G$ such that $\abs{\gamma_r^j} \leq G$ for all $r = 1, \dots, l_{X_j}-1$, i.e. the estimable thresholds are bounded away from infinity. Let us define the cumulative probability vector $\mathbf{\pi}^j = (\pi_1^j, \dots, \pi_{l_{X_j}-1}^j)$. Then, by Eq. \eqref{latent_ordered}, it is easy to see that 
-\begin{equation*}\label{thresholds_identity}
-    \pi_r^j = \sum_{i=1}^r P(X_j = x_i^j)  = P(X_j \leq x_r^j) = P(Z_j \leq \gamma^j_r) = \Phi(\gamma_r^j), 
-\end{equation*}
-where $\Phi(\cdot)$ denotes the cumulative distribution function of a standard normal random variable. From this equation it is immediately clear that the thresholds satisfy $\gamma_r^j = \Phi^{-1}( \pi_r^j )$. Consequently, when forming sample estimates of the unknown thresholds we replace the cumulative probability vector by its sample equivalent, namely
-\begin{equation*}
-    \hat\pi_r^j = \sum_{k=1}^r \Big[\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} = x_k^j)}\Big] = \frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} \leq x_r^j)},
-\end{equation*}
-and plug it into the identity, i.e. $\hat\gamma_r^j = \Phi^{-1}\left( \hat\pi_r^j \right)$ for $j = 1, \dots d_1$. The following lemma assures that these threshold estimates can be formed with high accuracy.
+We start by highlighting that we set the LGCM model up such that for each $\Gamma_j$, there exists a constant $G$ such that $\Abs{\Gamma^r_j} \leq G$ for all $r \in [l_{j}]$, i.e. the estimable thresholds are bounded away from infinity. Let us define the cumulative probability vector $\pi_j = (\pi^1_j, \dots, \pi^{l_{j}}_j)$. Then, by Eq. \eqref{latent_ordered}, it is easy to see that
+\begin{equation}\label{thresholds_identity}
+    \begin{split}
+        \pi^r_j &= \sum_{i=1}^r P(X_j = x^i_j) = P(X_j \leq x^r_j) \\
+        &= P(Z_j \leq \gamma_j^r) = P(f_j(Z_j) \leq f_j(\gamma_j^r)) = \Phi(\Gamma^r_j).
+    \end{split}
+\end{equation}
+From this equation, it is immediately clear that the thresholds satisfy $\Gamma^{r}_{j} = \Phi^{-1}( \pi^r_j )$.\todo{Ask Mathias why here we don't need Winsorization.} Consequently, when forming sample estimates of the unknown thresholds we replace the cumulative probability vector with its sample equivalent, namely
+\begin{equation}
+    \hat\pi^r_j = \sum_{k=1}^r \Big[\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ij} = x^k_j)}\Big] = \frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ij} \leq x^r_j)},
+\end{equation}
+and plug it into the identity, i.e. $\hat\Gamma^r_j = \Phi^{-1}\big( \hat\pi^r_j \big)$ for $j \in [d_1]$. The following lemma assures that these threshold estimates can be formed with high accuracy.
 \begin{lemma}\label{lemma::thresholds}
-    Consider the event $A_r^j = \big\{\abs{\hat{\gamma}^j_r} \leq 2G\big\}$. The following bound holds for all $j = 1, \dots, d_1$ and $r = 1, \dots, l_{x_j}-1$ for some Lipschitz constant $L_1$
+    Suppose the estimated thresholds are bounded away from infinity, i.e. \(\Abs{\hat\Gamma^r_j} \leq 2G\)\todo{Or just G?} for all $j \in [d_1]$ and $r = 1, \dots, l_j$ and some \(G\). The following bound holds for some Lipschitz constant $L_1$ and all $t > 0$:
     \begin{equation*}
-        P\left({A^c}^j\right) \leq 2(l_{X_j}-1)\exp{\Big(- \frac{2G^2n}{L_1^2}\Big)},
+        P\Big( \max_{r\in [l_j]}\Abs{\hat\Gamma_j^r - \Gamma_j^r} \geq t \Big) \leq 2l_{j}\exp{\Big(- \frac{2t^2n}{L_1^2}\Big)}.
     \end{equation*}
-    where $A^j = \bigcap_{r=1}^{l_{X_j}-1} A_r^j$.
 \end{lemma}
 
-The proof of Lemma \ref{lemma::thresholds} is given in Section 4 %\ref{lemma_threshold_proof}%
-of the Supplementary Materials. All herein developed methods are applied in a two-step fashion. 
-%This means -- in particular for the likelihood-based approaches -- that in a first step the thresholds are estimated as described above and in a second step optimization is only with respect to the remaining unknown correlation parameter. 
-%Due to the high estimation accuracy and in order to avoid unnecessarily long derivations we will treat the thresholds as given for the remainder of this analysis.
-We stress this by denoting the estimated thresholds as $\bar{\gamma}^j_r$ in the ensuing theoretical results.    
+The proof\todo{Fix proof!} of Lemma \ref{lemma::thresholds} is given in Section 4 %\ref{lemma_threshold_proof}%
+of the Supplementary Materials. All herein-developed methods are applied in a two-step fashion. We stress this by denoting the estimated thresholds as $\bar{\Gamma}_j^r$ in the ensuing theoretical results.
 
 \subsection{Concentration results}\label{sec::convergence_results}
 
-We start by stating the following assumptions:
+Define \(\mathbf{\Sigma}^*\) and \(\mathbf{\Omega}^*\) as the true covariance matrix and its inverse, respectively. We start by stating the following assumptions:
 
 \begin{assumption}\label{ass1}
-    For all $1 \leq j < k \leq d_1$, $\Sigma_{jk}^* \neq 1$. In other words, there exists a constant $\delta > 0$ such that $\Abs{\Sigma_{jk}^*} \leq 1 - \delta$.
+    For all $1 \leq j < k \leq d$, $\Abs{\Sigma_{jk}^*} \neq 1$. In other words, there exists a constant $\delta > 0$ such that $\Abs{\Sigma_{jk}^*} \leq 1 - \delta$.
 \end{assumption}
 
 \begin{assumption}\label{ass2}
-    For $\gamma^j_r$ there exists a constant $G$ such that $\Abs{\gamma^j_r} \leq G$ for any $j = 1, \dots, d_1$ and for all $r = 1, \dots, l_{X_j}-1$
+    For any $\Gamma_j^r$ with $j \in [d_1]$ and $r \in [l_{j}]$ there exists a constant $G$ such that $\Abs{\Gamma_j^r} \leq G$.
 \end{assumption}
 
 \begin{assumption}\label{ass3}
@@ -129,49 +128,45 @@ We start by stating the following assumptions:
     \begin{itemize}
         \item $\{-1+\delta, 1 - \delta\}$ are not critical points of the respective log-likelihood functions.
         \item The log-likelihood functions have a finite number of critical points.
-        \item Every critical point that is different from $\Sigma_{jk}^*$ is non-degenerate. 
+        \item Every critical point that is different from $\Sigma_{jk}^*$ is non-degenerate.
         \item All joint and conditional states of the discrete variables have positive probability.
     \end{itemize}
 \end{assumption}
 
-\noindent Assumptions \ref{ass1} and \ref{ass2} guarantee that $f(X_j)$ and $f(X_k)$ are not perfectly linearly dependent and that the thresholds are bounded away from infinity, respectively (these impose few restrictions in practice). 
+% Assumptions \ref{ass1} and \ref{ass2} guarantee that $f(X_j)$ and $f(X_k)$ are not perfectly linearly dependent and that the thresholds are bounded away from infinity, respectively (these impose few restrictions in practice).
+% Assumption \ref{ass3} assures that the likelihood functions in Section \ref{latent_gaussian_cm} behave in a ``nice'' way. This is again a requirement that resembles a mild technical assumption. The following theorem relies on \citet{Mei18} and requires four conditions that are verified to hold in Section 2
+% of the Supplementary Materials. We note that a similar approach has been employed by \citet{Anne19} in the context of zero-inflated Gaussian data under double truncation.
 
-%\begin{assumption}\label{ass4}
-%    The conditional expectation of $X_k$ is linear in $Z_j, 1 \leq j < k \leq d$ with probability one.
-%\end{assumption}
+Assumptions \ref{ass1} and \ref{ass2} ensure that $f(X_j)$ and $f(X_k)$ are not perfectly linearly dependent and that the thresholds are bounded away from infinity, respectively. Importantly, these constraints impose minimal restrictions in practice. Assumption \ref{ass3} guarantees that the likelihood functions in Section \ref{latent_gaussian_cm} exhibit a ``nice'' behavior, representing a mild technical requirement.
 
-Assumption \ref{ass3} assures that the likelihood functions under the latent Gaussian model behave in a ``nice'' way. This is again a requirement that resembles a mild technical assumption. 
-%In Section \ref{proof_convergence} of the Supplementary Materials we show that $\Sigma_{jk}^*$ is a non-degenerate critical point. 
-The following theorem, relies on \citet{Mei18} and requires four conditions that are verified to hold in Section 2 
-%\ref{proof_convergence}%
-of the Supplementary Materials. We note that a similar approach has been employed by \citet{Anne19} in the context of zero-inflated Gaussian data under double truncation.  
+The following theorem relies on \citet{Mei18} and involves four conditions, all of which are confirmed in Section 2 of the Supplementary Materials. It is worth noting that a similar approach has been employed by \citet{Anne19} in the context of zero-inflated Gaussian data under double truncation.
 
 \begin{theorem}\label{uniform_convergence}
     Assume that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in 1, \dots, d_1$ and $k \in d_1+1 \dots, d$ (case II) or $j,k \in 1, \dots, d_1$ (case III). Further, let $0 < \alpha < 1$. There exist some known constants $B$, $C$, and $D$ independent of $(n,d)$ but depending on cases II and III. Now, let $n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)$, such that $\hat{\Sigma}_{jk}^{(n)}$ satisfies the following inequality:
     \begin{equation}
         P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} > D\sqrt{\frac{C \log(n)}{n} }\Bigg) \leq \frac{d(d-1)}{2}\alpha.
     \end{equation}
-\end{theorem}
-\noindent Case I of the latent Gaussian model deals only with observed Gaussian variables and concentration results can be retrieved for example from \citet{Ravikumar11}. Having treated the latent Gaussian model, we now turn to the nonparanormal extension. 
+\end{theorem}\todo{Fix a bit, should be in Garching.}
+\noindent Case I of the latent Gaussian model deals only with observed Gaussian variables and concentration results can be retrieved for example from \citet{Ravikumar11}. Having treated the latent Gaussian model, we now turn to the nonparanormal extension.
 
 %\begin{theorem}\label{uniform_convergence}
 %    Assume \ref{ass1}--\ref{ass3} and let $0 < \alpha < 1$. There exist some known constants $B$, $C$, and $D$ and letting $\frac{n}{\log(n)} \geq C \log\Big(\frac{B}{\alpha}\Big)$, such that $\hat{\Sigma}^{(n)}$ satisfies the following inequality:
 %    \begin{equation}
 %        \mathbb{P}\Bigg(\Norm{\hat{\Sigma}^{(n)} - \Sigma^{*}}_\infty \geq D\sqrt{\frac{\log(n)}{n} \log\Big(\frac{B}{\alpha}\Big) }\Bigg) \leq \frac{d(d-1)}{2}\alpha
- %   \end{equation}
-%    with $\Norm{J}_\infty = \max\limits_{j,k \in \{1, \dots, d\}} \Abs{J_{jk}}$ denoting the element-wise infinity norm of the $d$-dimensional square matrix $J$. 
+%   \end{equation}
+%    with $\Norm{J}_\infty = \max\limits_{j,k \in \{1, \dots, d\}} \Abs{J_{jk}}$ denoting the element-wise infinity norm of the $d$-dimensional square matrix $J$.
 %\end{theorem}
 
-In principle the three cases will have to be considered again. 
+In principle, the three cases will have to be considered again.
 \begin{itemize}
     \item \textit{Case I}: When both random variables are continuous concentration results follow immediately from \citet{Liu12} who make use of Hoeffding's inequalities for $U$-statistics.
-    \item \textit{Case II}: For the case where one variable is discrete and the other one continuous, we present concentration results below. 
-    \item \textit{Case III}: When both variables are discrete we make the important observation that Theorem \ref{uniform_convergence} above still applies and needs not be altered. We do not observe the continuous variables directly but only their discretized versions. As a consequence, the threshold estimates remain valid under the monotone transformation functions and so does the polychoric correlation. 
+    \item \textit{Case II}: For the case where one variable is discrete and the other one continuous, we present concentration results below.
+    \item \textit{Case III}: When both variables are discrete we make an important observation that Theorem \ref{uniform_convergence} above still applies and needs not be altered. We do not observe the continuous variables directly but only their discretized versions. As a consequence, the threshold estimates remain valid under the monotone transformation functions and so does the polychoric correlation.
 \end{itemize}
 
-\noindent The following theorem provides concentration properties for case II. 
+\noindent The following theorem provides concentration properties for case II.
 \begin{theorem}\label{concentration_caseII}
-    Suppose that Assumptions \ref{ass1} and \ref{ass2} hold and $j \in 1, \dots, d_1$ and $k \in d_1+1 \dots, d$. Then for any $\epsilon \in \Big[C_M\sqrt{\frac{\log d \log^2 n}{\sqrt{n}}},8(1+4c^2)\Big]$, with sub-Gaussian parameter $c$, generic constants $k_i, i = 1,2,3$ and constant $C_M = \frac{48}{\sqrt{\pi}} \big(\sqrt{2M} - 1\big)(M+2)$ for some $M \geq 2\big(\frac{\log d_2}{\log n} +1\big)$ with $C_\gamma = \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)(x^j_{r+1} - x^j_r)$ and Lipschitz constant $L$ the following probability bound holds     
+    Suppose that Assumptions \ref{ass1} and \ref{ass2} hold and $j \in 1, \dots, d_1$ and $k \in d_1+1 \dots, d$. Then for any $\epsilon \in \Big[C_M\sqrt{\frac{\log d \log^2 n}{\sqrt{n}}},8(1+4c^2)\Big]$, with sub-Gaussian parameter $c$, generic constants $k_i, i = 1,2,3$ and constant $C_M = \frac{48}{\sqrt{\pi}} \big(\sqrt{2M} - 1\big)(M+2)$ for some $M \geq 2\big(\frac{\log d_2}{\log n} +1\big)$ with $C_\gamma = \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)(x^j_{r+1} - x^j_r)$ and Lipschitz constant $L$ the following probability bound holds
     \begin{multline*}
         P\left(\max_{jk}\abs{\hat{\Sigma}_{jk}^{(n)} -  \Sigma_{jk}^{*}} \geq \epsilon \right) \\
         \begin{aligned}
@@ -184,7 +179,7 @@ In principle the three cases will have to be considered again.
 \end{theorem}
 The proof of the theorem is given in Section 5
 %\ref{proof_concentration2} %
-of the Supplementary Materials. With regards to the scaling of the dimension in terms of sample size the ensuing corollary follows immediately.
+of the Supplementary Materials. Regarding the scaling of the dimension in terms of sample size, the ensuing corollary follows immediately.
 \begin{corollary}
     For some known constant $K_{\Sigma}$ independent of $d$ and $n$ we have
     \begin{equation}
@@ -196,20 +191,19 @@ of the Supplementary Materials. With regards to the scaling of the dimension in 
 
 Similar to \citet{Fan17}, we plug our estimate of the sample correlation matrix into existing routines for estimating $\mathbf{\Omega}^*$. In particular, we employ the graphical lasso (glasso) estimator \citep{Friedman08}, i.e.
 \begin{equation}\label{glasso}
-    \hat{\Omega} = \argmin_{\Omega \succeq 0} \big[\text{tr}(\hat{\Sigma}^{(n)}\Omega) - \log\Abs{\Omega} + \lambda \sum_{j\neq k}\Abs{\Omega_{jk}}\big], 
+    \hat{\Omega} = \argmin_{\Omega \succeq 0} \big[\text{tr}(\hat{\Sigma}^{(n)}\Omega) - \log\Abs{\Omega} + \lambda \sum_{j\neq k}\Abs{\Omega_{jk}}\big],
 \end{equation}
-where $\lambda > 0$ is a regularization parameter. As $\hat{\mathbf\Sigma}^{(n)}$ exhibits at worst the same theoretical properties as established in %\citet{Ravikumar11,Yuan10,Cai11}, convergence rate as well as graph selection behave as if we had actually observed the latent variables. 
-\citet{Liu09}, convergence rate and graph selection results follow immediately. 
+where $\lambda > 0$ is a regularization parameter. As $\hat{\mathbf\Sigma}^{(n)}$ exhibits at worst the same theoretical properties as established in %\citet{Ravikumar11, Yuan10, Cai11}, convergence rate as well as graph selection behave as if we had observed the latent variables.
+\citet{Liu09}, convergence rate and graph selection results follow immediately.
 
-We do not penalize diagonal entries of $\Omega$ and therefore have to make sure that $\hat{\mathbf\Sigma}^{(n)}$ is at least positive semidefinite to establish convergence in Eq. \eqref{glasso}. Hence, we need to project $\hat{\Sigma}^{(n)}$ into the cone of positive semidefinite matrices \citep[compare also][]{Liu12, Fan17}. In practice, we use an efficient implementation of the alternating projections method proposed by \citet{Higham88}.      
+We do not penalize diagonal entries of $\Omega$ and therefore have to make sure that $\hat{\mathbf\Sigma}^{(n)}$ is at least positive semidefinite to establish convergence in Eq. \eqref{glasso}. Hence, we need to project $\hat{\Sigma}^{(n)}$ into the cone of positive semidefinite matrices \citep[compare also][]{Liu12, Fan17}. In practice, we use an efficient implementation of the alternating projections method proposed by \citet{Higham88}.
 
-In order to select the tuning parameter in Eq. \eqref{glasso}
-%\citet{Fan17} recommend to use the high dimensional Bayesian information criterion (BIC) proposed by \citet{Fan12,Wang13}. In a similar fashion, 
+To select the tuning parameter in Eq. \eqref{glasso}
 \citet{Foygel10} introduce an extended BIC (eBIC) in particular for Gaussian graphical models establishing consistency in higher dimensions under mild asymptotic assumptions. We consider
 \begin{equation}\label{EBIC}
     eBIC_\theta = -2 \ell^{(n)}(\hat{\Omega}(E)) + \Abs{E} \log(n) + 4 \Abs{E}\theta \log(d),
 \end{equation}
-where $\theta \in [0,1]$ governs penalization of large graphs. Furthermore, $\abs{E}$ represents the cardinality of the edge set of a candidate graph on $d$ nodes and $\ell^{(n)}(\hat{\Omega}(E))$ denotes the corresponding maximized log-likelihood \citep[see][for more details]{Foygel10} which in turn depends on $\lambda$ from Eq. \eqref{glasso}. 
+where $\theta \in [0,1]$ governs penalization of large graphs. Furthermore, $\abs{E}$ represents the cardinality of the edge set of a candidate graph on $d$ nodes and $\ell^{(n)}(\hat{\Omega}(E))$ denotes the corresponding maximized log-likelihood \citep[see][for more details]{Foygel10} which in turn depends on $\lambda$ from Eq. \eqref{glasso}.
 
-In practice, first one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each of the models in the path and select the one with the minimal value. 
+In practice, first, one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each of the models in the path and select the one with the minimal value.
 
