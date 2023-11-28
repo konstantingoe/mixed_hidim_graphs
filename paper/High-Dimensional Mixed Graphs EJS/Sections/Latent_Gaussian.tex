@@ -39,7 +39,7 @@ For the remainder of the paper assume we observe an independent $n$-sample of th
 \subsection{Maximum-likelihood estimation under the latent Gaussian model}\label{sec::latent_gaussian}
 
 At the outset, we examine each of the three cases under the latent Gaussian model, a special case of the LGCM where all transformations are identity functions. Consider \textit{Case I}, where both $X_j$ and $X_k$ are continuous. This corresponds to the regular Gaussian graphical model set-up discussed thoroughly for instance in \citet{Ravikumar11}. Hence, the estimator for $\mathbf\Sigma$ when both $X_j$ and $X_k$ are continuous is:
-\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case I}]\label{def1}
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case I}]\label{def1}
     Let $\Bar{x}_j$ denote the sample mean of $X_j$. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{d_1 < j < k\leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
             \hat{\Sigma}_{jk}^{(n)} = \frac{\sum_{i=1}^n(x_{ij}- \Bar{x}_j)(x_{ik}- \Bar{x}_k)}{\sqrt{\sum_{i=1}^n(x_{ij}- \Bar{x}_j)^2} \sqrt{\sum_{i=1}^n(x_{ik}- \Bar{x}_k)^2}}
@@ -57,7 +57,7 @@ Turning to \textit{Case II}, let $X_j$ be ordinal and $X_k$ be continuous. We ar
 \end{equation}
 where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$. MLEs are obtained by differentiating the log of the likelihood in Eq. \eqref{polyserial_likelihood} with respect to the unknown parameters, setting the partial derivatives to zero, and solving the system of equations for $\Sigma_{jk}, \mu, \sigma^2$, and $\Gamma_j^r$ for $r \in [l_j]$. Under the latent Gaussian model we have the special case that the thresholds are identifiable from the observed data as \(\Gamma_j^r = \gamma_j^r\).
 
-\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II}]\label{definition_case2}
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II}]\label{definition_case2}
     Recall the log-likelihood in Eq. \eqref{polyserial_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ is defined by:
     \begin{equation}
         \begin{split}
@@ -85,7 +85,7 @@ where $r = 1, \dots, l_j$ and $s = 1, \dots, l_k$ and $\phi(x,y,\rho)$ denotes t
     \end{split}
 \end{equation}
 where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^r_j$ and $X_k = x^s_k$ in a sample of size $n= \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs}$. Differentiating the log-likelihood, setting it to zero, and solving for the unknown parameters yields the estimator for $\Sigma$ for \textit{Case III}:
-\begin{definition}[Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III}]\label{definition_case3}
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III}]\label{definition_case3}
     Recall the log-likelihood in Eq. \eqref{polychoric_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
         \begin{split}
