@@ -18,3 +18,5 @@ monotonicity
 thresholded
 semidefinite
 eBIC
+Frobenius
+binarization
