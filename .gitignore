@@ -55,3 +55,7 @@ vignettes/*.pdf
 
 *supplementary.pdf
 *ejs-template.pdf
+
+# virtual environment
+
+venv*
