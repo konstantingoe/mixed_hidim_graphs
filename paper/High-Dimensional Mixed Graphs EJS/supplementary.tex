@@ -1,4 +1,4 @@
-% Template for the submittion to:
+% Template for the submitting to:
 %  Electronic Journal of Statistics  [ejs]
 %
 % Author: In this template, the places where you need to add information
@@ -10,11 +10,11 @@
 
 \documentclass[ejs]{imsart}
 
-\RequirePackage{amsthm,amsmath,bm}
+\RequirePackage{amsthm, amsmath, bm}
 \RequirePackage[numbers]{natbib}
 \RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
 
-% will be filled by editor:
+% will be filled by the editor:
 \doi{10.1214/154957804100000000}
 \pubyear{0000}
 \volume{0}
@@ -30,7 +30,7 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-
+\usepackage{todonotes}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{booktabs}
@@ -40,15 +40,15 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-% put your definitions there:
+% Put your definitions there:
 \startlocaldefs
     \newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
-    
+
     \DeclareMathOperator*{\argmax}{arg\,max}
     \DeclareMathOperator*{\argmin}{arg\,min}
     \DeclarePairedDelimiter\Abs{\lvert}{\rvert}%
     \DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
-    
+
     %%%%%%%%%%%%%%%%%%%%Theorem Definition
     \newtheorem{theorem}{Theorem}[section]
     \newtheorem{lemma}[theorem]{Lemma}
@@ -135,7 +135,7 @@ MRC Biostatistics Unit \\
 \label{secsupp}
 \input{Sections/Appendix}
 \clearpage\newpage
-%% if your bibliography is in bibtex format, uncomment commands:
+%% If your bibliography is in bibtex format, uncomment commands:
 \bibliographystyle{imsart-nameyear} % Style BST file (imsart-number.bst or imsart-nameyear.bst)
 \bibliography{refs}       % Bibliography file (usually '*.bib')
 

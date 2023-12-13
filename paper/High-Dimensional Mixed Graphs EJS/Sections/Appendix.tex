@@ -1,100 +1,105 @@
 %\appendix
 
 \section{Methodology}
+
+In the following sections, we first derive the MLEs for the latent Gaussian model. Then, we provide the proof for Theorem 3.2 followed by, the proof of Theorem 3.3.
+
 \subsection{Case II MLE derivation}
 
-Recall case II, where we assume that $X_j$ is ordinal and $X_k$ is continuous and we are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (Eq. (1) in the Manuscript) 
-%\eqref{latent_ordered}%
-are given. The likelihood of the $n$-sample is defined by:
+In \textit{Case II}, we consider the instance where $X_j$ is ordinal and $X_k$ is continuous. Recall that in the latent Gaussian model we take all \(\{f_k\}_{k=1}^d\) to be the identity. Consequently, \(X_k\) is Gaussian and \(\Gamma_j^r = f_j(\gamma_j^r) = \gamma_j^r\) for all \(j \in [d_1]\) and \(r \in [l_j]\). Recall that we are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (Eq. (1) in the Manuscript) are given. The likelihood of the $n$-sample is defined by:
 \begin{equation}\label{polyserial_likelihood_appendix}
     \begin{split}
-        L^{(n)}(\Sigma_{jk}, x^j_r,x_k) &= \prod_{i=1}^n p(x^j_{ir},x_{ik}, \Sigma_{jk}) \\
-        &= \prod_{i=1}^n p(x_{ik})p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}),
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) &= \prod_{i=1}^n p(x_{ij}^{r},x_{ik}, \Sigma_{jk}) \\
+        &= \prod_{i=1}^n p(x_{ik})p(x_{ij}^{r} \mid x_{ik}, \Sigma_{jk}),
     \end{split}
 \end{equation}
-where $p(x^j_{ir},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$, i.e.  
+where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$, i.e.
 \begin{equation*}\label{marginal_normal}
-    p(x_{ik}) = \big(2\pi\sigma\big)^{-\frac{1}{2}} \exp\Bigg[-\frac{1}{2}\bigg(\frac{x_{ik} - \mu}{\sigma_{jk}}\bigg)^2\Bigg].
+    p(x_{ik}) = \big(2\pi\sigma\big)^{-\frac{1}{2}} \exp\Bigg[-\frac{1}{2}\bigg(\frac{x_{ik} - \mu}{\sigma_{ik}}\bigg)^2\Bigg].
 \end{equation*}
 Furthermore, the conditional probability of $X_j$ in Eq. %\eqref{polyserial_likelihood}%
-(3) in the Manuscript can be written as:
+(3)\todo{Is this still correct?} in the Manuscript can be written as:
 \begin{equation}\label{threshold_conditionalprob}
     \begin{split}
-        p(X_j = x^j_r \mid X_k, \Sigma_{jk}) = p(\gamma^j_{r-1} \leq Z_j < \gamma^j_r \mid X_k, \Sigma_{jk}) \\
-        = p(Z_j \leq \gamma^j_{r} \mid X_k, \Sigma_{jk}) - p(Z_j \leq \gamma^j_{r-1} \mid X_k, \Sigma_{jk}) \\
-        \Phi(\Tilde{\gamma}^j_{r}) - \Phi(\Tilde{\gamma}^j_{r-1}), \quad r = 1, \dots, l_{X_j} -1,
+        p(X_j = x_j^r \mid X_k, \Sigma_{jk}) = p(\gamma_j^{r-1} \leq Z_j < \gamma_j^r \mid X_k, \Sigma_{jk}) \\
+        = p(Z_j \leq \gamma_j^{r} \mid X_k, \Sigma_{jk}) - p(Z_j \leq \gamma_j^{r-1} \mid X_k, \Sigma_{jk}) \\
+        \Phi(\tilde{\gamma}_j^{r}) - \Phi(\tilde{\gamma}_j^{r-1}), \quad r = 1, \dots, l_{j},
     \end{split}
 \end{equation}
 where
 \begin{equation*}
-    \Tilde{\gamma}^j_{r} = \frac{\gamma^j_{r} - \Sigma_{jk}\Tilde{X_k} }{\sqrt{1-(\Sigma_{jk})^2}}, 
+    \tilde{\Gamma}_j^{r} = \frac{\gamma_j^{r} - \Sigma_{jk}\tilde{X_k} }{\sqrt{1-(\Sigma_{jk})^2}},
 \end{equation*}
-with $\Tilde{X_k} = \frac{X_k-\mu}{\sigma}$ and $\Phi(t)$ denoting the standard normal distribution function. This follows straight from the the fact that the conditional distribution of $Z_j$ is Gaussian with mean $\Sigma_{jk}\Tilde{X_k}$ and variance $(1-(\Sigma_{jk})^2)$. The log-likelihood is then $\ell^{(n)}(\Sigma_{jk}, x^j_r,x_k)$ with:
+with $\tilde{X_k} = \frac{X_k-\mu_k}{\sigma_k}$ and $\Phi(t)$ denoting the standard normal distribution function. This follows straight from the fact that the conditional distribution of $Z_j$ is Gaussian with mean $\Sigma_{jk}\tilde{X_k}$ and variance $(1-(\Sigma_{jk})^2)$. The log-likelihood is then $\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k)$ with
 \begin{equation}\label{polyserial_loglikelihood}
-    \ell^{(n)}(\Sigma_{jk}, x^j_r,x_k) = \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}))\big].
+    \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) = \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x_{j}^{r} \mid x_{ik}, \Sigma_{jk}))\big].
 \end{equation}
 
-Due to the heavy computational burden involved when estimating all parameters simultaneously, a \textit{two-step estimator} has been proposed \citet{Olsson82}. That is, in a first step $\mu, \sigma^2$ are estimated by $\Bar{X_k}$ and $s^2$, respectively. Moreover, the thresholds $\gamma^j_r, r = 1, \dots, l_{X_j}-1$ are estimated by the quantile function of the standard normal distribution evaluated at the cumulative marginal proportions of $x^j_r$ just as described in Section 3.4. %\ref{sec::thresholds}. 
+Due to the heavy computational burden involved when estimating all parameters simultaneously, a \textit{two-step estimator} has been proposed \citet{Olsson82}. That is, in a first step $\mu_k, \sigma_k^2$ are estimated by $\bar{X_k}$ and $s_k^2$, respectively. Moreover, the thresholds $\gamma_j^r, r = 1, \dots, l_{j}$ are estimated by the quantile function of the standard normal distribution evaluated at the cumulative marginal proportions of $x_j^r$ just as described in Section 3.4. %\ref{sec::thresholds}.
 
 In a second step, all that remains is obtaining the MLE for $\Sigma_{jk}$ now with the readily computed estimates from the first step:
 \begin{equation}\label{FOC}
-    \frac{\partial\ell^{(n)}(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}} = \sum_{i=1}^n \frac{1}{p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})} \frac{\partial p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk}}.
+    \frac{\partial \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}} = \sum_{i=1}^n \frac{1}{p(x_{ij}^{r} \mid x_{ik}, \Sigma_{jk})} \frac{\partial p(x_{ij}^{r} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk}}.
 \end{equation}
 Let us take a closer look at the partial derivative of the conditional probability in Eq. \eqref{FOC}:
 \begin{equation}\label{case2_firstdiff}
     \begin{split}
-        \lefteqn{\frac{\partial p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk})}} \\
-        &= \frac{\partial \Phi({\Tilde{\gamma}}^j_{r})}{\partial \Sigma_{jk}} - \frac{\partial\Phi({\Tilde{\gamma}}^j_{r-1})}{\partial \Sigma_{jk}} \\
-        &= \phi({\Tilde{\gamma}}^j_{r})\frac{\partial {\Tilde{\gamma}}^j_{r}}{\partial\Sigma_{jk}} - \phi({\Tilde{\gamma}}^j_{r-1})\frac{\partial {\Tilde{\gamma}}^j_{r}}{\partial\Sigma_{jk}} \\
-        &= (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}\Big[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{ik}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{ik})\Big],
+        \lefteqn{\frac{\partial p(x_{ij}^{r} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk}}} \\
+        &= \frac{\partial \Phi({\tilde{\gamma}}_j^{r})}{\partial \Sigma_{jk}} - \frac{\partial\Phi({\tilde{\gamma}}_j^{r-1})}{\partial \Sigma_{jk}} \\
+        &= \phi({\tilde{\gamma}}_j^{r})\frac{\partial {\tilde{\gamma}}_j^{r}}{\partial\Sigma_{jk}} - \phi({\tilde{\gamma}}_j^{r-1})\frac{\partial {\tilde{\gamma}}_j^{r}}{\partial\Sigma_{jk}} \\
+        &= (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}\Big[\phi({\tilde{\gamma}}_j^{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{ik}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{ik})\Big],
     \end{split}
 \end{equation}
-where ${\Tilde{X}}_{k} = \frac{X_{k} - \Bar{X}}{s}$ and ${\Tilde{\gamma}}^j_{r} = \frac{{\gamma}^j_{r} - \Sigma_{jk}{\Tilde{X}}_k}{\sqrt{1-(\Sigma_{jk})^2}}$. The last equality follows from taking the derivative and applying the chain-rule.  
-
-Hence putting all the pieces together we obtain:
+where
+\[{\tilde{X}}_{k} = \frac{X_{k} - \bar{X}_k}{\sqrt{s_k^2}} \quad \text{and} \quad {\tilde{\gamma}}^j_{r} = \frac{{\gamma}^j_{r} - \Sigma_{jk}{\tilde{X}}_k}{\sqrt{1-(\Sigma_{jk})^2}}.\]
+The last equality in Eq. \eqref{case2_firstdiff} follows from taking the derivative and applying the chain rule. Putting all the pieces together we obtain
 \begin{equation}\label{MLE_polyserial}
     \begin{split}
-        \frac{\partial\ell^{(n)}(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}} = \sum_{i=1}^n &\Bigg[\frac{1}{p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \\
-        &\Big[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{ik}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{ik})\Big]\Bigg].
+        \frac{\partial\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}} = \sum_{i=1}^n &\Bigg[\frac{1}{p(x_{ij}^{r} \mid x_{ik}, \Sigma_{jk})} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \\
+        &\Big[\phi({\tilde{\gamma}}_j^{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{ik}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{ik})\Big]\Bigg].
     \end{split}
 \end{equation}
+
+Setting Eq. \eqref{MLE_polyserial} to zero and solving for $\Sigma_{jk}$ yields the \textit{Case II} two-step MLE for $\Sigma_{jk}$. Note that this is a nonlinear optimization problem, which can efficiently be solved utilizing some quasi-Newton method.
+
 
 \subsection{Case III MLE derivation}
 
-Consider case III, where both $X_j$ and $X_k$ are ordinal variables. The probability of an observation with $X_j = x_r^j$ and $X_k = x_s^k$ is:
+Turning to \textit{Case III}, where both $X_j$ and $X_k$ are ordinal variables, we argue in Section 3.3 in the manuscript that the MLE for the polychoric correlation remains valid for the LGCM. The probability of an observation taking values $X_j = x^r_j$ and $X_k = x^s_k$ is
 \begin{equation}\label{cell_probabilities_appendix}
     \begin{split}
         \pi_{rs} &\coloneqq p(X_j = x_r^j, X_k = x_s^k) \\
-        &= p(\gamma^j_{r-1} \leq Z_j < \gamma^j_r, \gamma^k_{s-1} \leq Z_k < \gamma^k_s) \\
-        &= \int_{\gamma^j_{r-1}}^{\gamma^j_{r}} \int_{\gamma^k_{s-1}}^{\gamma^k_{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
+        &= p(\gamma_j^{r-1} \leq Z_j < \gamma_j^r, \gamma_k^{s-1} \leq Z_k < \gamma_k^s) \\
+        &= p(\Gamma_j^{r-1} \leq f_j(Z_j) < \Gamma_j^r, \Gamma_k^{s-1} \leq f_k(Z_k) < \Gamma_k^s) \\
+        &= \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} \int_{\Gamma_k^{s-1}}^{\Gamma^k_{s}} \phi_2(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
     \end{split}
 \end{equation}
-where $r = 1, \dots, l_{X_j}-1$ and $s = 1, \dots, l_{X_k}-1$ and $\phi(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as in the main text the likelihood and log-likelihood of the $n$-sample are defined as:
+where $r \in [l_j]$ and $s \in [l_k]$ and $\phi_2(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as in the manuscript, the likelihood and log-likelihood of the $n$-sample are defined as:
 \begin{equation}\label{polychoric_likelihood_appendix}
     \begin{split}
-        L^{(n)}(\Sigma_{jk}, x^j_r,x^k_s) &= C \prod_{r=1}^{l_{X_{j}}} \prod_{s=1}^{l_{X_{k}}} \pi_{rs}^{n_{rs}}, \\
-        \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s) &= \log(C) + \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} n_{rs} \log(\pi_{rs}).  
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= C \prod_{r=1}^{l_{{j}}} \prod_{s=1}^{l_{{k}}} \pi_{rs}^{n_{rs}}, \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= \log(C) + \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs} \log(\pi_{rs}).
     \end{split}
 \end{equation}
-where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x_r^j$ and $X_k = x_s^k$ in a sample of size $n= \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} n_{rs}$.
-Similar to case II above, we employ the \textit{two-step estimator} for the polychoric correlation. Given the threshold estimates from the first step, let us state the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respect to $\Sigma_{jk}$ explicitly. First, recall that from Eq. (5) %\eqref{cell_probabilities}%
+where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^r_j$ and $X_k = x^s_k$ in a sample of size $n= \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs}$.
+Similar to \textit{Case II} above, we employ the \textit{two-step estimator} for the polychoric correlation. Given the threshold estimates from the first step, let us state the derivative of $\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)$ with respect to $\Sigma_{jk}$ explicitly. First, recall that from Eq. \eqref{cell_probabilities_appendix}
 \begin{equation}
     \begin{split}
-        \pi_{rs} &= \int_{{\gamma}^j_{r-1}}^{{\gamma}^j_{r}} \int_{{\gamma}^k_{s-1}}^{{\gamma}^k_{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k \\
-        &= \Phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk}) - \Phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk}) \\ 
-        &- \Phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk}) + \Phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk}),
+        \pi_{rs} &= \int_{{\Gamma}_j^{r-1}}^{{\Gamma}^j_{r}} \int_{{\Gamma}_k^{s-1}}^{{\Gamma}^k_{s}} \phi_2(z_j,z_k,\Sigma_{jk}) dz_j dz_k \\
+        &= \Phi_2({\Gamma}_j^r, {\Gamma}_k^s, \Sigma_{jk}) - \Phi_2({\Gamma}_j^{r-1}, {\Gamma}_k^s, \Sigma_{jk}) \\
+        &- \Phi_2({\Gamma}_j^r, {\Gamma}_k^{s-1}, \Sigma_{jk}) + \Phi_2({\Gamma}_j^{r-1}, {\Gamma}_k^{s-1}, \Sigma_{jk}),
     \end{split}
 \end{equation}
-where $\Phi_2(u,v,\rho)$ is the standard bivariate normal distribution function with correlation parameter $\rho$. Note also that we have $\frac{\partial \Phi_2(u,v, \rho)}{\partial \rho} = \phi_2(u,v, \rho)$, where $\phi_2$ is the bivariate normal density function \citep{Tallis62}.  
-
-Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respect to $\Sigma_{jk}$ yields
-\begin{multline*}{2}
-        \frac{\partial \ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)}{\partial \Sigma_{jk}} = \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} \frac{n_{rs}}{\pi_{rs}} \frac{\partial \pi_{rs}}{\partial \Sigma_{jk}} \\
+where $\Phi_2(u,v,\rho)$ is the standard bivariate normal distribution function with correlation parameter $\rho$. Note also that we have $\frac{\partial \Phi_2(u,v, \rho)}{\partial \rho} = \phi_2(u,v, \rho)$; see \citep{Tallis62}. Taking the derivative of $\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)$ with respect to $\Sigma_{jk}$ yields
+\begin{multline*}
+        \frac{\partial \ell^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)}{\partial \Sigma_{jk}} = \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} \frac{n_{rs}}{\pi_{rs}} \frac{\partial \pi_{rs}}{\partial \Sigma_{jk}} \\
         \begin{aligned}
-        = \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} \frac{n_{rs}}{\pi_{rs}} \Big[&\phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk}) - \phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk}) - \\
-        &\phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk}) + \phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk})\Big].
+        = \sum_{r=1}^{l_{X_{j}}}\sum_{s=1}^{l_{X_{k}}} \frac{n_{rs}}{\pi_{rs}} \Big[&\phi_2({\Gamma}_j^r, {\Gamma}_k^s, \Sigma_{jk}) - \phi_2({\Gamma}_j^{r-1}, {\Gamma}_k^s, \Sigma_{jk}) - \\
+        &\phi_2({\Gamma}_j^r, {\Gamma}_k^{s-1}, \Sigma_{jk}) + \phi_2({\Gamma}_j^{r-1}, {\Gamma}_k^{s-1}, \Sigma_{jk})\Big].
         \end{aligned}
 \end{multline*}
+
+Again, setting the derivative to zero and solving for $\Sigma_{jk}$ using some quasi-Newton method yields the \textit{Case III} two-step MLE for $\Sigma_{jk}$.
 
 %\section{Case II under the Gaussian Copula model}
 
@@ -105,76 +110,74 @@ Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respe
 %    \Sigma_{jk}^* = \frac{\rho_{X_j X_k} \sigma_j}{\lambda(\Xi; x^j, \xi^j)}.
 %\end{equation}
 
-%We need to find sample equivalences for each of the components in Eq. \eqref{eq:polyserial_adhoc}. As the numerator does not change as compared to the naive approach let us focus on $\lambda(\Xi; x^j, \xi^j)$. First, let $\Tilde{\Xi}(t) = 1/n\sum_{i=1}^n \mathbbm{1}_{(X_k - \mu_k)/\sigma_k \leq t}$ be the empirical distribution function of the standardized observed continuous variable $X_k$. In order to estimate the threshold parameters $\xi^j$ we need to evaluate percentiles of $\Tilde{X}_k$, i.e, $\hat{\xi}_r^j = \Tilde{\Xi}^{-1}(p_{\cdot r}^j)$. As the $X_k$'s are unique with probability tending to one, we can estimate the corresponding percentiles by means of order statistics, i.e.  
+%We need to find sample equivalences for each of the components in Eq. \eqref{eq:polyserial_adhoc}. As the numerator does not change as compared to the naive approach let us focus on $\lambda(\Xi; x^j, \xi^j)$. First, let $\tilde{\Xi}(t) = 1/n\sum_{i=1}^n \mathbbm{1}_{(X_k - \mu_k)/\sigma_k \leq t}$ be the empirical distribution function of the standardized observed continuous variable $X_k$. In order to estimate the threshold parameters $\xi^j$ we need to evaluate percentiles of $\tilde{X}_k$, i.e, $\hat{\xi}_r^j = \tilde{\Xi}^{-1}(p_{\cdot r}^j)$. As the $X_k$'s are unique with probability tending to one, we can estimate the corresponding percentiles using order statistics, i.e.
 %\begin{equation*}
-%    \Tilde{\Xi}^{-1}\Big(\frac{c}{n}\Big) = \frac{(X_{k(c+1)} - X_{k(c)})/2 - %\Bar{X}_k}{\hat{\sigma}_k} \quad \text{for } c= 0,1, \dots, n,
+%    \tilde{\Xi}^{-1}\Big(\frac{c}{n}\Big) = \frac{(X_{k(c+1)} - X_{k(c)})/2 - %\Bar{X}_k}{\hat{\sigma}_k} \quad \text{for } c= 0,1, \dots, n,
 %\end{equation*}
-%where $X_{k(c)}$ denotes the $c^{th}$ order statistic of the random variable $X_k$ \citep[see][for more details]{David03}. Furthermore, we set $\Tilde{\Xi}^{-1}\Big(\frac{c}{n}\Big)$ to $-\infty$ and $+\infty$ for $c=0$ and $c=n$, respectively. 
+%where $X_{k(c)}$ denotes the $c^{th}$ order statistic of the random variable $X_k$ \citep[see][for more details]{David03}. Furthermore, we set $\tilde{\Xi}^{-1}\Big(\frac{c}{n}\Big)$ to $-\infty$ and $+\infty$ for $c=0$ and $c=n$, respectively.
 
 %Finally, we can construct a sample estimate of $\lambda(\Xi; x^j, \xi^j)$, namely:
 %\begin{equation*}
-%    \lambda(\Tilde{\Xi}; x^j, \hat{\xi}^j) = \sum_{r=1}^{l_{X_j}} x_r^j \int_{\hat{\xi}_{r-1}^{j}}^{\hat{\xi}_{r}^{j}} z d\Tilde{\Xi}(z) = \frac{1}{n\hat{\sigma}_k}\sum_{r=1}^{l_{X_j}} x_r^j \sum_{c=1+np_{\cdot r-1}^j}^{np_{\cdot r-1}^j}(X_{k(c)} - \Bar{X}_k),
+%    \lambda(\tilde{\Xi}; x^j, \hat{\xi}^j) = \sum_{r=1}^{l_{X_j}} x_r^j \int_{\hat{\xi}_{r-1}^{j}}^{\hat{\xi}_{r}^{j}} z d\tilde{\Xi}(z) = \frac{1}{n\hat{\sigma}_k}\sum_{r=1}^{l_{X_j}} x_r^j \sum_{c=1+np_{\cdot r-1}^j}^{np_{\cdot r-1}^j}(X_{k(c)} - \Bar{X}_k),
 %\end{equation*}
-%where clearly equality only holds when the $X_k$'s are all distinct. In practice, when ties are present we still use the right-most summation expression and make sure that null sums are set to zero whenever $p_{\cdot r-1}^j = p_{\cdot r}^j$. Let us denote the resulting estimator 
+%where equality only holds when the $X_k$'s are all distinct. In practice, when ties are present we still use the right-most summation expression and make sure that null sums are set to zero whenever $p_{\cdot r-1}^j = p_{\cdot r}^j$. Let us denote the resulting estimator
 %\begin{equation}\label{eq:brogden_adhoc}
-%     \hat{\Sigma}_{jk}^+ = \frac{\hat{\rho}^{\text{\textit{Sp}}}_{jk} \hat{\sigma}_j}{\lambda(\Tilde{\Xi}; x^j, \hat{\xi}^j)}.
+%     \hat{\Sigma}_{jk}^+ = \frac{\hat{\rho}^{\text{\textit{Sp}}}_{jk} \hat{\sigma}_j}{\lambda(\tilde{\Xi}; x^j, \hat{\xi}^j)}.
 %\end{equation}
 %In order to make the upper bound of $1$ more explicit, Eq. \eqref{eq:brogden_adhoc} can be rewritten such that $\Sigma_{jk}^* = \sigma_{X_j X_k} / \sigma_k \lambda(\Xi; x^j, \xi^j)$. Now, the denominator is simply the covariance between the ordered $X_j$ and $X_k$ observations which, by the rearrangement inequality \citep[Theorem 368 in][p.261]{Hardy52}, is at least as large as $\sigma_{X_j X_k}$.
 
 %However, $\hat{\Sigma}_{jk}^+$ is unchanged by location and scale transformation i.e. $a + bX_j$ and $a + bX_k$ only so long as $b > 0$. What's more, $\hat{\Sigma}_{jk}^+$ need not be bounded by $-1$ from below. Therefore, we simply let $\hat{\Sigma}_{jk}^- = - \hat{\Sigma}_{j-k}^+$ where $\hat{\Sigma}_{j-k}^+$ indicates that we take $- X_k = -(X_{k1}, \dots X_{kn})^\prime$ rather than $X_k$. Finally, we can state the generalized ad hoc estimator, i.e.
 %\begin{equation}\label{eq:generalized_adhoc_appendix}
 %    \hat{\Sigma}_{jk}^{\text{ad hoc}} = \begin{cases}
-%    \hat{\Sigma}_{jk}^+ & \text{if } \hat{\Sigma}_{jk}^+ \geq 0 \\ 
+%    \hat{\Sigma}_{jk}^+ & \text{if } \hat{\Sigma}_{jk}^+ \geq 0 \\
 %    \hat{\Sigma}_{jk}^- & \text{if } \hat{\Sigma}_{jk}^+ < 0,
 %    \end{cases}
 %\end{equation}
-%where at last $\abs{\hat{\Sigma}_{jk}^{\text{ad hoc}}} \leq 1$. Furthermore, $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ remains unchanged when we transform $X_j$ to $a + bX_j$ and $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ becomes $sign(b)\hat{\Sigma}_{jk}^{\text{ad hoc}}$ when we transform $X_k$ to $a + bX_k$ \citep[see also][]{Bedrick96}.    
+%where at last $\abs{\hat{\Sigma}_{jk}^{\text{ad hoc}}} \leq 1$. Furthermore, $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ remains unchanged when we transform $X_j$ to $a + bX_j$ and $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ becomes $sign(b)\hat{\Sigma}_{jk}^{\text{ad hoc}}$ when we transform $X_k$ to $a + bX_k$ \citep[see also][]{Bedrick96}.
 
 \section{Proof of Theorem 3.2
 %\ref{uniform_convergence}
 }\label{proof_convergence}
-
 
 \begin{condition}[Gradient statistical noise]\label{Gradient statistical noise}
     The gradient of the log-likelihood function is $\tau^2$-sub-Gaussian. That is, for any $\lambda \in \mathbb{R}$ and $\forall \Sigma_{jk} \in [-1+\delta, 1-\delta]$ for $1\leq j < k \leq d$
     \begin{equation}
         \mathbb{E}\Bigg[\exp\Bigg(\lambda \Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big) \Bigg)\Bigg] \leq \exp\Big(\frac{\tau^2\lambda^2}{2}\Big),
     \end{equation}
-    where $\ell_{jk}$ corresponds to the respective log-likelihood functions in Definitions 2.3 and 2.4 of the main Manuscript. 
-    %\ref{definition_case2} and \ref{definition_case3}. 
-    
-    Let us consider case II, where we recall that 
+    where $\ell_{jk}$ corresponds to the respective log-likelihood functions in Definitions 2.3 and 2.4 of the main Manuscript.
+    %\ref{definition_case2} and \ref{definition_case3}.
+    Let us consider case II, where we recall that
 
     \begin{equation*}
-        \frac{\partial\ell(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}} = \frac{1}{p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})} \frac{\partial p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk}}.
+        \frac{\partial\ell(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}} = \frac{1}{p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})} \frac{\partial p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})}{\partial \Sigma_{jk}}.
     \end{equation*}
     Thus:
     \begin{equation*}
-        \frac{\partial\ell(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}} = \frac{(1-(\Sigma_{jk})^2)^{-\frac{3}{2}}}{\Phi({\Tilde{\gamma}}^j_{r}) - \Phi({\Tilde{\gamma}}^j_{r-1})} \Bigg[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})\Bigg].
+        \frac{\partial\ell(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}} = \frac{(1-(\Sigma_{jk})^2)^{-\frac{3}{2}}}{\Phi({\tilde{\gamma}}^j_{r}) - \Phi({\tilde{\gamma}}_j^{r-1})} \Bigg[\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})\Bigg].
     \end{equation*}
     It is easy to see that $p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}) \in (0,1)$ almost surely. Assumption 3.3
     %\ref{ass3} %
-    makes sure that we exclude impossible events where $p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}) = 0$. Moreover, we require that $\gamma^j_r > \gamma^j_{r-1}, \forall j \in 1, \dots, d_1$ this implies that $\Phi({\Tilde{\gamma}}^j_{r}) > \Phi({\Tilde{\gamma}}^j_{r-1})$. In other words, there exists a $\kappa >0$ such that $p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}) \leq \frac{1}{\kappa}$.
-    
+    makes sure that we exclude impossible events where $p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}) = 0$. Moreover, we require that $\gamma_j^r > \gamma_j^{r-1}, \forall j \in 1, \dots, d_1$ this implies that $\Phi({\tilde{\gamma}}^j_{r}) > \Phi({\tilde{\gamma}}_j^{r-1})$. In other words, there exists a $\kappa >0$ such that $p(x^j_{ir} \mid x_{ik}, \Sigma_{jk}) \leq \frac{1}{\kappa}$.
+
     Let us now turn to $\partial p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})/\partial \Sigma_{jk}$. First, for all $\Sigma_{jk} \in [-1+\delta, 1-\delta]$ we clearly have $1 \leq (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \leq \varpi$ for $\varpi > 1$. What's more, the density of the standard normal is bounded, i.e. $\abs{\phi(t)} \leq (2\pi)^{-\frac{1}{2}}$ for all $x \in \mathbb{R}$. Similarly
     \begin{equation*}
-        \abs{\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})} \leq  \abs{\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})} \leq L_1,
-    \end{equation*} 
-    due to Assumption 3.2. %\ref{ass2}.  
-    Therefore, 
+        \abs{\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})} \leq  \abs{\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})} \leq L_1,
+    \end{equation*}
+    due to Assumption 3.2. %\ref{ass2}.
+    Therefore,
     \begin{equation*}
-        \abs{\frac{\partial\ell(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}}} \leq \kappa L_1, 
+        \abs{\frac{\partial\ell(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}} \leq \kappa L_1,
     \end{equation*}
     and $\Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big)$ is zero-mean and bounded. Then by Hoeffding's (\citeyear{Hoeffding63}) lemma  the gradient of the log-likelihood function is $\tau^2$-sub-Gaussian with $\tau = 2\kappa L_1$
 
     Turning to case III, recall that we have:
     \begin{equation*}
-        \frac{\partial \ell(\Sigma_{jk}, x^j_r,x^k_s)}{\partial \Sigma_{jk}} = \frac{1}{\pi_{rs}} \frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}, \quad \text{for some }j<k.  
+        \frac{\partial \ell(\Sigma_{jk}, x_j^r,x_k^s)}{\partial \Sigma_{jk}} = \frac{1}{\pi_{rs}} \frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}, \quad \text{for some }j<k.  
     \end{equation*}
     Considering
     \begin{align*}
-        \pi_{rs} = &\Phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk}) - \Phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk}) \\
-        - &\Phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk}) + \Phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk}),
+        \pi_{rs} = &\Phi_2({\gamma}_j^r, {\gamma}_k^s, \Sigma_{jk}) - \Phi_2({\gamma}_j^{r-1}, {\gamma}_k^s, \Sigma_{jk}) \\
+        - &\Phi_2({\gamma}_j^r, {\gamma}_k^{s-1}, \Sigma_{jk}) + \Phi_2({\gamma}_j^{r-1}, {\gamma}_k^{s-1}, \Sigma_{jk}),
     \end{align*}
     we note that this again has to be in $(0,1)$ due to Assumptions 3.1 and 3.2,
     % \ref{ass1} and \ref{ass2}. 
@@ -183,8 +186,8 @@ Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respe
     Now let us show that
     \begin{align*}
         \frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}
-        = \Big[&\phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk}) - \phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk}) \\
-        - &\phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk}) + \phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk})\Big]
+        = \Big[&\phi_2({\gamma}_j^r, {\gamma}_k^s, \Sigma_{jk}) - \phi_2({\gamma}_j^{r-1}, {\gamma}_k^s, \Sigma_{jk}) \\
+        - &\phi_2({\gamma}_j^r, {\gamma}_k^{s-1}, \Sigma_{jk}) + \phi_2({\gamma}_j^{r-1}, {\gamma}_k^{s-1}, \Sigma_{jk})\Big]
     \end{align*}    
     is bounded. Indeed the density of the standard bivariate normal random variable is of the form $\phi_2(x,y) = c e^{-q(x,y)}$. Since $q(x,y)$ is a quadratic function of $x,y$ it follows that $\abs{\phi_2(x,y)} \leq c$. Therefore, every element in $\frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}$ is bounded and thus $\abs{\frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}} \leq K_1$. By the same argument as for case II $\Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big)$ is zero-mean and bounded and by Hoeffding's lemma the gradient of the log-likelihood function is $\tau^2$-sub-Gaussian with $\tau = 2\xi K_1$. 
     
@@ -212,21 +215,21 @@ Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respe
     \end{equation}
     where it remains to show that $\abs{\partial^2 p(x^j_{ir} \mid x_{ik}, \Sigma_{jk})/\partial \Sigma_{jk}^{2}} \leq L_2$. Indeed, we can rewrite our objective as:
     \begin{multline}\label{second_derivative_case2}
-            \frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}}\Bigg) \\
+            \frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}\Bigg) \\
             \begin{aligned}
-            &= \frac{\partial}{\partial \Sigma_{jk}}\Bigg( (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \Bigg[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})\Bigg] \Bigg) \\
+            &= \frac{\partial}{\partial \Sigma_{jk}}\Bigg( (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \Bigg[\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})\Bigg] \Bigg) \\
             %
-            &= \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) + \frac{\phi^\prime({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} \\
+            &= \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) + \frac{\phi^\prime({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} \\
             %
-            &+ \frac{\phi({\Tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} - \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k}) \\
+            &+ \frac{\phi({\tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} - \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k}) \\
             %
-            &-  \frac{\phi^\prime({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\Tilde{\gamma}}^j_{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}.
+            &-  \frac{\phi^\prime({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\tilde{\gamma}}_j^{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}.
             \end{aligned}
     \end{multline} 
     \begin{equation*}
         \begin{split}
-            \text{Thus: } \abs{\frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell(\Sigma_{jk}, x^j_r,x_k)}{\partial \Sigma_{jk}}\Bigg)} \leq &\abs{\frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})} \\
-            + &\abs{\frac{\phi^\prime({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\Tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}} \leq L_2,
+            \text{Thus: } \abs{\frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}\Bigg)} \leq &\abs{\frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})} \\
+            + &\abs{\frac{\phi^\prime({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}} \leq L_2,
         \end{split} 
     \end{equation*}
     due to Assumptions 3.1 and 3.2 % \ref{ass1} and \ref{ass2} %
@@ -239,8 +242,8 @@ Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respe
     Let us consider case III:
     \begin{equation}\label{hessian_case3}
         \begin{split}
-            \frac{\partial^2 \ell(\Sigma_{jk}, x^j_r,x^k_s)}{\partial \Sigma_{jk}^{2}} &= \frac{\partial^2 \pi_{rs}/\partial \Sigma_{jk}^{2}}{\pi_{rs}} - \Bigg(\frac{\partial \pi_{rs}/\partial \Sigma_{jk}}{\pi_{rs}}\Bigg)^2 \\
-            \text{Thus: } \abs{\frac{\partial^2 \ell(\Sigma_{jk}, x^j_r,x^k_s)}{\partial \Sigma_{jk}^{2}}} &\leq \frac{\abs{\partial^2 \pi_{rs}/\partial \Sigma_{jk}^{2}}}{\abs{\pi_{rs}}} + \Bigg(\frac{\abs{\partial \pi_{rs}/\partial \Sigma_{jk}}}{\abs{\pi_{rs}}} \Bigg)^2 \\ 
+            \frac{\partial^2 \ell(\Sigma_{jk}, x_j^r,x_k^s)}{\partial \Sigma_{jk}^{2}} &= \frac{\partial^2 \pi_{rs}/\partial \Sigma_{jk}^{2}}{\pi_{rs}} - \Bigg(\frac{\partial \pi_{rs}/\partial \Sigma_{jk}}{\pi_{rs}}\Bigg)^2 \\
+            \text{Thus: } \abs{\frac{\partial^2 \ell(\Sigma_{jk}, x_j^r,x_k^s)}{\partial \Sigma_{jk}^{2}}} &\leq \frac{\abs{\partial^2 \pi_{rs}/\partial \Sigma_{jk}^{2}}}{\abs{\pi_{rs}}} + \Bigg(\frac{\abs{\partial \pi_{rs}/\partial \Sigma_{jk}}}{\abs{\pi_{rs}}} \Bigg)^2 \\ 
             &\leq \xi K_2 + \xi^2K_1^2.
         \end{split}
     \end{equation}
@@ -248,10 +251,10 @@ Thus, taking the derivative of $\ell^{(n)}(\Sigma_{jk}, x^j_r,x^k_s)$ with respe
     \begin{equation*}
         \begin{split}
         \lefteqn{\abs{\frac{\partial}{\partial \Sigma_{jk}}\bigg(\frac{\partial \pi_{rs}}{\partial \Sigma_{jk}}\bigg)}} \\
-        &= \Big\lvert \frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk}) - \phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk}) \\
-        &- \phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk}) + \phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk})\Big\rvert \\
-        &\leq \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}^j_r, {\gamma}^k_s, \Sigma_{jk})} + \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}^j_{r-1}, {\gamma}^k_s, \Sigma_{jk})} \\
-        &+ \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}^j_r, {\gamma}^k_{s-1}, \Sigma_{jk})} + \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}^j_{r-1}, {\gamma}^k_{s-1}, \Sigma_{jk})} \\
+        &= \Big\lvert \frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}_j^r, {\gamma}_k^s, \Sigma_{jk}) - \phi_2({\gamma}_j^{r-1}, {\gamma}_k^s, \Sigma_{jk}) \\
+        &- \phi_2({\gamma}_j^r, {\gamma}_k^{s-1}, \Sigma_{jk}) + \phi_2({\gamma}_j^{r-1}, {\gamma}_k^{s-1}, \Sigma_{jk})\Big\rvert \\
+        &\leq \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}_j^r, {\gamma}_k^s, \Sigma_{jk})} + \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}_j^{r-1}, {\gamma}_k^s, \Sigma_{jk})} \\
+        &+ \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}_j^r, {\gamma}_k^{s-1}, \Sigma_{jk})} + \abs{\frac{\partial}{\partial \Sigma_{jk}}\phi_2({\gamma}_j^{r-1}, {\gamma}_k^{s-1}, \Sigma_{jk})} \\
         &\leq K_2,
         \end{split}
     \end{equation*}
@@ -310,7 +313,7 @@ for case III. Lastly, we define $R(\Sigma_{jk}) = \mathbb{E}_{\Sigma_{jk}^*}\hat
     For case III we proceed similarly by considering:
     \begin{equation}
         \begin{split}
-            \frac{\partial^3}{\partial\Sigma_{jk}^3}\ell(\Sigma_{jk}) &= \frac{\partial}{\partial\Sigma_{jk}}\Bigg[\frac{\partial^2 \ell(\Sigma_{jk}, x^j_r,x^k_s)}{\partial \Sigma_{jk}^{2}}\Bigg] \\
+            \frac{\partial^3}{\partial\Sigma_{jk}^3}\ell(\Sigma_{jk}) &= \frac{\partial}{\partial\Sigma_{jk}}\Bigg[\frac{\partial^2 \ell(\Sigma_{jk}, x_j^r,x_k^s)}{\partial \Sigma_{jk}^{2}}\Bigg] \\
             &= \frac{\partial}{\partial\Sigma_{jk}}\Bigg[\frac{\partial^2 \pi_{rs}/\partial \Sigma_{jk}^{2}}{\pi_{rs}} - \Bigg(\frac{\partial \pi_{rs}/\partial \Sigma_{jk}}{\pi_{rs}}\Bigg)^2\Bigg] \\
             &= \frac{\partial^3 \pi_{rs} / \partial \Sigma_{jk}^3}{\pi_{rs}} - 3\frac{\big(\partial \pi_{rs} / \partial \Sigma_{jk}\big)\big( \partial^2 \pi_{rs} / \partial \Sigma_{jk}^2\big)}{(\pi_{rs})^2} \\
             &+ 2\Bigg(\frac{\partial \pi_{rs} / \partial \Sigma_{jk}}{\pi_{rs}}\Bigg)^3. \\
@@ -353,23 +356,23 @@ for case III. Lastly, we define $R(\Sigma_{jk}) = \mathbb{E}_{\Sigma_{jk}^*}\hat
         \begin{multline*}
                 \sum_{r=1}^{l_{l_{X_j}}} \partial^2 p(x^j_{r} \mid x_{k}, \Sigma_{jk}^*)/\partial \Sigma_{jk}^{2}\\
                 \begin{aligned}
-                &=\sum_{r=1}^{l_{l_{X_j}}} \Bigg[ \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) \\
-                &+ \frac{\phi^\prime({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\Tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} \\
+                &=\sum_{r=1}^{l_{l_{X_j}}} \Bigg[ \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) \\
+                &+ \frac{\phi^\prime({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} \\
                 %
-                &- \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k}) \\
-                &- \frac{\phi^\prime({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\Tilde{\gamma}}^j_{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}\Bigg] \\
+                &- \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k}) \\
+                &- \frac{\phi^\prime({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\tilde{\gamma}}_j^{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}\Bigg] \\
                 %
                 &= 0,
                 \end{aligned}
         \end{multline*}
-        since all terms except the ones involving $\phi({\Tilde{\gamma}}^j_{0})$ and $\phi({\Tilde{\gamma}}^j_{l_{X_j}})$ cancel and furthermore $ \lim\limits_{t \to \pm \infty} \phi(t) = \lim\limits_{t \to \pm \infty} \phi^\prime(t) = 0$ . Similarly, we have for case III:
+        since all terms except the ones involving $\phi({\tilde{\gamma}}^j_{0})$ and $\phi({\tilde{\gamma}}^j_{l_{X_j}})$ cancel and furthermore $ \lim\limits_{t \to \pm \infty} \phi(t) = \lim\limits_{t \to \pm \infty} \phi^\prime(t) = 0$ . Similarly, we have for case III:
         \begin{equation*}
             \begin{split}
                 \lefteqn{\mathbb{E}_{\Sigma_{jk}^*}\Bigg[\frac{\partial^2 \pi(x^j_{r},x^k_{s}; \Sigma_{jk}^*)/\partial \Sigma_{jk}^{2}}{\pi(x^j_{r},x^k_{s}; \Sigma_{jk}^*)}\Bigg]} \\
                 &= \sum_r \sum_s \Bigg[\frac{\partial^2 \pi(x^j_{r},x^k_{s}; \Sigma_{jk}^*)/\partial \Sigma_{jk}^{2}}{\pi(x^j_{r},x^k_{s}; \Sigma_{jk}^*)} P(X_j = x_r^j, X_k = x_s^k)\Bigg] \\
                 &= \sum_r\sum_s \Big[\partial^2 \pi(x^j_{r},x^k_{s}; \Sigma_{jk}^*)/\partial \Sigma_{jk}^{2}\Big] \\
-                &= \sum_r\sum_s \Big[q(\gamma^j_r, \gamma^k_s, \Sigma_{jk}^*)\phi_2(\gamma^j_r, \gamma^k_s, \Sigma_{jk}^*) - q(\gamma^j_{r-1}, \gamma^k_s, \Sigma_{jk}^*)\phi_2(\gamma^j_{r-1}, \gamma^k_s, \Sigma_{jk}^*) \\
-                &- q(\gamma^j_r, \gamma^k_{s-1}, \Sigma_{jk}^*)\phi_2(\gamma^j_r, \gamma^k_{s-1}, \Sigma_{jk}^*) + q(\gamma^j_{r-1}, \gamma^k_{s-1}, \Sigma_{jk}^*)\phi_2(\gamma^j_{r-1}, \gamma^k_{s-1}, \Sigma_{jk}^*)\Big] \\
+                &= \sum_r\sum_s \Big[q(\gamma_j^r, \gamma_k^s, \Sigma_{jk}^*)\phi_2(\gamma_j^r, \gamma_k^s, \Sigma_{jk}^*) - q(\gamma_j^{r-1}, \gamma_k^s, \Sigma_{jk}^*)\phi_2(\gamma_j^{r-1}, \gamma_k^s, \Sigma_{jk}^*) \\
+                &- q(\gamma_j^r, \gamma_k^{s-1}, \Sigma_{jk}^*)\phi_2(\gamma_j^r, \gamma_k^{s-1}, \Sigma_{jk}^*) + q(\gamma_j^{r-1}, \gamma_k^{s-1}, \Sigma_{jk}^*)\phi_2(\gamma_j^{r-1}, \gamma_k^{s-1}, \Sigma_{jk}^*)\Big] \\
                 &= q(\gamma^j_{l_{X_j}}, \gamma^k_{l_{X_k}}, \Sigma_{jk}^*)\phi_2(\gamma^j_{l_{X_j}}, \gamma^k_{l_{X_k}}, \Sigma_{jk}^*) - q(\gamma^j_{l_{X_j}}, \gamma^k_0, \Sigma_{jk}^*)\phi_2(\gamma^j_{l_{X_j}}, \gamma^k_0, \Sigma_{jk}^*) \\
                 &- q(\gamma^j_0, \gamma^k_{l_{X_k}}, \Sigma_{jk}^*)\phi_2(\gamma^j_0, \gamma^k_{l_{X_k}}, \Sigma_{jk}^*) + q(\gamma^j_0, \gamma^k_0, \Sigma_{jk}^*)\phi_2(\gamma^j_0, \gamma^k_0, \Sigma_{jk}^*) = 0,
             \end{split}
@@ -420,17 +423,17 @@ follows.
         Clearly, from Eq. \eqref{case2_firstdiff} we have 
         \begin{multline*}
             \frac{\partial }{\partial \Sigma_{jk}} p(x^j_{r} \mid x_{k}, \Sigma_{jk}) \\
-            =  (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}\Big[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})\Big],
+            =  (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}\Big[\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})\Big],
         \end{multline*}
         and therefore 
         \begin{equation*}
             \begin{split}
-                \int_S (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}&\Big[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})\Big] d\mu(x_r^j) = \\
-                (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \sum_{r=1}^{l_{X_j}} &\Big[\phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) - \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})\Big] = 0 = \\
+                \int_S (1-(\Sigma_{jk})^2)^{-\frac{3}{2}}&\Big[\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})\Big] d\mu(x_r^j) = \\
+                (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \sum_{r=1}^{l_{X_j}} &\Big[\phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) - \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})\Big] = 0 = \\
                 \frac{\partial }{\partial \Sigma_{jk}} \sum_{r=1}^{l_{X_j}} &p(x^j_{r} \mid x_{k}, \Sigma_{jk}) = \frac{\partial }{\partial \Sigma_{jk}} 1,
             \end{split}
         \end{equation*}
-        since all terms except the ones involving $\phi({\Tilde{\gamma}}^j_{0})$ and $\phi({\Tilde{\gamma}}^j_{l_{X_j}})$ cancel and 
+        since all terms except the ones involving $\phi({\tilde{\gamma}}^j_{0})$ and $\phi({\tilde{\gamma}}^j_{l_{X_j}})$ cancel and 
         \begin{equation*}
             \lim\limits_{t \to \pm \infty} \phi(t) = \lim\limits_{t \to \pm \infty} \phi^\prime(t) = 0,
         \end{equation*} 
@@ -450,15 +453,15 @@ follows.
         \begin{equation*}
             \begin{split}
                 \frac{\partial^2 }{\partial \Sigma_{jk}^2} p(x^j_{r} \mid x_{k}, \Sigma_{jk}) 
-                &= \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k}) \\
+                &= \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k}) \\
                 %
-                &+\frac{\phi^\prime({\Tilde{\gamma}}^j_{r})({\gamma}^j_r\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\Tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} \\
+                &+\frac{\phi^\prime({\tilde{\gamma}}^j_{r})({\gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\tilde{\gamma}}^j_{r}){\gamma}_{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}} \\
                 %
-                &- \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k}) \\
-                &- \frac{\phi^\prime({\Tilde{\gamma}}^j_{r-1})({\gamma}^j_{r-1}\Sigma_{jk} - {\Tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\Tilde{\gamma}}^j_{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}.
+                &- \frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k}) \\
+                &- \frac{\phi^\prime({\tilde{\gamma}}_j^{r-1})({\gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\tilde{\gamma}}_j^{r-1}){\gamma}_{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}.
             \end{split}
         \end{equation*}
-        By similar arguments to Lemma \ref{interchange_caseII_firstdif}, when taking the sum over all possible states all terms except the ones involving $\phi({\Tilde{\gamma}}^j_{0})$ and $\phi({\Tilde{\gamma}}^j_{l_{X_j}})$ still cancel as they appear in every additive term in the above equation -- recall that $\phi^\prime(t) = -t\phi(t)$ -- and equality then follows immediately. 
+        By similar arguments to Lemma \ref{interchange_caseII_firstdif}, when taking the sum over all possible states all terms except the ones involving $\phi({\tilde{\gamma}}^j_{0})$ and $\phi({\tilde{\gamma}}^j_{l_{X_j}})$ still cancel as they appear in every additive term in the above equation -- recall that $\phi^\prime(t) = -t\phi(t)$ -- and equality then follows immediately. 
     \end{proof}
 \end{corollary}    
 
@@ -481,12 +484,12 @@ follows.
                \end{equation*}
                with $\mu$ denoting the counting measure on the corresponding discrete space $S$ and $\lambda$ the Lebesgue measure on the corresponding Euclidean space.  
     \item \begin{equation*}
-                \frac{\partial }{\partial \Sigma_{jk}} \mathbb{E}_{\Sigma_{jk}^*} \big[\ell(\Sigma_{jk}, x^j_r,x^k_s)\big] = \mathbb{E}_{\Sigma_{jk}^*} \Bigg[\frac{\partial }{\partial \Sigma_{jk}} \ell(\Sigma_{jk}, x^j_r,x^k_s) \Bigg], 
+                \frac{\partial }{\partial \Sigma_{jk}} \mathbb{E}_{\Sigma_{jk}^*} \big[\ell(\Sigma_{jk}, x_j^r,x_k^s)\big] = \mathbb{E}_{\Sigma_{jk}^*} \Bigg[\frac{\partial }{\partial \Sigma_{jk}} \ell(\Sigma_{jk}, x_j^r,x_k^s) \Bigg], 
            \end{equation*}
            i.e. 
                \begin{align*}
-                    \frac{\partial }{\partial \Sigma_{jk}} \int_{S\times S^\prime} \log L(\Sigma_{jk}, x^j_r,x^k_s) L(\Sigma_{jk}^*, x^j_r,x^k_s) d\varpi(x^j_r,x^k_s) = \\
-                    \int_{S\times S^\prime} \frac{\partial }{\partial \Sigma_{jk}} \log L(\Sigma_{jk}, x^j_r,x^k_s) L(\Sigma_{jk}^*, x^j_r,x^k_s) d\varpi(x^j_r,x^k_s)
+                    \frac{\partial }{\partial \Sigma_{jk}} \int_{S\times S^\prime} \log L(\Sigma_{jk}, x_j^r,x_k^s) L(\Sigma_{jk}^*, x_j^r,x_k^s) d\varpi(x_j^r,x_k^s) = \\
+                    \int_{S\times S^\prime} \frac{\partial }{\partial \Sigma_{jk}} \log L(\Sigma_{jk}, x_j^r,x_k^s) L(\Sigma_{jk}^*, x_j^r,x_k^s) d\varpi(x_j^r,x_k^s)
                \end{align*}
                where $\varpi$ is the product measure on $S \times S^\prime$ defined by
                \begin{equation*}
@@ -517,7 +520,7 @@ follows.
 \begin{corollary}\label{expectation_commutes_case3}
     For all $\abs{\Sigma_{jk}} \leq 1-\delta$ we have \\
         $\frac{\partial^2 }{\partial \Sigma_{jk}^2} \mathbb{E}_{\Sigma_{jk}^*} \big[\ell(\Sigma_{jk}, x_r^j,x_k)\big] = \mathbb{E}_{\Sigma_{jk}^*} \Bigg[\frac{\partial^2 }{\partial \Sigma_{jk}^2} \ell(\Sigma_{jk}, x_r^j,x_k) \Bigg]$, for case II and \\
-        $\frac{\partial^2 }{\partial \Sigma_{jk}^2} \mathbb{E}_{\Sigma_{jk}^*} \big[\ell(\Sigma_{jk}, x^j_r,x^k_s)\big] = \mathbb{E}_{\Sigma_{jk}^*} \Bigg[\frac{\partial^2 }{\partial \Sigma_{jk}^2} \ell(\Sigma_{jk}, x^j_r,x^k_s) \Bigg]$, for case III.
+        $\frac{\partial^2 }{\partial \Sigma_{jk}^2} \mathbb{E}_{\Sigma_{jk}^*} \big[\ell(\Sigma_{jk}, x_j^r,x_k^s)\big] = \mathbb{E}_{\Sigma_{jk}^*} \Bigg[\frac{\partial^2 }{\partial \Sigma_{jk}^2} \ell(\Sigma_{jk}, x_j^r,x_k^s) \Bigg]$, for case III.
     
     \begin{proof}
         This follows immediately by the same arguments as in Lemma \ref{expectation_commutes_case2} and the bound on the second derivative of the log likelihood functions in Condition \ref{Hessian statistical noise}, respectively. 
@@ -527,7 +530,7 @@ follows.
 \section{Proof of Lemma 3.1 of the Manuscript %\ref{lemma::thresholds}
 }\label{lemma_threshold_proof}
 
-First, note that $\Phi^{-1}(\cdot)$ is Lipschitz on $[\Phi(-2G),\Phi(2G)]$ with a Lipschitz constant $L_1$ such that under the event $A_r^j = \big\{\abs{\hat{\gamma}^j_r} \leq 2G\big\}$
+First, note that $\Phi^{-1}(\cdot)$ is Lipschitz on $[\Phi(-2G),\Phi(2G)]$ with a Lipschitz constant $L_1$ such that under the event $A_r^j = \big\{\abs{\hat{\gamma}_j^r} \leq 2G\big\}$
 \begin{equation*}
     \begin{split}
         \abs{\hat{\gamma}_r^j - \gamma_r^j} &= \abs{\Phi^{-1}\left(\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} \leq x_r^j)}\right) - \Phi^{-1}\left(\Phi\left(\gamma_r^j\right)\right)} \\
@@ -538,10 +541,10 @@ First, note that $\Phi^{-1}(\cdot)$ is Lipschitz on $[\Phi(-2G),\Phi(2G)]$ with 
 We may then bound the probability of the complementary event as
 \begin{equation*}
 \begin{split}
-    P\left({A^c}_{r}^{j}\right) &= P\Big(\abs{\hat{\gamma}^j_r} > 2G\Big) \\
-                     &= P\Big(\abs{\hat{\gamma}^j_r} - \abs{\gamma^j_r} > 2G - \abs{\gamma^j_r}\Big) \\
-                     &\leq P\Big(\abs{\hat{\gamma}^j_r} - \abs{\gamma^j_r} > G\Big) \\
-                     &\leq P\Big(\abs{\hat{\gamma}^j_r - \gamma^j_r} > G\Big) \\
+    P\left({A^c}_{r}^{j}\right) &= P\Big(\abs{\hat{\gamma}_j^r} > 2G\Big) \\
+                     &= P\Big(\abs{\hat{\gamma}_j^r} - \abs{\gamma_j^r} > 2G - \abs{\gamma_j^r}\Big) \\
+                     &\leq P\Big(\abs{\hat{\gamma}_j^r} - \abs{\gamma_j^r} > G\Big) \\
+                     &\leq P\Big(\abs{\hat{\gamma}_j^r - \gamma_j^r} > G\Big) \\
                      &\leq P\left(\abs{\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} \leq x_r^j)} - \Phi(\gamma_r^j)} > \frac{G}{L_1}\right) \\ 
                      &\leq 2\exp{\Big(- \frac{2G^2n}{L_1^2}\Big)},
 \end{split} 
@@ -576,14 +579,14 @@ Recall that $\hat{f}(x) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(x)])$ where $W_{\
         \begin{equation*}
             p_{\cdot r}^j = \frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} = x_r^j)}.
         \end{equation*}
-        First, note that $\Phi^{-1}(\cdot)$ is Lipschitz on $[\Phi(-2G),\Phi(2G)]$ with a Lipschitz constant $L_1$ such that under the event $A_r^j = \{\abs{\hat{\gamma}^j_r} \leq 2G\}$
+        First, note that $\Phi^{-1}(\cdot)$ is Lipschitz on $[\Phi(-2G),\Phi(2G)]$ with a Lipschitz constant $L_1$ such that under the event $A_r^j = \{\abs{\hat{\gamma}_j^r} \leq 2G\}$
         \begin{equation*}
             \begin{split}
                 \abs{\hat{\gamma}_r^j - \gamma_r^j} &= \abs{\Phi^{-1}(\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} = x_r^j)}) - \Phi^{-1}(\Phi(\gamma_r^j))} \\
                 &\leq L_1\abs{\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} = x_r^j)} - \Phi(\gamma_r^j)}.
             \end{split}
         \end{equation*}
-        Now, we are interested in $\phi(\hat{\gamma}^j_r)$, therefore note further that $\phi(\cdot)$, namely the density function of the standard normal is Lipschitz with Lipschitz constant $L_0 = (2\pi)^{-1/2}e^{-1/2}$, s.t.
+        Now, we are interested in $\phi(\hat{\gamma}_j^r)$, therefore note further that $\phi(\cdot)$, namely the density function of the standard normal is Lipschitz with Lipschitz constant $L_0 = (2\pi)^{-1/2}e^{-1/2}$, s.t.
         \begin{equation*}
             \abs{\phi(\hat{\gamma}_r^j) - \phi(\gamma_r^j)} \leq L_0 \abs{\hat{\gamma}_r^j - \gamma_r^j} \leq \abs{\hat{\gamma}_r^j - \gamma_r^j},
         \end{equation*}
@@ -591,10 +594,10 @@ Recall that $\hat{f}(x) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(x)])$ where $W_{\
         We may then bound the probability of the complementary event as
         \begin{equation*}
         \begin{split}
-            P({A^c}_{r}^{j}) &= P\Big(\abs{\hat{\gamma}^j_r} > 2G\Big) \\
-                             &= P\Big(\abs{\hat{\gamma}^j_r} - \abs{\gamma^j_r} > 2G - \abs{\gamma^j_r}\Big) \\
-                             &\leq P\Big(\abs{\hat{\gamma}^j_r} - \abs{\gamma^j_r} > G\Big) \quad \text{(Assumption \ref{ass2})} \\
-                             &\leq P\Big(\abs{\hat{\gamma}^j_r - \gamma^j_r} > G\Big) \quad \text{(reverse triangle inequality)} \\
+            P({A^c}_{r}^{j}) &= P\Big(\abs{\hat{\gamma}_j^r} > 2G\Big) \\
+                             &= P\Big(\abs{\hat{\gamma}_j^r} - \abs{\gamma_j^r} > 2G - \abs{\gamma_j^r}\Big) \\
+                             &\leq P\Big(\abs{\hat{\gamma}_j^r} - \abs{\gamma_j^r} > G\Big) \quad \text{(Assumption \ref{ass2})} \\
+                             &\leq P\Big(\abs{\hat{\gamma}_j^r - \gamma_j^r} > G\Big) \quad \text{(reverse triangle inequality)} \\
                              &\leq P\Big(\abs{\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ji} = x_r^j)} - \Phi(\gamma_r^j)} > \frac{G}{L_1}\Big) \\ 
                              &\leq 2\exp{\Big(- \frac{2G^2n}{L_1^2}\Big)},
         \end{split} 
@@ -610,7 +613,7 @@ Recall that $\hat{f}(x) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(x)])$ where $W_{\
 
 Assume w.l.o.g. that we have consecutive integer scoring in our discrete variable $X_j$ such that the polyserial estimator simplifies as
 \begin{equation}
-    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)(x^j_{r+1} - x^j_r)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)} = \frac{S_{\hat{f}(X_k)X_j}}{\sigma^{(n)}_{\hat{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)},
+    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)(x^j_{r+1} - x_j^r)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)} = \frac{S_{\hat{f}(X_k)X_j}}{\sigma^{(n)}_{\hat{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)},
 \end{equation}
 for all $1 < j < d_1+1 \leq k \leq d_2$. $S_{\hat{f}(X_k)X_j}$ denotes the sample covariance between the $\hat{f}(X_k)$ and the $X_j$, i.e.
 \begin{equation*}
@@ -620,7 +623,7 @@ where $\mu_n(\hat{f}) = 1/n\sum_{i=1}^n\hat f(X_{ki})$ and $\mu_n(X_j) = 1/n\sum
 \begin{equation*}
     \sigma^{(n)}_{\hat{f}(X_k)} \equiv \sqrt{\frac{1}{n}\sum_{i=1}^n \Big(\hat{f}(X_{ki}) - \mu_n(\hat{f})\Big)^2}.
 \end{equation*}
-Recall that we treat the thresholds estimates as given. In particular, we have here $\phi(\bar{\gamma}^j_r)$, therefore note further that $\phi(\cdot)$, namely the density function of the standard normal is Lipschitz with Lipschitz constant $L_0 = (2\pi)^{-1/2}e^{-1/2}$, s.t.
+Recall that we treat the thresholds estimates as given. In particular, we have here $\phi(\bar{\gamma}_j^r)$, therefore note further that $\phi(\cdot)$, namely the density function of the standard normal is Lipschitz with Lipschitz constant $L_0 = (2\pi)^{-1/2}e^{-1/2}$, s.t.
 \begin{equation*}
     \abs{\phi(\bar{\gamma}_r^j) - \phi(\gamma_r^j)} \leq L_0 \abs{\bar{\gamma}_r^j - \gamma_r^j} \leq \abs{\bar{\gamma}_r^j - \gamma_r^j},
 \end{equation*}
@@ -977,7 +980,7 @@ The following lemma provides us with the means to forming a probability bound fo
         &\leq L \Big( \max_{jk} \abs{S_{\hat{f}(X_k)X_j} - S_{{f}(X_k)X_j} } + C_\gamma \max_{k} \abs{\sigma_{\hat{f}(X_k)}^{(n)} - \sigma_{\hat{f}(X_k)}^{(n)} } \\
         &+  \max_{jk} \abs{S_{{f}(X_k)X_j} - S^*_{{f}(X_k)X_j}}  + C_\gamma \max_{k} \abs{\sigma^{(n)}_{{f}(X_k)} - 1} \Big),
     \end{align*}
-    where $C_\gamma \equiv \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)(x^j_{r+1} - x^j_r)$.
+    where $C_\gamma \equiv \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)(x^j_{r+1} - x_j^r)$.
 \end{lemma}
 
 \begin{proof}
@@ -1114,7 +1117,7 @@ follows by plugging in the corresponding concentration bounds and simplifying.
 
 Let us assume w.l.o.g. that $X_j$ -- the discrete variable -- to have zero mean and variance one. As a consequence, we would simply need to adjust the integer scoring of the threshold estimates i.e.
 \begin{equation*}
-    \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)(x^j_{r+1} - x^j_r).
+    \sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)(x^j_{r+1} - x_j^r).
 \end{equation*}
 
 
@@ -1218,8 +1221,8 @@ Consider
 \begin{multline*}
     P\left(\max_{jk}\abs{\hat{\Sigma}_{jk}^{(n)} -  \Sigma_{jk}^{*}} \geq 2\epsilon \right) \\
     \begin{aligned}
-    &\leq P\left( \max_{jk} \abs{\frac{S_{\hat{f}(X_k)X_j}}{\sigma^{(n)}_{\hat{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)} - \frac{S_{{f}(X_k)X_j}}{\sigma^{(n)}_{{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)}} \geq \epsilon \right) \\
-    &+ P\left(\max_{jk} \abs{\frac{S_{{f}(X_k)X_j}}{\sigma^{(n)}_{{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}^j_r)} - \Sigma_{jk}^{*}} \geq \epsilon \right) \\
+    &\leq P\left( \max_{jk} \abs{\frac{S_{\hat{f}(X_k)X_j}}{\sigma^{(n)}_{\hat{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)} - \frac{S_{{f}(X_k)X_j}}{\sigma^{(n)}_{{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)}} \geq \epsilon \right) \\
+    &+ P\left(\max_{jk} \abs{\frac{S_{{f}(X_k)X_j}}{\sigma^{(n)}_{{f}(X_k)}\sum_{r=1}^{l_{X_j}-1} \phi(\bar{\gamma}_j^r)} - \Sigma_{jk}^{*}} \geq \epsilon \right) \\
     &\leq P\left(\max_{jk} \abs{S_{\hat{f}(X_k)X_j} - S_{{f}(X_k)X_j}}  \geq \frac{\epsilon}{2L} \right) + P\left(\max_{jk} \abs{S_{{f}(X_k)X_j} - S^*_{{f}(X_k)X_j}}  \geq \frac{\epsilon}{2L} \right) \\
     &+ P\left(\max_{k} \abs{\sigma^{(n)}_{\hat{f}(X_k)} - \sigma^{(n)}_{{f}(X_k)}} \geq \frac{\epsilon}{2L} \right) + P\left(\max_{k} \abs{\sigma^{(n)}_{{f}(X_k)} - 1} \geq \frac{\epsilon}{2L} \right)
     \end{aligned}
