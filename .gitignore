@@ -59,3 +59,7 @@ vignettes/*.pdf
 # virtual environment
 
 venv*
+
+# scribbling
+
+scribbling/*
