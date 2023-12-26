@@ -394,13 +394,12 @@ by Lemma \ref{expectation_commutes_case2} and Corollary \ref{expectation_commute
     \end{condition}
 \end{condition}
 
-With these considerations, we have verified the required four conditions to hold such that Theorem 3.2\todo{Rather cite Theorem 2 in the non-convex loss paper here.}
-%\ref{uniform_convergence}%
-holds for each couple $(j,k)$ with $j < k$. More precisely, let $\alpha \in (0,1)$. Now, letting  $n \geq 4 C \log(n) \log(\frac{B}{\alpha})$
+With these considerations, we have verified the required four conditions to hold such that Theorem 2 in \cite{Mei18} %\ref{uniform_convergence}%
+holds for each couple $(j,k)$ according to cases II and III. More precisely, let $\alpha \in (0,1)$. Now, letting  $n \geq 4 C \log(n) \log(\frac{B}{\alpha})$
 where $C = C_0 \Big(\frac{\tau^2}{\epsilon^2} \vee \frac{\tau^4}{\eta^2} \vee \frac{\tau^2L^2}{\eta^4} \Big)$ and $B = \tau(1-\delta)$
-with $\tau = 2 [\kappa L_1 \vee \xi K_1]$  and $C_0$ denoting a universal constant. Letting further $L = \sup_{\Sigma_{jk}: \abs{\Sigma_{jk}} \leq 1- \delta} \abs{R^{\prime\prime\prime}(\Sigma_{jk})}$ we obtain
+with $\tau = 2 [\kappa L_1 \vee \xi K_1]$  and $C_0$ denoting a universal constant. Letting further $L = \sup_{\Sigma_{jk}: \Abs{\Sigma_{jk}} \leq 1- \delta} \Abs{R_{jk}^{\prime\prime\prime}(\Sigma_{jk})}$ we obtain
 \begin{equation}\label{individual_bound}
-    \mathbb{P}\Bigg( \abs{\hat{\Sigma}^{(n)}_{jk} - \Sigma_{jk}^*} \leq \frac{2\tau}{\eta}\sqrt{C_0\frac{\log(n)}{n}\Big[\log\big(\frac{\tau(1-\delta)}{\alpha}\big) \vee 1\Big] } \Bigg) \geq 1- \alpha,
+    \mathbb{P}\Bigg( \abs{\hat{\Sigma}^{(n)}_{jk} - \Sigma_{jk}^*} \geq \frac{2\tau}{\eta}\sqrt{C_0\frac{\log(n)}{n}\Big[\log\bigg(\frac{B}{\alpha}\bigg) \vee 1\Big] } \Bigg) \leq \alpha,
 \end{equation}
 and consequently, the result in Theorem 3.2
 %\ref{uniform_convergence} %
