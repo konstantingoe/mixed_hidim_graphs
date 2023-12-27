@@ -15,7 +15,7 @@ with $R_{ji}$ corresponding to the rank of $X_{ji}$ among $X_{j1}, \dots, X_{jn}
 \begin{definition}[Nonparanormal estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case I}]\label{case1_nonpara}
     The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{d_1 < j< k\leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
-            \hat{\Sigma}_{jk}^{(n)} = 2\sin{\frac{\pi}{6} \hat{\rho}^{\text{\textit{Sp}}}_{jk}},
+        \hat{\Sigma}_{jk}^{(n)} = 2\sin{\frac{\pi}{6} \hat{\rho}^{\text{\textit{Sp}}}_{jk}},
     \end{equation}
     for all $d_1 < j < k \leq d_2$.
 \end{definition}
@@ -37,7 +37,7 @@ where we can assume w.l.o.g. that $\mu_{f(X_k)} = 0$. After multiplying both sid
 \end{equation*}
 Now let us take again the expectation on both sides, rearrange and expand by $\sigma_{X_j}$, yielding
 \begin{equation}\label{population_polyserial_nonpara}
-        \Sigma_{jk} = \frac{E[f(X_k)X_j]}{\sigma_{f(X_k)} E[f(Z_j)X_j]} = \frac{r_{f(X_k)X_j}\sigma_{X_j}}{E[f(Z_j)X_j]},
+    \Sigma_{jk} = \frac{E[f(X_k)X_j]}{\sigma_{f(X_k)} E[f(Z_j)X_j]} = \frac{r_{f(X_k)X_j}\sigma_{X_j}}{E[f(Z_j)X_j]},
 \end{equation}
 where $r_{f(X_k)X_j}$ is the product-moment correlation between the Gaussian (unobserved) variable $f(X_k)$ and the observed discretized variable $X_j$.
 
@@ -60,9 +60,9 @@ where $\mu(\hat{f}) \equiv 1/n\sum_{i=1}^n \hat{f}(X_{ik})$ and $\mu(X_j) \equiv
 \begin{definition}
     [Estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II} nonparanormal]
     The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
-\begin{equation}
-    \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}} \phi(\hat{\Gamma}_j^r)(x_j^{r+1} - x_j^r)}
-\end{equation}
+    \begin{equation}
+        \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}} \phi(\hat{\Gamma}_j^r)(x_j^{r+1} - x_j^r)}
+    \end{equation}
     for all $1 < j \leq d_1 < k \leq d_2$.
 \end{definition}
 
@@ -75,7 +75,7 @@ Lastly, let us turn to \textit{Case III} where both $X_j$ and $X_k$ are discrete
 \begin{definition}[Nonparanormal estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III} ]
     The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
-            \hat{\Sigma}_{jk}^{(n)} = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)
+        \hat{\Sigma}_{jk}^{(n)} = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)
     \end{equation}
     for all $1 < j < k \leq d_1 $.
 \end{definition}
@@ -161,9 +161,9 @@ The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all
     \begin{multline*}
         P\left(\max_{jk}\abs{\hat{\Sigma}_{jk}^{(n)} -  \Sigma_{jk}^{*}} \geq \epsilon \right) \\
         \begin{aligned}
-        &\leq 8\exp\Bigg(2\log d - \frac{\sqrt{n}\epsilon^2}{(64 \ L \ C_\gamma \ l_{\max} \ \pi)^2 \log n}\Bigg) \\
-        &+ 8\exp\left( 2\log d - \frac{n \epsilon^2}{(4L \ C_\gamma)^2 \ 128(1+4c^2)^2} \right) \\
-        &+ 8\exp\Big(2\log d - \frac{\sqrt{n}}{8\pi\log n}\Big) + 4\exp\Big(- \frac{k_1 n^{3/4} \sqrt{\log n}}{k_2+ k_3} \Big) + \frac{2}{\sqrt{\pi \log(nd_2)}}.
+             & \leq 8\exp\Bigg(2\log d - \frac{\sqrt{n}\epsilon^2}{(64 \ L \ C_\gamma \ l_{\max} \ \pi)^2 \log n}\Bigg)                                                 \\
+             & + 8\exp\left( 2\log d - \frac{n \epsilon^2}{(4L \ C_\gamma)^2 \ 128(1+4c^2)^2} \right)                                                                   \\
+             & + 8\exp\Big(2\log d - \frac{\sqrt{n}}{8\pi\log n}\Big) + 4\exp\Big(- \frac{k_1 n^{3/4} \sqrt{\log n}}{k_2+ k_3} \Big) + \frac{2}{\sqrt{\pi \log(nd_2)}}.
         \end{aligned}
     \end{multline*}
 
@@ -199,5 +199,5 @@ To select the tuning parameter in Eq. \eqref{glasso}
 \end{equation}
 where $\theta \in [0,1]$ governs penalization of large graphs. Furthermore, $\abs{E}$ represents the cardinality of the edge set of a candidate graph on $d$ nodes and $\ell^{(n)}(\hat{\mathbf\Omega}(E))$ denotes the corresponding maximized log-likelihood \citep[see][for more details]{Foygel10} which in turn depends on $\lambda$ from Eq. \eqref{glasso}.
 
-In practice, first, one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each of the models in the path and select the one with the minimal value.
+In practice, first, one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each model in the path and select the one with the minimal value.
 
