@@ -116,8 +116,8 @@ identity <- function(x) {
     return(x)
 }
 
-nthroot <- function(x, n) {
-    return(x^(1 / n))
+cubic_root <- function(x) {
+    return(x^(1 / 3))
 }
 
 
