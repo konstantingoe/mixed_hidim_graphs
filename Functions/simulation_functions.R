@@ -1,7 +1,3 @@
-rm(list = ls())
-
-source("mixed_hidim_graphs/Packages/packages.R")
-
 # function for euclidean norm
 euclid_norm <- function(x) sqrt(sum(x^2))
 edgenumber <- function(mat = mat, cut = 0) {
@@ -804,10 +800,3 @@ hatR_feng <- function(data = data, verbose = T) {
     }
     return(hatR_pd)
 }
-
-
-
-
-test1 <- binary_benchmark(runs = 2, n = 200, d = 50)
-
-test2 <- general_benchmark(runs = 2, n = 200, d = 50)

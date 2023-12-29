@@ -19,6 +19,7 @@ pacman::p_load(
   cowplot,
   latex2exp,
   microbenchmark,
+  jsonlite,
   genscore,
   nleqslv,
   pcaPP,
