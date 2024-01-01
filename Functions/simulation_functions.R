@@ -116,10 +116,9 @@ identity <- function(x) {
     return(x)
 }
 
-cubic_root <- function(x) {
-    return(x^(1 / 3))
+cubic <- function(x) {
+    return(x^3)
 }
-
 
 generate_data <- function(n = 200, d = 50, g = identity) {
     t <- .15
@@ -390,7 +389,7 @@ hatR_poly <- function(data = data, verbose = T) {
             warning(
                 paste0(
                     "Correlation of the pair ",
-                    stringr::str_c(as.character(which(hatR[lower.tri(hatR)][which(abs(pair) > .98)][k] == hatR,
+                    stringr::str_c(as.character(which(hatR[lower.tri(hatR)][which(abs(pair) > .999)][k] == hatR,
                         arr.ind = T
                     )[, 1]), collapse = ",")
                 ),
@@ -443,7 +442,7 @@ hatR_mle <- function(data = data, verbose = T) {
             warning(
                 paste0(
                     "Correlation of the pair ",
-                    stringr::str_c(as.character(which(hatR[lower.tri(hatR)][which(abs(pair) > .98)][k] == hatR,
+                    stringr::str_c(as.character(which(hatR[lower.tri(hatR)][which(abs(pair) > .999)][k] == hatR,
                         arr.ind = T
                     )[, 1]), collapse = ",")
                 ),
@@ -577,7 +576,7 @@ fan_case_2 <- function(x, y) {
         return(
             (
                 4 * mvtnorm::pmvnorm(
-                    lower = -Inf,
+                    lower = c(-Inf, -Inf),
                     upper = c(delta_hat, 0),
                     corr = matrix(c(1, t / sqrt(2), t / sqrt(2), 1),
                         nrow = 2,

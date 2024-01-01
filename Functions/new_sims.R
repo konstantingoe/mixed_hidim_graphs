@@ -14,7 +14,7 @@ binary_50_json <- jsonlite::toJSON(binary_50)
 write_json(binary_50_json, paste0(target_path, "binary_50.json"))
 binary_50_elapsed <- end_time - start_time
 
-binary_50_cubic <- binary_benchmark(runs = 2, n = 200, d = 50, g = cubic_root)
+binary_50_cubic <- binary_benchmark(runs = 2, n = 200, d = 50, g = cubic)
 binary_50_cubic_json <- jsonlite::toJSON(binary_50_cubic)
 write_json(binary_50_cubic_json, paste0(target_path, "binary_50_cubic.json"))
 
@@ -26,7 +26,7 @@ binary_250_json <- jsonlite::toJSON(binary_250)
 write_json(binary_250_json, paste0(target_path, "binary_250.json"))
 binary_250_elapsed <- end_time - start_time
 
-binary_250_cubic <- binary_benchmark(runs = 2, n = 200, d = 250, g = cubic_root)
+binary_250_cubic <- binary_benchmark(runs = 2, n = 200, d = 250, g = cubic)
 binary_250_cubic_json <- jsonlite::toJSON(binary_250_cubic)
 write_json(binary_250_cubic_json, paste0(target_path, "binary_250_cubic.json"))
 
@@ -38,7 +38,7 @@ binary_750_json <- jsonlite::toJSON(binary_750)
 write_json(binary_750_json, paste0(target_path, "binary_750.json"))
 binary_750_elapsed <- end_time - start_time
 
-binary_750_cubic <- binary_benchmark(runs = 2, n = 300, d = 750, g = cubic_root)
+binary_750_cubic <- binary_benchmark(runs = 2, n = 300, d = 750, g = cubic)
 binary_750_cubic_json <- jsonlite::toJSON(binary_750_cubic)
 write_json(binary_750_cubic_json, paste0(target_path, "binary_750_cubic.json"))
 
@@ -52,7 +52,7 @@ general_50_json <- jsonlite::toJSON(general_50)
 write_json(general_50_json, paste0(target_path, "general_50.json"))
 general_50_elapsed <- end_time - start_time
 
-general_50_cubic <- general_benchmark(runs = 2, n = 200, d = 50, g = cubic_root)
+general_50_cubic <- general_benchmark(runs = 2, n = 200, d = 50, g = cubic)
 general_50_cubic_json <- jsonlite::toJSON(general_50_cubic)
 write_json(general_50_cubic_json, paste0(target_path, "general_50_cubic.json"))
 
@@ -65,7 +65,7 @@ general_250_json <- jsonlite::toJSON(general_250)
 write_json(general_250_json, paste0(target_path, "general_250.json"))
 general_250_elapsed <- end_time - start_time
 
-general_250_cubic <- general_benchmark(runs = 2, n = 200, d = 250, g = cubic_root)
+general_250_cubic <- general_benchmark(runs = 2, n = 200, d = 250, g = cubic)
 general_250_cubic_json <- jsonlite::toJSON(general_250_cubic)
 write_json(general_250_cubic_json, paste0(target_path, "general_250_cubic.json"))
 
@@ -78,7 +78,7 @@ general_750_json <- jsonlite::toJSON(general_750)
 write_json(general_750_json, paste0(target_path, "general_750.json"))
 general_750_elapsed <- end_time - start_time
 
-general_750_cubic <- general_benchmark(runs = 2, n = 300, d = 750, g = cubic_root)
+general_750_cubic <- general_benchmark(runs = 2, n = 300, d = 750, g = cubic)
 general_750_cubic_json <- jsonlite::toJSON(general_750_cubic)
 write_json(general_750_cubic_json, paste0(target_path, "general_750_cubic.json"))
 
