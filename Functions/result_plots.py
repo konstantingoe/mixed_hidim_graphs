@@ -1,21 +1,22 @@
 """plotting results"""
+import json
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
-result_dict = {
-    "Frobenius": [2.860, 2.845, 2.892, 2.890],
-    "FPR": [0.015, 0.019, 0.042, 0.044],
-    "TPR": [0.335, 0.343, 0.356, 0.356],
-    "AUC": [0.881, 0.864, 0.816, 0.811],
-    "Routine": [
-        "Oracle",
-        "Oracle nonparanormal",
-        "Polyserial ML",
-        "Polyserial nonparanormal",
-    ],
-}
+sim_path = "mixed_hidim_graphs/simulation_results/"
 
-df = pd.DataFrame(result_dict)
+
+with open(sim_path + "binary_50.json", 'r+') as f:
+    binary_50 = json.load(f)
+    binary_50 = json.loads(binary_50[0])
+
+
+my_df = pd.DataFrame(binary_50)
+
+my_df.explode(["oracle","fan", "poly", "mle"])
+
+
 
 d = [50, 250, 750]
 # latent Gaussian
@@ -31,3 +32,4 @@ oracle_df = pd.DataFrame(oracle)
 fig, ax = plt.subplots()
 ax.errorbar(oracle_df["d"], oracle_df["Frobenius"], yerr=oracle_df["sd"], linestyle="")
 plt.show()
+
