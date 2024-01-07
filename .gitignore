@@ -63,3 +63,7 @@ venv*
 # scribbling
 
 scribbling/*
+
+# vscode
+
+.vscode/*
