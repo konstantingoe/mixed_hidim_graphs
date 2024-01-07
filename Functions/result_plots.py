@@ -14,22 +14,10 @@ with open(sim_path + "binary_50.json", 'r+') as f:
 
 my_df = pd.DataFrame(binary_50)
 
-my_df.explode(["oracle","fan", "poly", "mle"])
 
+exploded = my_df.transpose().explode(["auc","frobenius", "tpr", "fpr"])
+exploded["routine"] = exploded.index
 
+exploded.boxplot(column=["auc", "frobenius"], by="routine", figsize=(12, 8))
 
-d = [50, 250, 750]
-# latent Gaussian
-oracle = {
-    "d": [50, 250, 750],
-    "Frobenius": [2.860, 3.201, 11.207],
-    "sd": [0.091, 0.109, 0.140],
-}
-
-oracle_df = pd.DataFrame(oracle)
-
-
-fig, ax = plt.subplots()
-ax.errorbar(oracle_df["d"], oracle_df["Frobenius"], yerr=oracle_df["sd"], linestyle="")
 plt.show()
-
