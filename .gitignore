@@ -67,3 +67,4 @@ scribbling/*
 # vscode
 
 .vscode/*
+*.nfs*
