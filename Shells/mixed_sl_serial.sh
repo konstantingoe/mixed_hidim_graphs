@@ -5,7 +5,7 @@
 #SBATCH --get-user-env
 #SBATCH --clusters=serial
 #SBATCH --partition=serial_long
-#SBATCH --mem=2gb
+#SBATCH --mem=8gb
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
