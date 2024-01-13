@@ -18,4 +18,4 @@ module load r
 
 cd /dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs
 
-Rscript /Functions/new_sims.R
+Rscript Functions/new_sims.R
