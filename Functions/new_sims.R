@@ -1,11 +1,11 @@
 rm(list = ls())
-setwd("/Users/kgoebler/hume_revisions/mixed_hidim_graphs")
+setwd("cd /dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs")
 
 source("./Packages/packages.R")
 source("./Functions/simulation_functions.R")
 
 target_path <- "./simulation_results/"
-nworkers <- 20
+nworkers <- 50
 
 #### Binary benchamrk #####
 
