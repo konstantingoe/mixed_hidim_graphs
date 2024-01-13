@@ -15,8 +15,7 @@ binary_benchmark <- function(
     nlam = 30,
     g = \(x) {
         x
-    },
-    namevector = c("binary" = T, "ordinal" = F, "poisson" = F)) {
+    }) {
     # result objects
     within_list <- list("auc" = c(), "frobenius" = c(), "tpr" = c(), "fpr" = c())
     result_list <- list("oracle" = within_list, "fan" = within_list, "poly" = within_list, "mle" = within_list)
@@ -27,7 +26,7 @@ binary_benchmark <- function(
 
         data <- NULL
 
-        data_mixed <- make_ordinal_general(data_1, namevector = namevector)
+        data_mixed <- make_ordinal(data_1)
 
         ### learn sample correlation matrix
         sigma_oracle <- hatR_poly(data_1, verbose = F)
@@ -68,8 +67,7 @@ general_benchmark <- function(
     nlam = 30,
     g = \(x) {
         x
-    },
-    namevector = c("binary" = T, "ordinal" = T, "poisson" = T)) {
+    }) {
     # result objects
     within_list <- list("auc" = c(), "frobenius" = c(), "tpr" = c(), "fpr" = c())
     result_list <- list("oracle" = within_list, "feng" = within_list, "poly" = within_list, "mle" = within_list)
@@ -80,11 +78,11 @@ general_benchmark <- function(
 
         data <- NULL
 
-        data_mixed <- make_ordinal_general(data_1, namevector = namevector)
+        data_mixed <- make_ordinal(data_1, general = TRUE)
 
         ### learn sample correlation matrix
         sigma_oracle <- hatR_poly(data_1, verbose = F)
-        sigma_feng <- hatR_fan(data_mixed, verbose = F)
+        sigma_feng <- hatR_feng(data_mixed, verbose = F)
         sigma_poly <- hatR_poly(data_mixed, verbose = F)
         sigma_mle <- hatR_mle(data_mixed, verbose = F)
 
@@ -106,6 +104,152 @@ general_benchmark <- function(
             omega_path <- NULL
             omega_hat <- NULL
             adj_estimate <- NULL
+        }
+    }
+    return(result_list)
+}
+
+
+# Function: binary_benchmark_parallel
+# Description: This function performs binary benchmarking in parallel.
+binary_benchmark_parallel <- function(
+    runs = 100,
+    n = n,
+    d = d,
+    param = .1,
+    nlam = 30,
+    g = \(x) {
+        x
+    },
+    nworkers = 3) {
+    # result objects
+    # Create a foreach loop to fill up the vector in parallel
+    doFuture::registerDoFuture()
+    doRNG::registerDoRNG()
+    future::plan("multisession", workers = nworkers)
+    result_vector <- foreach::foreach(i = seq_len(runs), .combine = cbind) %dorng% {
+        # Your computation or value assignment goes here
+        # For example, computing the square of each element
+        data <- generate_data(n = n, d = d)
+        data_1 <- data[[2]]
+        omega <- data[[3]]
+
+        data <- NULL
+
+        data_mixed <- make_ordinal(data_1)
+        ### learn sample correlation matrix
+        sigma_oracle <- hatR_poly(data_1, verbose = F)
+        sigma_fan <- hatR_fan(data_mixed, verbose = F)
+        sigma_poly <- hatR_poly(data_mixed, verbose = F)
+        sigma_mle <- hatR_mle(data_mixed, verbose = F)
+
+        data_mixed <- NULL
+        data_1 <- NULL
+        corr_list <- list(sigma_oracle, sigma_fan, sigma_poly, sigma_mle)
+        rep <- 0
+        temp <- c()
+        for (corr_mat in corr_list) {
+            rep <- rep + 1
+            omega_path <- huge::huge(corr_mat, nlambda = nlam, method = "glasso", verbose = FALSE)
+            omega_hat <- ebic_selection(x = omega_path, n = n, s = corr_mat, param = param)
+            adj_estimate <- abs(omega_hat) > 0
+            temp <- c(temp, c(
+                auc(truth = omega, huge_obj = omega_path),
+                base::norm(omega_hat - omega, type = "F"),
+                tpr(truth = omega, estimate = adj_estimate),
+                fpr(truth = omega, estimate = adj_estimate)
+            ))
+            omega_path <- NULL
+            omega_hat <- NULL
+            adj_estimate <- NULL
+        }
+        temp
+    }
+    future::plan(sequential)
+    return(result_vector)
+}
+
+# Function: binary_benchmark_parallel
+# Description: This function performs binary benchmarking in parallel.
+general_benchmark_parallel <- function(
+    runs = 100,
+    n = n,
+    d = d,
+    param = .1,
+    nlam = 30,
+    g = \(x) {
+        x
+    },
+    nworkers = 3) {
+    # result objects
+    # Create a foreach loop to fill up the vector in parallel
+    doFuture::registerDoFuture()
+    doRNG::registerDoRNG()
+    future::plan("multisession", workers = nworkers)
+    result_vector <- foreach::foreach(i = seq_len(runs), .combine = cbind) %dorng% {
+        # Your computation or value assignment goes here
+        # For example, computing the square of each element
+        data <- generate_data(n = n, d = d, g = g)
+        data_1 <- data[[2]]
+        omega <- data[[3]]
+
+        data <- NULL
+
+        data_mixed <- make_ordinal(data_1, general = TRUE)
+
+        ### learn sample correlation matrix
+        sigma_oracle <- hatR_poly(data_1, verbose = F)
+        sigma_feng <- hatR_feng(data_mixed, verbose = F)
+        sigma_poly <- hatR_poly(data_mixed, verbose = F)
+        sigma_mle <- hatR_mle(data_mixed, verbose = F)
+
+
+        data_mixed <- NULL
+        data_1 <- NULL
+        corr_list <- list(sigma_oracle, sigma_feng, sigma_poly, sigma_mle)
+        rep <- 0
+        temp <- c()
+        for (corr_mat in corr_list) {
+            rep <- rep + 1
+            omega_path <- huge::huge(corr_mat, nlambda = nlam, method = "glasso", verbose = FALSE)
+            omega_hat <- ebic_selection(x = omega_path, n = n, s = corr_mat, param = param)
+            adj_estimate <- abs(omega_hat) > 0
+            temp <- c(temp, c(
+                auc(truth = omega, huge_obj = omega_path),
+                base::norm(omega_hat - omega, type = "F"),
+                tpr(truth = omega, estimate = adj_estimate),
+                fpr(truth = omega, estimate = adj_estimate)
+            ))
+            omega_path <- NULL
+            omega_hat <- NULL
+            adj_estimate <- NULL
+        }
+        temp
+    }
+    future::plan(sequential)
+    return(result_vector)
+}
+
+
+# Function: collect_results
+# Description: This function collects the results from a result vector.
+# Parameters:
+#   - result_vector: A vector containing the results to be collected.
+# Returns: None
+collect_results <- function(result_vector, general = FALSE) {
+    # Create a list of lists
+    within_list <- list("auc" = c(), "frobenius" = c(), "tpr" = c(), "fpr" = c())
+    result_list <- list("oracle" = within_list, "fan" = within_list, "poly" = within_list, "mle" = within_list)
+
+    if (general) {
+        result_list <- list("oracle" = within_list, "feng" = within_list, "poly" = within_list, "mle" = within_list)
+    }
+
+    counter <- 1
+    for (i in seq_len(length(result_list))) {
+        for (j in seq_len(length(within_list))) {
+            result_list[[i]][[j]] <- as.numeric(result_vector[counter, ])
+            counter <- counter + 1
         }
     }
     return(result_list)
@@ -175,103 +319,75 @@ generate_data <- function(n = 200, d = 50, g = identity) {
     ))
 }
 
-make_ordinal_general <- function(
+make_ordinal <- function(
     data = data,
     proportion = .5,
-    namevector = c("binary" = T, "ordinal" = T, "poisson" = T),
+    general = FALSE,
     unbalanced = .2,
     low = .05,
     high = .1,
-    lambda = 6,
-    num_breaks = round(runif(1, 3, 10))) {
+    lambda = 6) {
     # Define local vars:
     d <- ncol(data)
     d_1 <- floor(d * proportion)
     ordinal <- data[, 1:d_1]
 
-    if (namevector[1] == T && namevector[2] == T && namevector[3] == T) {
-        p_devide <- diff(c(0, floor(d_1 / sum(namevector)), d_1))
+    if (general) {
+        p_devide <- diff(c(0, floor(d_1 / 3), d_1))
         ordinal_binary <- ordinal[, 1:p_devide[1]]
         ordinal_ordinal <- ordinal[, (p_devide[1] + 1):p_devide[2]]
         ordinal_poisson <- ordinal[, (p_devide[2] + 1):d_1]
-    }
-    if (namevector[1] == T && namevector[2] == T && namevector[3] == F) {
-        p_devide <- diff(c(0, floor(d_1 / sum(namevector))))
-        ordinal_binary <- ordinal[, 1:p_devide[1]]
-        ordinal_ordinal <- ordinal[, (p_devide[1] + 1):d_1]
-        ordinal_poisson <- NULL
-    }
-    if (namevector[1] == T && namevector[2] == F && namevector[3] == T) {
-        p_devide <- diff(c(0, floor(d_1 / sum(namevector))))
-        ordinal_binary <- ordinal[, 1:p_devide[1]]
-        ordinal_ordinal <- NULL
-        ordinal_poisson <- ordinal[, (p_devide[1] + 1):d_1]
-    }
-    if (namevector[1] == F && namevector[2] == T && namevector[3] == T) {
-        p_devide <- diff(c(0, floor(d_1 / sum(namevector))))
-        ordinal_binary <- NULL
-        ordinal_ordinal <- ordinal[, 1:p_devide[1]]
-        ordinal_poisson <- ordinal[, (p_devide[1] + 1):d_1]
-    }
-    if (namevector[1] == F && namevector[2] == F && namevector[3] == T) {
-        ordinal_binary <- NULL
-        ordinal_ordinal <- NULL
-        ordinal_poisson <- ordinal[, 1:d_1]
-    }
-    if (namevector[1] == F && namevector[2] == T && namevector[3] == F) {
-        ordinal_binary <- NULL
-        ordinal_ordinal <- ordinal[, 1:d_1]
-        ordinal_poisson <- NULL
-    }
-    if (namevector[1] == T && namevector[2] == F && namevector[3] == F) {
+    } else {
         ordinal_binary <- ordinal[, 1:d_1]
         ordinal_ordinal <- NULL
         ordinal_poisson <- NULL
     }
 
-    if (namevector["binary"] == T) {
-        #### Xbinary
-        #### split binary so as to control fraction of unbalanced binary data
-        pbin1 <- runif(floor(ncol(ordinal_binary) * (1 - unbalanced)), .4, .6)
-        pbin2 <- runif((ncol(ordinal_binary) - floor(ncol(ordinal_binary) * (1 - unbalanced))), low, high)
-        pbin <- c(pbin1, pbin2)
-        for (i in seq_len(ncol(ordinal_binary))) {
-            ordinal_binary[, i] <- qbinom(pnorm(scale(ordinal_binary[, i])), size = 1, prob = pbin[i])
-        }
+
+    #### Xbinary
+    #### split binary so as to control fraction of unbalanced binary data
+    pbin1 <- runif(floor(ncol(ordinal_binary) * (1 - unbalanced)), .4, .6)
+    pbin2 <- runif((ncol(ordinal_binary) - floor(ncol(ordinal_binary) * (1 - unbalanced))), low, high)
+    pbin <- c(pbin1, pbin2)
+    for (i in seq_len(ncol(ordinal_binary))) {
+        ordinal_binary[, i] <- qbinom(pnorm(scale(ordinal_binary[, i])), size = 1, prob = pbin[i])
     }
-    if (namevector["ordinal"] == T) {
-        cum_mat <- list()
-        for (k in seq_len(ncol(ordinal_binary))) {
-            breaks <- runif(num_breaks)
-            sum_breaks <- sum(breaks)
-            breaks_norm <- sort(breaks) / sum_breaks
-            cum_mat[[k]] <- c(0, cumsum(breaks_norm))
-        }
-        for (i in seq_len(ncol(ordinal_binary))) {
+
+    if (general) {
+        # cum_mat <- list()
+        # for (k in seq_len(ncol(ordinal_ordinal))) {
+        #     breaks <- runif(num_breaks)
+        #     sum_breaks <- sum(breaks)
+        #     breaks_norm <- sort(breaks) / sum_breaks
+        #     cum_mat[[k]] <- c(0, cumsum(breaks_norm))
+        # }
+        ### Ordinal Variables
+        for (i in seq_len(ncol(ordinal_ordinal))) {
+            num_breaks <- round(runif(1, 3, 7))
             u <- pnorm(scale(ordinal_ordinal[, i]))
             ordinal_ordinal[, i] <- cut(
                 u,
-                breaks = cum_mat[[i]],
+                breaks = num_breaks, # cum_mat[[i]],
                 include.lowest = T,
                 ordered_result = T,
-                labels = 1:(length(cum_mat[[i]]) - 1)
+                labels = 1:num_breaks
             )
         }
-    }
-    if (namevector["poisson"] == T) {
-        #### Poisson Variables from Threshold generation
-        lambda_sample <- abs(rnorm(ncol(ordinal_poisson), mean = lambda, sd = 2))
+        ### Poisson Variables from Threshold generation
         for (i in seq_len(ncol(ordinal_poisson))) {
             ordinal_poisson[, i] <- qpois(
                 pnorm(
                     scale(ordinal_poisson[, i])
                 ),
-                lambda = lambda_sample[i]
+                lambda = lambda
             )
         }
     }
 
     ordinal <- cbind(ordinal_binary, ordinal_ordinal, ordinal_poisson)
+    if (any(is.na(ordinal))) {
+        stop("NA values detected in the 'ordinal' dataframe.")
+    }
     continuous <- (data[, (d_1 + 1):d])
     data_mixed <- as.data.frame(cbind(ordinal, continuous))
     ### declare ordinal variables as factors!
@@ -669,35 +785,48 @@ fan_case_3 <- function(x, y) {
 
 
 feng_case_3 <- function(x, y) {
-    #' @param x a vector containing the observations of the 1st ordinal r.v.
-    #' @param y a vector containing the observations of the 2nd ordinal r.v.
+    cross_tab <- table(x, y)
+    n_j <- nrow(cross_tab)
+    n_k <- ncol(cross_tab)
+    n <- sum(cross_tab)
+    gamma_p <- qnorm(cumsum(rowSums(cross_tab)) / n)[-n_j]
+    gamma_q <- qnorm(cumsum(colSums(cross_tab)) / n)[-n_k]
 
-    c_x <- length(unique(x))
-    c_y <- length(unique(y))
-    hatR_pq <- matrix(0, c_x, c_y)
+    # Get unique values sorted
+    unique_vals_p <- sort(unique(x))
+    binarized_p <- lapply(unique_vals_p[-1], function(val) {
+        as.integer(x >= val)
+    })
 
-    for (p in seq_len(c_x)) {
-        for (q in seq_len(c_y)) {
-            x_p <- 1 * (x >= p)
-            y_q <- 1 * (y >= q)
-            # computing Kendall's tau
-            tau <- pcaPP::cor.fk(x_p, y_q)
-            # estimating thresholds
-            gamma_p <- qnorm(1 - mean(x_p))
-            gamma_q <- qnorm(1 - mean(y_q))
+    unique_vals_q <- sort(unique(y))
+    binarized_q <- lapply(unique_vals_q[-1], function(val) {
+        as.integer(y >= val)
+    })
 
+    tau_hat <- sapply(seq_along(binarized_p), function(p) {
+        sapply(seq_along(binarized_q), function(q) {
+            kendall.a(binarized_p[[p]], binarized_q[[q]])
+        })
+    })
+
+    hat_rho_pq <- c()
+    counter <- 0
+    for (p in seq_along(binarized_p)) {
+        for (q in seq_along(binarized_q)) {
+            counter <- counter + 1
             bridge_func <- function(t) {
                 return(
                     (
                         2 * mvtnorm::pmvnorm(
                             lower = c(-Inf, -Inf),
-                            upper = c(gamma_p, gamma_q),
+                            upper = c(gamma_p[p], gamma_q[q]),
                             corr = matrix(c(1, t, t, 1), nrow = 2, ncol = 2)
                         )
-                        - 2 * pnorm(gamma_p) * pnorm(gamma_q) - tau)^2
+                        - 2 * pnorm(gamma_p[p]) * pnorm(gamma_q[q]) - as.matrix(tau_hat)[q, p])^2
                 )
             }
-            hatR_pq[p, q] <- as.numeric(
+
+            hat_rho_pq[counter] <- as.numeric(
                 tryCatch(
                     expr = {
                         optimize(bridge_func,
@@ -709,64 +838,82 @@ feng_case_3 <- function(x, y) {
                     error = function(e) {
                         message("Caught an error!")
                         message(e)
-                        return(sin(pi * tau))
+                        return(sin(pi * as.matrix(tau_hat)[q, p]))
                     }
                 )
             )
         }
     }
+
+
     # Adding the weights
-    w <- 1 / (c_x * c_y)
-    hatR <- sum(hatR_pq * w)
-    return(hatR)
+    w <- 1 / ((n_j - 1) * (n_k - 1))
+    hat_rho <- w * sum(hat_rho_pq)
+    return(hat_rho)
 }
 
-feng_case_2 <- function(ordinal, continuous) {
-    #' @param ordinal a vector containing the observations of the ordinal r.v.
-    #' @param continuous a vector containing the observations of the continuous r.v.
-    c_ordinal <- length(unique(ordinal))
-    hatR_p <- rep(0, c_ordinal)
-    # delta <- rep(0, c_ordinal)
-    for (p in seq_len(c_ordinal)) {
-        ordinal_p <- 1 * (ordinal >= p)
-        # computing Kendall's tau
-        tau <- pcaPP::cor.fk(ordinal_p, continuous)
-        # estimating thresholds
-        delta_hat <- qnorm(1 - mean(ordinal_p))
 
+feng_case_2 <- function(ordinal, continuous) {
+    x <- ordinal
+    y <- continuous
+    cross_tab <- table(x)
+    n <- sum(cross_tab)
+    n_j <- length(cross_tab)
+    gamma_p <- qnorm(cumsum(cross_tab) / n)[-n_j]
+    # Get unique values sorted
+    unique_vals_p <- sort(unique(x))
+    binarized_p <- lapply(unique_vals_p[-1], function(val) {
+        as.integer(x >= val)
+    })
+
+    tau_hat <- sapply(seq_along(binarized_p), function(p) {
+        kendall.a(binarized_p[[p]], y)
+    })
+
+    hat_rho_p <- c()
+    counter <- 0
+    for (p in seq_along(binarized_p)) {
+        counter <- counter + 1
         bridge_func <- function(t) {
             return(
                 (
                     4 * mvtnorm::pmvnorm(
                         lower = c(-Inf, -Inf),
-                        upper = c(delta_hat, 0),
+                        upper = c(gamma_p[p], 0),
                         corr = matrix(c(1, t / sqrt(2), t / sqrt(2), 1),
                             nrow = 2,
                             ncol = 2
                         )
                     )
-                    - 2 * pnorm(delta_hat) - tau
+                    - 2 * pnorm(gamma_p[p]) - tau_hat[p]
                 )^2
             )
         }
-        hatR_p[p] <- as.numeric(
+
+        hat_rho_p[counter] <- as.numeric(
             tryCatch(
                 expr = {
-                    optimize(bridge_func, lower = -0.999, upper = 0.999, tol = 1e-8)[1]
+                    optimize(bridge_func,
+                        lower = -0.999,
+                        upper = 0.999,
+                        tol = 1e-8
+                    )[1]
                 },
                 error = function(e) {
                     message("Caught an error!")
                     message(e)
-                    return(2^(1 / 2) * sin(tau * pi / 2))
+                    return(sin(pi * tau_hat[p]))
                 }
             )
         )
     }
+
     # Adding the weights
-    w <- 1 / c_ordinal
-    hatR <- sum(w * hatR_p)
-    return(hatR)
+    w <- 1 / (n_j - 1)
+    hat_rho <- w * sum(hat_rho_p)
+    return(hat_rho)
 }
+
 
 hatR_feng <- function(data = data, verbose = T) {
     if (sum(sapply(data, is.factor)) == 0 && verbose == T) {

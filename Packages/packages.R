@@ -3,8 +3,9 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
   huge,
   glasso,
-  future.apply,
-  parallel,
+  foreach,
+  doFuture,
+  doRNG,
   dplyr,
   stats,
   MASS,
