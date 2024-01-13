@@ -1,5 +1,5 @@
 rm(list = ls())
-setwd("cd /dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs")
+#setwd("/dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs")
 
 source("./Packages/packages.R")
 source("./Functions/simulation_functions.R")
