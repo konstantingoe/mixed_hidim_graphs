@@ -67,6 +67,7 @@ g = sns.pointplot(
     errorbar="sd",
     data=long_binary_auc_df,
     ax=axs[0, 0],
+    dodge=True,
 )
 g.set(ylabel="AUC")
 h = sns.pointplot(
@@ -76,6 +77,7 @@ h = sns.pointplot(
     errorbar="sd",
     data=long_cubic_auc_df,
     ax=axs[0, 1],
+    dodge=True,
 )
 i = sns.pointplot(
     x="dimension",
@@ -84,6 +86,7 @@ i = sns.pointplot(
     errorbar="sd",
     data=long_binary_frobenius_df,
     ax=axs[1, 0],
+    dodge=True,
 )
 i.set(ylabel="Frobenius Norm")
 j = sns.pointplot(
@@ -93,9 +96,15 @@ j = sns.pointplot(
     errorbar="sd",
     data=long_cubic_frobenius_df,
     ax=axs[1, 1],
+    dodge=True,
 )
 axs[0, 0].set(ylim=(0.5, 1))
-axs[1, 0].set(ylim=(2, 6))
+axs[1, 0].set(ylim=(2, 12))
+
+for ax_row in axs:
+    for ax in ax_row:
+        plt.setp(ax.collections, alpha=0.6)
+        plt.setp(ax.lines, alpha=0.6)
 
 sns.move_legend(g, "upper right", bbox_to_anchor=(1.2, 0))
 axs[0, 1].get_legend().set_visible(False)
