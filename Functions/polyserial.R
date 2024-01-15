@@ -1,6 +1,8 @@
 rm(list = ls())
-source("Packages/packages.R")
-source("Functions/functions.R")
+
+setwd("/Users/kgoebler/hume_revisions/mixed_hidim_graphs")
+source("./Packages/packages.R")
+source("./Functions/functions.R")
 
 # The palette with grey:
 cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999")
