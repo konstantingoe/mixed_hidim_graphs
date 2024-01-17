@@ -46,6 +46,17 @@ nworkers <- 50
 # binary_750_cubic_json <- jsonlite::toJSON(binary_750_cubic)
 # write_json(binary_750_cubic_json, paste0(target_path, "binary_750_cubic.json"))
 
+print("Starting cubic binary benchmark d = 750")
+start_time <- Sys.time()
+temp <- binary_benchmark_parallel(runs = 100, n = 300, d = 750, g = cubic, nworkers = nworkers)
+binary_750_cubic <- collect_results(temp, general = TRUE)
+
+end_time <- Sys.time()
+print(end_time - start_time)
+
+binary_750_cubic_json <- jsonlite::toJSON(binary_750_cubic)
+write_json(binary_750_cubic_json, paste0(target_path, "binary_750_cubic.json"))
+
 #### General benchamrk #####
 
 # General benchmark d = 50
@@ -93,16 +104,16 @@ nworkers <- 50
 # general_250_cubic_json <- jsonlite::toJSON(general_250_cubic)
 # write_json(general_250_cubic_json, paste0(target_path, "general_250_cubic.json"))
 
-print("Starting general benchmark d = 750")
-# General benchmark d = 750
-start_time <- Sys.time()
-# general_750 <- general_benchmark(runs = 100, n = 300, d = 750)
-temp <- general_benchmark_parallel(runs = 100, n = 300, d = 750, nworkers = nworkers)
-general_750 <- collect_results(temp, general = TRUE)
-end_time <- Sys.time()
-general_750_json <- jsonlite::toJSON(general_750)
-write_json(general_750_json, paste0(target_path, "general_750.json"))
-print(end_time - start_time)
+# print("Starting general benchmark d = 750")
+# # General benchmark d = 750
+# start_time <- Sys.time()
+# # general_750 <- general_benchmark(runs = 100, n = 300, d = 750)
+# temp <- general_benchmark_parallel(runs = 100, n = 300, d = 750, nworkers = nworkers)
+# general_750 <- collect_results(temp, general = TRUE)
+# end_time <- Sys.time()
+# general_750_json <- jsonlite::toJSON(general_750)
+# write_json(general_750_json, paste0(target_path, "general_750.json"))
+# print(end_time - start_time)
 
 
 print("Starting cubic general benchmark d = 750")
