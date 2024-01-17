@@ -103,9 +103,35 @@ Again, setting the derivative to zero and solving for $\Sigma_{jk}$ using some q
 
 \section{Comparison of \textit{Case II} estimators under the LGCM}
 
-In this section, we empirically compare \textit{Case II} estimators under the LGCM. In particular, we consider the \textit{Case II} MLE derived in Section 2.1 of the Manuscript after plugging in the estimated transformations \(\hat{f}\) at appropriate places with the ad-hoc estimator derived in Section 3.2 of the Manuscript.
+In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad-hoc estimator presented in Section 3.2 of the Manuscript.
 
+Let us start by rewriting Eq. \eqref{MLE_polyserial} where we replace occurrences of the former Gaussian variables $X_k$ with the corresponding transformation $\hat{f}_k(X_k)$. The resulting transformation plugged-in first order condition (FOC) for the \textit{Case II} MLE under the LGCM becomes:
 
+\begin{align*}
+    \MoveEqLeft \frac{\partial\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f_k}(x_k))}{\partial \Sigma_{jk}}                                                                                                                                 \\
+    = \sum_{i=1}^n & \Bigg[\frac{1}{\Phi(\tilde{\Gamma}_j^{r}(\hat{f_k})) - \Phi(\tilde{\Gamma}_j^{r-1}(\hat{f_k}))}(1-(\Sigma_{jk})^2)^{-\frac{3}{2}}                                                                                  \\
+                   & \Big[\phi({\tilde{\Gamma}}_j^{r}(\hat{f_k}))({\Gamma}_j^r\Sigma_{jk} - \hat{f_k}(\tilde{x}_{ik})) - \phi({\tilde{\Gamma}}_j^{r-1}(\hat{f_k}))({\Gamma}_j^{r-1}\Sigma_{jk} - \hat{f_k}(\tilde{x}_{ik}))\Big]\Bigg],
+\end{align*}
+where
+\[\hat{f}_k(\tilde{x}_{ik}) = \frac{\hat{f}_k(x_{ik}) - \hat{f}_k(\bar{x}_k)}{\sqrt{\hat{f}_k(s_k)^2}} \quad \text{and} \quad {\tilde{\Gamma}}_j^{r}(\hat{f}_k) = \frac{{\Gamma}_j^{r} - \Sigma_{jk}\hat{f}_k(\tilde{x}_{ik})}{\sqrt{1-(\Sigma_{jk})^2}}.\]
+
+In the ensuing empirical evaluation, the data generation scheme is as follows: First, we generate \(n\) data points \((z_{ij}, x_{ik})_{i=1}^n\) from a standard bivariate normal with correlation \(\Sigma^*_{jk}\). Second, we apply the same transformation \(f_t^{-1}(x) = 5x^5\) for \(t \in \{j,k\}\) to all the data points. Third, we generate binary data \(x_{ij}^r\) by randomly choosing appropriate \(f^{-1}_j(z_{ij})\)-thresholds and then applying inversion sampling.
+
+Computing the transformation plugged-in MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.
+\begin{equation}\label{eq:plugged_in_objective}
+    \begin{split}
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f}_k(x_k)) & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \log(p(x_{j}^{r} \mid \hat{f}_k(x_{ik}), \Sigma_{jk}))\big]                      \\
+        & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \Phi(\tilde{\Gamma}_j^{r}(\hat{f_k})) - \Phi(\tilde{\Gamma}_j^{r-1}(\hat{f_k}))\big].
+    \end{split}
+\end{equation}
+One strategy entails the direct maximization of Eq. \eqref{eq:plugged_in_objective} by employing a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. We employ Broyden's method \citep{Broyden1965}.
+
+In Figure \figref{fig:case2_comparison}, we generate data according to the scheme above for \(n=1000\) and a grid of true correlation values \(\Sigma^*_{jk} \in [0, 0.98]\) with a step size of \(s=0.02\). For each correlation value along the grid, we generate \(100\) data sets and compute the MLE (using the abovementioned strategies) and the ad-hoc estimator from Section 3.2 in the main text. We plot the true correlation values against the absolute difference between estimates and true correlation and the corresponding Monte-Carlo standard error for the MLE and the ad-hoc estimator.
+
+\begin{figure}\label{fig:case2_comparison}
+    \includegraphics[width=\textwidth]{Figures/case_2_difference.pdf}
+    \caption{Comparison of the \textsl{Case II} MLE under the LGCM and the ad-hoc estimator.}
+\end{figure}
 
 %\section{\textit{Case II} under the Gaussian Copula model}
 

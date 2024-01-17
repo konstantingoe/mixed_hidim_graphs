@@ -143,7 +143,7 @@ corr_comp <- function(rho, transform = function(x) 5 * x^5) {
     closed_form <- polyserial_closedform_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
     obj_func <- polyserial_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
 
-    return(c("adhoc" = adhoc, "closed_form" = closed_form, "obj_func" = obj_func))
+    return(c("ad_hoc" = adhoc, "foc" = closed_form, "log_likelihood" = obj_func))
 }
 
 run_corr_sim <- function(sim, rho = .5) {
@@ -165,8 +165,8 @@ test_corr <- data.frame(cbind(
 ))
 
 
-test_long_df <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc", "closed_form", "obj_func"))
-interim <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("adhoc_sd", "closed_form_sd", "obj_func_sd"))
+test_long_df <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("ad_hoc", "foc", "log_likelihood"))
+interim <- melt(test_corr, id.vars = "corr_seq", measure.vars = c("ad_hoc_sd", "foc_sd", "log_likelihood_sd"))
 melt_df <- cbind(test_long_df, interim[, "value"])
 names(melt_df) <- c("corr_seq", "variable", "value", "value_sd")
 
@@ -180,7 +180,9 @@ ggplot(melt_df) +
     ylab(TeX("difference betweem true $\\rho$ and estimated $\\hat{\\rho}$")) +
     xlab(TeX("true $\\rho$")) +
     labs(colour = "Estimation method") +
-    scale_colour_manual(values = cbPalette)
+    scale_colour_manual(values = cbPalette) +
+    ylim(-.1, .1) +
+    theme_minimal(base_size = 16)
 
 ggplot2::ggsave(filename = "case_2_difference.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
 
@@ -231,7 +233,8 @@ ggplot(sample_size_corr) +
     ylab("milliseconds") +
     xlab("sample size") +
     labs(colour = "Estimation method") +
-    scale_colour_manual(values = cbPalette)
+    scale_colour_manual(values = cbPalette) +
+    theme_minimal(base_size = 22)
 
 ggplot2::ggsave(filename = "case_2_speed.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
 
@@ -258,6 +261,7 @@ ggplot(corr_corr) +
     ylab(TeX("milliseconds")) +
     xlab(TeX("\\rho")) +
     labs(colour = "Estimation method") +
-    scale_colour_manual(values = cbPalette)
+    scale_colour_manual(values = cbPalette) +
+    theme_minimal(base_size = 22)
 
 ggplot2::ggsave(filename = "case_2_speed_corr.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
