@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -o ./outfiles/general.out
+#SBATCH -o ./outfiles/binary.out
 #SBATCH -D ./
-#SBATCH -J general_run
+#SBATCH -J binary_run
 #SBATCH --get-user-env
 #SBATCH --clusters=inter
 #SBATCH --partition=teramem_inter
