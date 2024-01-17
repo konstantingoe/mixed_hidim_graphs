@@ -182,6 +182,8 @@ ggplot(melt_df) +
     labs(colour = "Estimation method") +
     scale_colour_manual(values = cbPalette)
 
+ggplot2::ggsave(filename = "case_2_difference.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
+
 #### Some microbenchmarks ####
 
 
@@ -231,6 +233,7 @@ ggplot(sample_size_corr) +
     labs(colour = "Estimation method") +
     scale_colour_manual(values = cbPalette)
 
+ggplot2::ggsave(filename = "case_2_speed.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
 
 corr_seq <- seq(-.89, .98, length.out = 200)
 corr_seq_final <- rep(corr_seq, each = 3)
@@ -256,3 +259,5 @@ ggplot(corr_corr) +
     xlab(TeX("\\rho")) +
     labs(colour = "Estimation method") +
     scale_colour_manual(values = cbPalette)
+
+ggplot2::ggsave(filename = "case_2_speed_corr.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
