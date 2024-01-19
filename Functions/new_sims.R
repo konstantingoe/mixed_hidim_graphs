@@ -1,5 +1,5 @@
 rm(list = ls())
-#setwd("/dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs")
+# setwd("/dss/dsshome1/lxc0A/ge43doh2/Projects/mixed_hidim_graphs")
 
 source("./Packages/packages.R")
 source("./Functions/simulation_functions.R")
@@ -116,15 +116,15 @@ write_json(binary_750_cubic_json, paste0(target_path, "binary_750_cubic.json"))
 # print(end_time - start_time)
 
 
-print("Starting cubic general benchmark d = 750")
-start_time <- Sys.time()
-# general_750_cubic <- general_benchmark(runs = 100, n = 300, d = 750, g = cubic)
-temp <- general_benchmark_parallel(runs = 100, n = 300, d = 750, g = cubic, nworkers = nworkers)
-general_750_cubic <- collect_results(temp, general = TRUE)
+# print("Starting cubic general benchmark d = 750")
+# start_time <- Sys.time()
+# # general_750_cubic <- general_benchmark(runs = 100, n = 300, d = 750, g = cubic)
+# temp <- general_benchmark_parallel(runs = 100, n = 300, d = 750, g = cubic, nworkers = nworkers)
+# general_750_cubic <- collect_results(temp, general = TRUE)
 
-end_time <- Sys.time()
-print(end_time - start_time)
+# end_time <- Sys.time()
+# print(end_time - start_time)
 
-general_750_cubic_json <- jsonlite::toJSON(general_750_cubic)
-write_json(general_750_cubic_json, paste0(target_path, "general_750_cubic.json"))
-print("all done!")
+# general_750_cubic_json <- jsonlite::toJSON(general_750_cubic)
+# write_json(general_750_cubic_json, paste0(target_path, "general_750_cubic.json"))
+# print("all done!")
