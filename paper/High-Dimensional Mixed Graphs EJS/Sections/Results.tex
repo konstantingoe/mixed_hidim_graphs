@@ -1,9 +1,18 @@
 \subsection{Simulation results: binary-continuous mix}
 
-We start by considering a mix of binary and continuous variables generated as outlined in Section \ref{sec::setup} in order to be able to compare results with those of \citet{Fan17}. For this purpose, Table \ref{kendall_table} reports mean estimation errors $\Norm{\hat{\boldsymbol\Omega} - \boldsymbol\Omega^*}_F$ under the different $(d,n)$ regimes. When for all $j$, $f_j(x) = x$ we recover the latent Gaussian and when $f_j(x) = x^3$ the latent Gaussian copula model.
+We start by considering a mix of binary and continuous variables generated as outlined in Section \ref{sec::setup} to be able to compare results with those of \citet{Fan17}. For this purpose, \figref{fig:bench_binary} depicts the mean estimation error $\Norm{\hat{\boldsymbol\Omega} - \boldsymbol\Omega^*}_F$ and the AUC for the different estimators under the different $(d,n)$ regimes.
+%Table \ref{kendall_table} reports mean estimation errors $\Norm{\hat{\boldsymbol\Omega} - \boldsymbol\Omega^*}_F$ under the different $(d,n)$ regimes. When for all $j$, $f_j(x) = x$ we recover the latent Gaussian and when $f_j(x) = x^3$ the latent Gaussian copula model.
 
 The oracle estimator in the third column of Table \ref{kendall_table} corresponds to estimating $\hat{\boldsymbol\Sigma}^{(n)}$ from Definition \ref{def1} based on realization of the latent data $(\boldsymbol{Z_1},\boldsymbol{Z_2})$. Next in column four, the binary $\hat{\boldsymbol\Omega}_\tau$ indicates the nonparanormal estimator proposed by \citet{Fan17}. The next two columns, namely $\hat{\boldsymbol\Omega}_{\text{MLE}}$ and $\hat{\boldsymbol\Omega}_r$ indicate the ML approach and the general mixed estimator developed in Sections \ref{sec::latent_gaussian} and \ref{sec::nonparanormal}, respectively.
-\input{Tables/binary_table}
+%\input{Tables/binary_table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/binary.pdf}
+    \caption{Binary benchmark results}
+    \label{fig:bench_binary}
+\end{figure}
+
 As expected, the estimation error for $d = 50$ and $n=200$ in the latent Gaussian setting is almost identical for $\hat{\boldsymbol\Omega}_\tau$ and our proposed nonparanormal estimator $\hat{\boldsymbol\Omega}_r$. Additionally, $\hat{\boldsymbol\Omega}_{\text{MLE}}$ performs best in this case. Compared to the oracle estimator, all three approaches exhibit very little loss in accuracy that arises due to binarization. Looking at graph recovery in terms of FPR, TPR, and AUC the picture is similar.
 %For $\hat{\boldsymbol\Omega}_\tau$, $\hat{\boldsymbol\Omega}_{\text{MLE}}$, and $\hat{\boldsymbol\Omega}_r$ the FPR is around $22-25\%$ while the TPR amounts to $56-58\%$. Together, they form the AUC amounting to around $0.71$. Note, that the oracle estimator produces fewer TPs at a much lower FPR. The reason for the relatively low TPR is the fact that the glasso penalty induces too much sparsity in this low-dimensional setting. On the other hand, $\hat{\boldsymbol\Omega}_\tau$, $\hat{\boldsymbol\Omega}_{\text{MLE}}$, and $\hat{\boldsymbol\Omega}_r$ seem to be less conservative and produce more FPs.
 
@@ -17,8 +26,8 @@ When comparing $\Norm{\hat{\boldsymbol\Omega} - \boldsymbol\Omega^*}_F$ across t
 \input{Tables/general_table}
 \noindent This is true both for $\hat{\boldsymbol\Omega}_r$ and for $\hat{\boldsymbol\Omega}_{\text{MLE}}$ in the latent Gaussian settings. Furthermore, graph recovery in terms of AUC improves overall owing to the fact that more information regarding the latent variable is available.
 %This indicates that having more diverse level-sets increases the information regarding the latent variables, rather than having a negative impact on performance. 
-All remaining characteristics established in the previous scenario translate to the general case. In the nonparanormal settings $\hat{\boldsymbol\Omega}_{\text{MLE}}$ fails to establishing true positives rather than producing more FPs. 
+All remaining characteristics established in the previous scenario translate to the general case. In the nonparanormal settings $\hat{\boldsymbol\Omega}_{\text{MLE}}$ fails to establishing true positives rather than producing more FPs.
 %While in the low and medium dimensional setting too much sparsity is imposed in the high dimensional scenario FPRs of $\hat{\boldsymbol\Omega}_r$ and $\hat{\boldsymbol\Omega}_{\text{MLE}}$ are lower than for both oracle estimators confirming that they are more conservative in terms of graph recovery. 
 
-In conclusion, the results of the simulation study reveal that both estimators developed in this paper perform favorably when compared to the state of the art. Particularly, the nonparanormal estimator $\hat{\boldsymbol\Omega}_r$ 
-performs well, but is simple, removing the need to derive potentially large numbers of bridge functions to generalize the setting in \citet{Fan17} further. Instead, the polychoric and polyserial correlations agree naturally with the latent Gaussian copula model. 
+In conclusion, the results of the simulation study reveal that both estimators developed in this paper perform favorably when compared to the state of the art. Particularly, the nonparanormal estimator $\hat{\boldsymbol\Omega}_r$
+performs well, but is simple, removing the need to derive potentially large numbers of bridge functions to generalize the setting in \citet{Fan17} further. Instead, the polychoric and polyserial correlations agree naturally with the latent Gaussian copula model.

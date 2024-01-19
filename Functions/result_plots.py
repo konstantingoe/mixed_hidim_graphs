@@ -48,7 +48,7 @@ def get_metric_long(result_dict: dict, key_name_list: list, which_metric: str = 
             [([i] * reshaper.shape[0]) for i in [50, 250, 750]], axis=0
         ),
     )
-    long_metric_df = metric_df.melt(id_vars=["dimension"], var_name="method")
+    long_metric_df = metric_df.melt(id_vars=["dimension"], var_name="Method")
 
     return long_metric_df
 
@@ -89,16 +89,20 @@ general_df_list = [
 
 # Plotting
 def plot_simulation_results(
-    result_data: list[pd.DataFrame], frobenius_ylim: tuple[float, float] = (2, 12)
+    result_data: list[pd.DataFrame],
+    frobenius_ylim: tuple[float, float] = (2, 12),
+    save_fig: bool = False,
+    location: str = "/Users/kgoebler/hume_revisions/mixed_hidim_graphs/paper/High-Dimensional Mixed Graphs EJS/Figures/",
+    plotname: str = "simulation_results.pdf",
 ):
     """plot simulation results"""
-    _, axs = plt.subplots(
+    fig, axs = plt.subplots(
         ncols=2, nrows=2, figsize=(12, 8), sharey="row", layout="tight"
     )
     g = sns.pointplot(
         x="dimension",
         y="value",
-        hue="method",
+        hue="Method",
         errorbar="sd",
         data=result_data[0],
         ax=axs[0, 0],
@@ -108,7 +112,7 @@ def plot_simulation_results(
     h = sns.pointplot(
         x="dimension",
         y="value",
-        hue="method",
+        hue="Method",
         errorbar="sd",
         data=result_data[1],
         ax=axs[0, 1],
@@ -117,7 +121,7 @@ def plot_simulation_results(
     i = sns.pointplot(
         x="dimension",
         y="value",
-        hue="method",
+        hue="Method",
         errorbar="sd",
         data=result_data[2],
         ax=axs[1, 0],
@@ -127,7 +131,7 @@ def plot_simulation_results(
     j = sns.pointplot(
         x="dimension",
         y="value",
-        hue="method",
+        hue="Method",
         errorbar="sd",
         data=result_data[3],
         ax=axs[1, 1],
@@ -147,19 +151,31 @@ def plot_simulation_results(
     axs[1, 0].get_legend().set_visible(False)
     sns.color_palette("colorblind")
 
+    # Add individual titles to each subplot
+    axs[0, 0].set_title(r"$f(x) = x$")
+    axs[0, 1].set_title(r"$f(x) = x^{1/3}$")
+    axs[1, 0].set_title(r"$f(x) = x$")
+    axs[1, 1].set_title(r"$f(x) = x^{1/3}$")
+
     plt.show()
+    if save_fig:
+        fig.savefig(location + plotname)
 
 
-plot_simulation_results(result_data=binary_df_list)
+plot_simulation_results(
+    result_data=binary_df_list, save_fig=True, plotname="binary.pdf"
+)
 
-plot_simulation_results(result_data=general_df_list)
+plot_simulation_results(
+    result_data=general_df_list, save_fig=True, plotname="general.pdf"
+)
 
 
 # f, axs = plt.subplots(ncols=2, nrows=2, figsize=(12, 8), sharey="row", layout="tight")
 # g = sns.pointplot(
 #     x="dimension",
 #     y="value",
-#     hue="method",
+#     hue="Method",
 #     errorbar="sd",
 #     data=long_binary_auc_df,
 #     ax=axs[0, 0],
@@ -169,7 +185,7 @@ plot_simulation_results(result_data=general_df_list)
 # h = sns.pointplot(
 #     x="dimension",
 #     y="value",
-#     hue="method",
+#     hue="Method",
 #     errorbar="sd",
 #     data=long_cubic_auc_df,
 #     ax=axs[0, 1],
@@ -178,7 +194,7 @@ plot_simulation_results(result_data=general_df_list)
 # i = sns.pointplot(
 #     x="dimension",
 #     y="value",
-#     hue="method",
+#     hue="Method",
 #     errorbar="sd",
 #     data=long_binary_frobenius_df,
 #     ax=axs[1, 0],
@@ -188,7 +204,7 @@ plot_simulation_results(result_data=general_df_list)
 # j = sns.pointplot(
 #     x="dimension",
 #     y="value",
-#     hue="method",
+#     hue="Method",
 #     errorbar="sd",
 #     data=long_cubic_frobenius_df,
 #     ax=axs[1, 1],
