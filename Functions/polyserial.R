@@ -177,8 +177,8 @@ ggplot(melt_df) +
         ymin = corr_seq - value - value_sd, ymax = corr_seq - value + value_sd,
         x = corr_seq, colour = variable
     ), alpha = .2) +
-    ylab(TeX("difference betweem true $\\rho$ and estimated $\\hat{\\rho}$")) +
-    xlab(TeX("true $\\rho$")) +
+    ylab(TeX("$\\Delta$ betweem $\\Sigma^{*}_{jk}$ and $\\hat{\\Sigma}_{jk}$")) +
+    xlab(TeX("$\\Sigma^{*}_{jk}$")) +
     labs(colour = "Estimation method") +
     scale_colour_manual(values = cbPalette) +
     ylim(-.1, .1) +
@@ -196,13 +196,13 @@ corr_timing <- function(rho, transform = function(x) 5 * x^5, sample_size = 1000
     y <- latent_ordinalize(transformed_data[, 2])
     test_bm <- microbenchmark::microbenchmark(
         unit = "milliseconds",
-        adhoc = {
+        ad_hoc = {
             adhoc_lord_sim(cont = x, disc = y)
         },
-        closed_form = {
+        foc = {
             polyserial_closedform_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
         },
-        obj_func = {
+        log_likelihood = {
             polyserial_mle(cont_var = x, disc_var = y, nonparanormal = TRUE)
         }
     )
@@ -218,13 +218,13 @@ sample_size_corr <- data.frame(cbind(
     do.call(rbind, lapply(
         n_seq, function(k) {
             corr_timing(
-                rho = .47, sample_size = k
+                rho = .87, sample_size = k
             )
         }
     ))
 ))
 
-ggplot(sample_size_corr) +
+microbench_a <- ggplot(sample_size_corr) +
     geom_line(aes(y = median, x = final_seq, colour = expr)) +
     geom_ribbon(aes(
         ymin = lq, ymax = uq,
@@ -234,7 +234,8 @@ ggplot(sample_size_corr) +
     xlab("sample size") +
     labs(colour = "Estimation method") +
     scale_colour_manual(values = cbPalette) +
-    theme_minimal(base_size = 22)
+    theme_minimal(base_size = 16) +
+    theme(legend.position = "none")
 
 ggplot2::ggsave(filename = "case_2_speed.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
 
@@ -252,16 +253,24 @@ corr_corr <- data.frame(cbind(
 ))
 
 
-ggplot(corr_corr) +
+microbench_b <- ggplot(corr_corr) +
     geom_line(aes(y = median, x = corr_seq_final, colour = expr)) +
     geom_ribbon(aes(
         ymin = lq, ymax = uq,
         x = corr_seq_final, colour = expr
     ), alpha = .2) +
     ylab(TeX("milliseconds")) +
-    xlab(TeX("\\rho")) +
-    labs(colour = "Estimation method") +
+    xlab(TeX("$\\Sigma^{*}_{jk}$")) +
+    labs(colour = "Method") +
     scale_colour_manual(values = cbPalette) +
-    theme_minimal(base_size = 22)
+    theme_minimal(base_size = 16) +
+    theme(legend.position = "top")
 
 ggplot2::ggsave(filename = "case_2_speed_corr.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
+
+ggpubr::ggarrange(microbench_a, microbench_b,
+    # labels = c("A", "B"),
+    ncol = 2, nrow = 1
+)
+
+ggplot2::ggsave(filename = "case_2_speed_comp.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")

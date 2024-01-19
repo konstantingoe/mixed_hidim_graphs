@@ -27,5 +27,6 @@ pacman::p_load(
   VGAM,
   reshape,
   plyr,
+  ggpubr,
   ggplot2
 )
