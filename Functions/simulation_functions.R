@@ -130,7 +130,7 @@ binary_benchmark_parallel <- function(
     result_vector <- foreach::foreach(i = seq_len(runs), .combine = cbind) %dorng% {
         # Your computation or value assignment goes here
         # For example, computing the square of each element
-        data <- generate_data(n = n, d = d)
+        data <- generate_data(n = n, d = d, g = g)
         data_1 <- data[[2]]
         omega <- data[[3]]
 
