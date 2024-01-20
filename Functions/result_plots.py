@@ -118,15 +118,16 @@ def plot_simulation_results(
         ax=axs[0, 1],
         dodge=True,
     )
-    i = sns.pointplot(
+    i = sns.boxplot(
         x="dimension",
         y="value",
         hue="Method",
-        errorbar="sd",
+        # errorbar="sd",
         data=result_data[2],
         ax=axs[1, 0],
         dodge=True,
     )
+
     i.set(ylabel="Frobenius Norm")
     j = sns.pointplot(
         x="dimension",

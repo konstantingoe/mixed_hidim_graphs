@@ -49,7 +49,7 @@ nworkers <- 50
 print("Starting cubic binary benchmark d = 750")
 start_time <- Sys.time()
 temp <- binary_benchmark_parallel(runs = 100, n = 300, d = 750, g = cubic, nworkers = nworkers)
-binary_750_cubic <- collect_results(temp, general = TRUE)
+binary_750_cubic <- collect_results(temp)
 
 end_time <- Sys.time()
 print(end_time - start_time)
