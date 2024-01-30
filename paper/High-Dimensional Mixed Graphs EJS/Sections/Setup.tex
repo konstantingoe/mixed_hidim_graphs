@@ -12,12 +12,12 @@ At the outset, we construct the underlying precision matrix $\mathbf{\Omega}^*$.
 Throughout the simulation, we set $s = 0.15$ and incrementally increase the dimensionality by $d= 50,250,750$, representing a transition from small to large-scale graphs. We let $\mathbf{\Sigma}^* = (\mathbf{\Omega}^*)^{-1}$ rescaled such that all diagonal elements are equal to $1$. Equipped with $\mathbf\Sigma^*$, we draw $n$ i.i.d. samples from $\text{NPN}_d(\mathbf{0}, \mathbf{\Sigma}^*, f)$ and set the back-transform \(f^{-1}\) accordingly.
 
 In order to agree with the latent setup according to Definition 2.2
-%\ref{def1}% 
-let $\mathbf{X}_1$ be partitioned into equally sized collections of binary, ordinal, and Poisson distributed random variables i.e. $\mathbf{X}_1 = (\mathbf{X}_1^{\text{bin}}, \mathbf{X}_1^{\text{ord}},\mathbf{X}_1^{\text{pois}})$ where the generative procedure is according to Eq. (1) of the main Manuscript. %\eqref{latent_ordered}. 
+%\ref{def1}%
+let $\mathbf{X}_1$ be partitioned into equally sized collections of binary, ordinal, and Poisson distributed random variables, i.e., $\mathbf{X}_1 = (\mathbf{X}_1^{\text{bin}}, \mathbf{X}_1^{\text{ord}},\mathbf{X}_1^{\text{pois}})$ where the generative procedure is according to Eq. (1) of the main Manuscript. %\eqref{latent_ordered}.
 
-Recall, that for any continuous random variable $X$ with corresponding cumulative distribution function (CDF) $F_X$, $Y \coloneqq F_X(X)$ is a standard uniformly distributed random variable. Then, given $Y$ and with the aid of the inverse probability integral transform we can generate random samples from any cumulative distribution function \citep{Angus94}. Incidentally, this corresponds exactly to the relationship described in Eq. (1) of the main Manuscript.
+Recall that for any continuous random variable $X$ with corresponding cumulative distribution function (CDF) $F_X$, $Y \coloneqq F_X(X)$ is a standard uniformly distributed random variable. Then, given $Y$ and with the aid of the inverse probability integral transform, we can generate random samples from any cumulative distribution function \citep{Angus94}. Incidentally, this corresponds to the relationship described in Eq. (1) of the main Manuscript.
 %\eqref{latent_ordered}. %
-For $\mathbf{X}_1^{\text{bin}}$ the aforementioned transformation is employed with success probability drawn from Uniform$[0.4,0.6]$ for $80\%$ of $\mathbf{X}_1^{\text{bin}}$. The remaining $20\%$ mimic unbalanced classes and success probability is drawn from Uniform$[0.05,0.1]$.
+For $\mathbf{X}_1^{\text{bin}}$ the aforementioned transformation is employed with success probability drawn from Uniform$[0.4,0.6]$ for $80\%$ of $\mathbf{X}_1^{\text{bin}}$. The remaining $20\%$ mimics unbalanced classes, and success probability is drawn from Uniform$[0.05,0.1]$.
 
 Regarding $\mathbf{X}_1^{\text{ord}}$, the inverse probability integral transform is used to generate samples from the multinomial distribution. To that end, the state space is drawn from Uniform$[3,10]$ and the corresponding probability of falling into one of these states is chosen to be proportional to the amount of states. Lastly, $\mathbf{X}_1^{\text{pois}}$ is generated with the inverse probability integral transform and the rate parameter set equal to $6$.
 

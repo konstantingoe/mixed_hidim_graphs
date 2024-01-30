@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
+from seaborn.palettes import color_palette
+from matplotlib import gridspec
 
 sim_path = "/Users/kgoebler/hume_revisions/mixed_hidim_graphs/simulation_results/"
 sim_runs = 100
@@ -85,6 +88,110 @@ general_df_list = [
     long_general_frobenius_df,
     long_general_cubic_frobenius_df,
 ]
+
+
+def frobenius_sub_boxplot(data: pd.DataFrame, subfig_axs=None, subtitle: str = None):
+    """boxplot function for subplots"""
+    if subfig_axs:
+        axs = subfig_axs.subplots(ncols=3, nrows=1)
+    else:
+        _, axs = plt.subplots(ncols=3, nrows=1, figsize=(12, 8), layout="tight")
+    palette = color_palette("colorblind", len(data["Method"].unique()))
+    # Set y-axis label for the leftmost plot
+    axs[0].set_ylabel("Frobenius norm")
+
+    dims = [50, 250, 750]
+    counter = -1
+    for ax in axs:
+        counter += 1
+        plt.setp(ax.collections, alpha=0.6)
+        plt.setp(ax.lines, alpha=0.6)
+        sns.boxplot(
+            data=data[data["dimension"] == dims[counter]],
+            x="Method",
+            y="value",
+            ax=ax,
+            palette=palette,
+        )
+        ax.set_ylabel("")
+        ax.set_xlabel(f"dimension = {dims[counter]}")
+        ax.set(xticklabels=[])
+        ax.tick_params(bottom=False)
+    axs[0].set_ylabel("Frobenius norm")
+    if subtitle:
+        axs.set_title(subtitle)
+    # plt.show()
+
+
+def auc_sub_pointplot(
+    data: pd.DataFrame, show_legend: bool = False, subfig_axs=None, subtitle: str = None
+):
+    """pointplot function for subplots"""
+    if subfig_axs:
+        axs = subfig_axs.subplots()
+    else:
+        _, axs = plt.subplots()
+    palette = color_palette("colorblind", len(data["Method"].unique()))
+    g = sns.pointplot(
+        x="dimension",
+        y="value",
+        hue="Method",
+        errorbar="sd",
+        data=data,
+        ax=axs,
+        dodge=True,
+        linewidth=2,
+        palette=palette,
+    )
+    g.set(ylabel="AUC")
+    axs.set(ylim=(0.5, 1))
+    plt.setp(axs.collections, alpha=0.6)
+    g.get_legend().set_visible(False)
+    if show_legend:
+        g.get_legend().set_visible(True)
+    if subtitle:
+        axs.set_title(subtitle)
+    # plt.show()
+
+
+# frobenius_sub_boxplot(long_general_cubic_frobenius_df)
+# auc_sub_pointplot(long_general_cubic_auc_df, show_legend=True)
+
+location = (
+    "/Users/kgoebler/hume_revisions/mixed_hidim_graphs/paper/High-Dimensional Mixed Graphs EJS/Figures/",
+)
+plotname = ("simulation_results.pdf",)
+
+fig = plt.figure(layout="constrained", figsize=(10, 4))
+subfigs = fig.subfigures(nrows=2, ncols=2, wspace=0.07)
+
+axs_left_top = auc_sub_pointplot(
+    data=long_general_auc_df, subfig_axs=subfigs[0, 0], subtitle=r"$f(x) = x$"
+)
+axs_right_top = auc_sub_pointplot(
+    data=long_general_cubic_auc_df,
+    subfig_axs=subfigs[0, 1],
+    subtitle=r"$f(x) = x^{1/3}$",
+)
+axs_left_bottom = frobenius_sub_boxplot(
+    data=long_general_frobenius_df, subfig_axs=subfigs[1, 0]
+)
+axs_right_bottom = frobenius_sub_boxplot(
+    data=long_general_cubic_frobenius_df, subfig_axs=subfigs[1, 1]
+)
+
+handles, labels = fig.get_axes()[0].get_legend_handles_labels()
+
+alt_handles = color_palette(
+    "colorblind", len(long_general_frobenius_df["Method"].unique())
+)
+
+fig.legend(handles, labels, loc=(0.48, 0.46))
+
+plt.show()
+fig.savefig(location + plotname)
+
+sys.exit()
 
 
 # Plotting
