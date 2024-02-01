@@ -1068,6 +1068,26 @@ follows by plugging in the corresponding concentration bounds and simplifying.
 
 \section{Additional simulation setup and results}\label{sec::additional_setup_results}
 
+\subsection{FPR and TPR results for binary and genral mixed data}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/binary_fpr_tpr.pdf}
+    \caption{Simulation results for the binary-continuous data setting based on \(100\) simulation runs. The left column corresponds to the latent Gaussian model, where the transformation function is the identity. The right colum depicts results for the LGCM with \(f_j(x) = x^{1/3}\) for all \(j\). The top and bottom rows report mean and standard deviation of the TPR and FPR along simulation runs, respectively. The y-axis labels have superscript arrows attached to indicate the direction of improvement: \(\rightarrow\) implies that larger values are better.}
+    \label{fig:bench_tpr_fpr_binary}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/general_fpr_tpr.pdf}
+    \caption{Simulation results for the general mixed data setting based on \(100\) simulation runs. The left column corresponds to the latent Gaussian model, where the transformation function is the identity. The right colum depicts results for the LGCM with \(f_j(x) = x^{1/3}\) for all \(j\). The top and bottom rows report mean and standard deviation of the TPR and FPR along simulation runs, respectively. The y-axis labels have superscript arrows attached to indicate the direction of improvement: \(\rightarrow\) implies that larger values are better.}
+    \label{fig:bench_tpr_fpr_general}
+\end{figure}
+
+
 In the simulations carried out we start by constructing the true latent graph $\boldsymbol{\Omega}^*$. We set $\boldsymbol{\Omega}^*_{jj} = 1$ and $\boldsymbol{\Omega}_{jk}^* = s b_{jk}$ if $j\neq k$, where $s$ is the constant signal strength so as to assure positive definiteness. Furthermore, $b_{jk}$ are realizations of a Bernoulli random variable with corresponding success probability $p_{jk} = (2\pi)^{-1/2} \exp\big[\Norm{v_j - v_k}_2 / (2c) \big]$. In particular $v_j = (v_j^{(1)}, v_j^{(2)})$ are independent realizations of a bivariate uniform $[0,1]$ distribution and $c$ controls the sparsity of the graph. Throughout the experiments, $\hat{\Omega}$ is chosen by minimizing the eBIC according to the procedure outlined in Section 3.6 of the Manuscript %\ref{sec:precision_matrix} %
 with $\theta = 0.1$ for the low and medium, $\theta = 0.5$ for the high dimensional graphs.
 
