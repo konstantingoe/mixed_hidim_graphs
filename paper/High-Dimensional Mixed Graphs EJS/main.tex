@@ -59,9 +59,38 @@
     \newtheorem{assumption}{Assumption}[section]
     \newtheorem{condition}[theorem]{Condition}
     \newtheorem{corollary}[theorem]{Corollary}
+    \newtheorem*{theorem*}{Theorem}
 \endlocaldefs
 
+\newcounter{reviewer}
+\setcounter{reviewer}{0}
+\newcounter{point}[reviewer]
+\setcounter{point}{0}
 
+\renewcommand{\thepoint}{P\,\thereviewer.\arabic{point}} 
+
+% command declarations for reviewer points and our responses
+\newcommand{\reviewersection}{\stepcounter{reviewer} \bigskip \hrule
+                  \section*{Reviewer \thereviewer}}
+
+\newenvironment{point}
+   {\refstepcounter{point} \bigskip \noindent {\textbf{Reviewer~Point~\thepoint} } ---\ }
+   {\par }
+
+\newcommand{\shortpoint}[1]{\refstepcounter{point}  \bigskip \noindent 
+	{\textbf{Reviewer~Point~\thepoint} } ---~#1\par }
+
+\newenvironment{reply}
+   {\medskip \noindent \begin{it}\textbf{Reply}:\  }
+   {\medskip \end{it}}
+
+\newenvironment{change}
+   {\medskip \noindent \begin{sf}\textbf{Changed}:\  }
+   {\medskip \end{sf}}
+
+\newcommand{\shortreply}[2][]{\medskip \noindent \begin{sf}\textbf{Reply}:\  #2
+	\ifthenelse{\equal{#1}{}}{}{ \hfill \footnotesize (#1)}%
+	\medskip \end{sf}}
 %\usepackage{xr}
 %\makeatletter
 %\newcommand*{\addFileDependency}[1]{% argument=file name and extension
@@ -80,6 +109,13 @@
 
 
 \begin{document}
+
+\section*{Revision: Point-to-point cover letter}
+
+\input{Sections/Revision_cover}
+
+\clearpage\newpage
+\setcounter{page}{1}
 
 \begin{frontmatter}
 

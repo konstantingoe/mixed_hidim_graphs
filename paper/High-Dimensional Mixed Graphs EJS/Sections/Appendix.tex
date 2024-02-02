@@ -103,9 +103,9 @@ Again, setting the derivative to zero and solving for $\Sigma_{jk}$ using some q
 
 \section{Comparison of \textit{Case II} estimators under the LGCM}\label{sec::case2_comparison}
 
-In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad-hoc estimator presented in Section 3.2 of the Manuscript.
+In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad hoc estimator presented in Section 3.2 of the Manuscript.
 
-Let us start by rewriting Eq. \eqref{MLE_polyserial} where we replace occurrences of the former Gaussian variables $X_k$ with the corresponding transformation $\hat{f}_k(X_k)$. The resulting transformation plugged-in first order condition (FOC) for the \textit{Case II} MLE under the LGCM becomes:
+Let us start by rewriting Eq. \eqref{MLE_polyserial} where we replace occurrences of the former Gaussian variables $X_k$ with the corresponding transformation $\hat{f}_k(X_k)$. The resulting transformation-plugged-in first order condition (FOC) for the \textit{Case II} MLE under the LGCM becomes:
 
 \begin{align*}
     \MoveEqLeft \frac{\partial\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f_k}(x_k))}{\partial \Sigma_{jk}}                                                                                                                                 \\
@@ -117,7 +117,7 @@ where
 
 In the ensuing empirical evaluation, the data generation scheme is as follows: First, we generate \(n\) data points \((z_{ij}, x_{ik})_{i=1}^n\) from a standard bivariate normal with correlation \(\Sigma^*_{jk}\). Second, we apply the same transformation \(f_t^{-1}(x) = 5x^5\) for \(t \in \{j,k\}\) to all the data points. Third, we generate binary data \(x_{ij}^r\) by randomly choosing appropriate \(f^{-1}_j(z_{ij})\)-thresholds and then applying inversion sampling.
 
-Computing the transformation plugged-in MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.
+Computing the transformation-plugged-in MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.
 \begin{equation}\label{eq:plugged_in_objective}
     \begin{split}
         \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f}_k(x_k)) & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \log(p(x_{j}^{r} \mid \hat{f}_k(x_{ik}), \Sigma_{jk}))\big]                      \\
@@ -126,21 +126,21 @@ Computing the transformation plugged-in MLE for \textit{Case II} can be achieved
 \end{equation}
 One strategy entails the direct maximization of Eq. \eqref{eq:plugged_in_objective} by employing a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$; This strategy is used, for instance, in the R package \texttt{polycor} \citep{polycor2022}. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. We employ Broyden's method \citep{Broyden1965}.
 
-In \figref{fig:case2_comparison}, we generate data according to the scheme above for \(n=1000\) and a grid of true correlation values \(\Sigma^*_{jk} \in [0, 0.98]\) with a step size of \(s=0.02\). Due to symmetry, taking only positive correlations is sufficient for comparison purposes. For each correlation value along the grid, we generate \(100\) mixed binary-continuous data pairs and compute the MLE (using the abovementioned strategies) and the ad-hoc estimator from Section 3.2 in the main text. We plot the true correlation values against the absolute difference between estimates and true correlation and the corresponding Monte-Carlo standard error for the MLE and the ad-hoc estimator.
+In \figref{fig:case2_comparison}, we generate data according to the scheme above for \(n=1000\) and a grid of true correlation values \(\Sigma^*_{jk} \in [0, 0.98]\) with a step size of \(s=0.02\). Due to symmetry, taking only positive correlations is sufficient for comparison purposes. For each correlation value along the grid, we generate \(100\) mixed binary-continuous data pairs and compute the MLE (using the abovementioned strategies) and the ad hoc estimator from Section 3.2 in the main text. We plot the true correlation values against the absolute difference between estimates and true correlation and the corresponding Monte-Carlo standard error for the MLE and the ad hoc estimator.
 
 \begin{figure}\label{fig:case2_comparison}
     \includegraphics[width=\textwidth]{Figures/case_2_difference.pdf}
-    \caption{Comparison of the \textit{Case II} MLE under the LGCM and the ad-hoc estimator.}
+    \caption{Comparison of the \textit{Case II} MLE under the LGCM and the ad hoc estimator.}
 \end{figure}
 
-As expected, both strategies for attaining the MLE yield the same results. The ad-hoc estimator's bias shows only when the underlying correlation \(\Sigma^*_{jk}\) exceeds \(0.75\) and it remains at such a mild level that we consider it negligible \citep[see][for a similar observation]{Olsson82}. The strength of the ad-hoc estimator lies in its simplicity and computational efficiency. The left panel of \figref{fig:case2_speed} shows the median, first and third quartile computation time and for the MLE and the ad-hoc estimator for a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). Here we fix \(\Sigma^*_{jk} = .87\) and repeat each calculation \(100\) times recording the time elapsed.
+As expected, both strategies for attaining the MLE yield the same results. The ad hoc estimator's bias shows only when the underlying correlation \(\Sigma^*_{jk}\) exceeds \(0.75\) and it remains at such a mild level that we consider it negligible \citep[see][for a similar observation]{Olsson82}. The strength of the ad hoc estimator lies in its simplicity and computational efficiency. The left panel of \figref{fig:case2_speed} shows the median computation time surrounded by the first and third quartiles. We compare the two MLE optimization strategies and the ad hoc estimator for a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). Here we fix \(\Sigma^*_{jk} = .87\) and repeat each calculation \(100\) times recording the time elapsed.
 
 \begin{figure}\label{fig:case2_speed}
     \includegraphics[width=\textwidth]{Figures/case_2_speed_comp.pdf}
-    \caption{Computation time in milliseconds for the \textit{Case II} MLE and ad-hoc estimators. We report the median (solid line) and the first and third quartile (shaded area) of recorded computation time. In the left panel, we compare computation time against a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). In the right panel, we compare computation time against a grid of true correlation values \(\Sigma^*_{jk} \in [-.98, .98]\).}
+    \caption{Computation time in milliseconds for the \textit{Case II} MLE and ad hoc estimators. We report the median (solid line) and the first and third quartile (shaded area) of recorded computation time. In the left panel, we compare computation time against a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). In the right panel, we compare computation time against a grid of true correlation values \(\Sigma^*_{jk} \in [-.98, .98]\).}
 \end{figure}
 
-The right panel of \figref{fig:case2_speed} demonstrates computation time across a grid of length \(200\) of values for \(\Sigma_{jk}^* \in [-.98, 98]\). The sample size is, in this case, fixed at \(n=1000\). The ad-hoc estimator is consistently and considerably faster than the MLE, regardless of the strategy used. The difference in computation time is especially pronounced for large sample sizes and correlation values approaching the endpoints of the $[-1,1]$-interval. Setting the FOC to zero and solving for \(\Sigma_{jk}\) is computationally more efficient than directly maximizing the log-likelihood function. The time difference in MLE strategies is more pronounced at the endpoints of the $[-1,1]$ interval. The ad-hoc estimator is not affected by this issue. Therefore, in the high-dimensional setting we consider in this paper, the ad-hoc estimator is preferable to the MLE due to (1) its computational efficiency, (2) its simplicity, which allows us to form concentration inequalities, and (3) its robustness to the underlying correlation value.
+The right panel of \figref{fig:case2_speed} demonstrates computation time across a grid of length \(200\) of values for \(\Sigma_{jk}^* \in [-.98, 98]\). The sample size is, in this case, fixed at \(n=1000\). The ad hoc estimator is consistently and considerably faster than the MLE, regardless of the strategy used. The difference in computation time is especially pronounced for large sample sizes and correlation values approaching the endpoints of the $[-1,1]$-interval. Setting the FOC to zero and solving for \(\Sigma_{jk}\) is computationally more efficient than directly maximizing the log-likelihood function. The time difference in MLE strategies is more pronounced at the endpoints of the $[-1,1]$ interval. The ad hoc estimator is not affected by this issue. Therefore, in the high-dimensional setting we consider in this paper, the ad hoc estimator is preferable to the MLE due to (1) its computational efficiency, (2) its simplicity, which allows us to form concentration inequalities, and (3) its robustness to the underlying correlation value.
 
 %\section{\textit{Case II} under the Gaussian Copula model}
 
@@ -167,14 +167,14 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
 %\end{equation}
 %In order to make the upper bound of $1$ more explicit, Eq. \eqref{eq:brogden_adhoc} can be rewritten such that $\Sigma_{jk}^* = \sigma_{X_j X_k} / \sigma_k \lambda(\Xi; x^j, \xi^j)$. Now, the denominator is simply the covariance between the ordered $X_j$ and $X_k$ observations which, by the rearrangement inequality \citep[Theorem 368 in][p.261]{Hardy52}, is at least as large as $\sigma_{X_j X_k}$.
 
-%However, $\hat{\Sigma}_{jk}^+$ is unchanged by location and scale transformation i.e. $a + bX_j$ and $a + bX_k$ only so long as $b > 0$. What's more, $\hat{\Sigma}_{jk}^+$ need not be bounded by $-1$ from below. Therefore, we simply let $\hat{\Sigma}_{jk}^- = - \hat{\Sigma}_{j-k}^+$ where $\hat{\Sigma}_{j-k}^+$ indicates that we take $- X_k = -(X_{1k}, \dots X_{kn})^\prime$ rather than $X_k$. Finally, we can state the generalized ad-hoc estimator, i.e.
+%However, $\hat{\Sigma}_{jk}^+$ is unchanged by location and scale transformation i.e. $a + bX_j$ and $a + bX_k$ only so long as $b > 0$. What's more, $\hat{\Sigma}_{jk}^+$ need not be bounded by $-1$ from below. Therefore, we simply let $\hat{\Sigma}_{jk}^- = - \hat{\Sigma}_{j-k}^+$ where $\hat{\Sigma}_{j-k}^+$ indicates that we take $- X_k = -(X_{1k}, \dots X_{kn})^\prime$ rather than $X_k$. Finally, we can state the generalized ad hoc estimator, i.e.
 %\begin{equation}\label{eq:generalized_adhoc_appendix}
-%    \hat{\Sigma}_{jk}^{\text{ad-hoc}} = \begin{cases}
+%    \hat{\Sigma}_{jk}^{\text{ad hoc}} = \begin{cases}
 %    \hat{\Sigma}_{jk}^+ & \text{if } \hat{\Sigma}_{jk}^+ \geq 0 \\
 %    \hat{\Sigma}_{jk}^- & \text{if } \hat{\Sigma}_{jk}^+ < 0,
 %    \end{cases}
 %\end{equation}
-%where at last $\abs{\hat{\Sigma}_{jk}^{\text{ad-hoc}}} \leq 1$. Furthermore, $\hat{\Sigma}_{jk}^{\text{ad-hoc}}$ remains unchanged when we transform $X_j$ to $a + bX_j$ and $\hat{\Sigma}_{jk}^{\text{ad-hoc}}$ becomes $sign(b)\hat{\Sigma}_{jk}^{\text{ad-hoc}}$ when we transform $X_k$ to $a + bX_k$ \citep[see also][]{Bedrick96}.
+%where at last $\abs{\hat{\Sigma}_{jk}^{\text{ad hoc}}} \leq 1$. Furthermore, $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ remains unchanged when we transform $X_j$ to $a + bX_j$ and $\hat{\Sigma}_{jk}^{\text{ad hoc}}$ becomes $sign(b)\hat{\Sigma}_{jk}^{\text{ad hoc}}$ when we transform $X_k$ to $a + bX_k$ \citep[see also][]{Bedrick96}.
 
 \section{Proof of Theorem 3.2
   %\ref{uniform_convergence}
@@ -593,7 +593,7 @@ In what follows, the proof of Theorem 3.3
 revolves largely around the Winsorized estimator introduced in Section 3.2. %\ref{sec::nonparanormal_case2}%
 Recall that \[\hat{f}(x) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(x)])\] where \[W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n)),\] with truncation constant $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$. Recall $f(x) = \Phi^{-1}(F_{X_k}(x))$, and let $g = f^{-1}$.
 
-Assume w.l.o.g. that we have consecutive integer scoring in our discrete variable $X_j$ such that the polyserial ad-hoc estimator simplifies as
+Assume w.l.o.g. that we have consecutive integer scoring in our discrete variable $X_j$ such that the polyserial ad hoc estimator simplifies as
 \begin{equation}
     \hat{\Sigma}_{jk}^{(n)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}} \phi(\bar{\Gamma}_j^r)(x_j^{r+1} - x_j^r)} = \frac{r^{(n)}_{\hat{f}(X_k),X_j} \sigma^{(n)}_{X_j}}{\sum_{r=1}^{l_{j}} \phi(\bar{\Gamma}_j^r)} = \frac{S_{\hat{f}(X_k)X_j}}{\sigma^{(n)}_{\hat{f}(X_k)}\sum_{r=1}^{l_{j}} \phi(\bar{\Gamma}_j^r)},
 \end{equation}
@@ -941,7 +941,7 @@ The following lemma provides us with the means to form a probability bound for
 
 
 \begin{lemma}
-    Consider the polyserial ad-hoc estimator $\hat{\Sigma}_{jk}^{(n)}$ for $1 \leq j \leq d_1 < k \leq d_2$ and let $\epsilon \in \Big[ C_M\sqrt{\frac{\log d_2 log^2 n}{n^{1/2}}}, 8(1+4c^2)\Big]$, where $c$ is the corresponding sub-Gaussian parameter of the discrete variable.
+    Consider the polyserial ad hoc estimator $\hat{\Sigma}_{jk}^{(n)}$ for $1 \leq j \leq d_1 < k \leq d_2$ and let $\epsilon \in \Big[ C_M\sqrt{\frac{\log d_2 log^2 n}{n^{1/2}}}, 8(1+4c^2)\Big]$, where $c$ is the corresponding sub-Gaussian parameter of the discrete variable.
     Both the numerator and the denominator are bounded, i.e.
     \begin{equation*}
         S_{\hat{f}(X_k)X_j} \in [-(1 + \epsilon), 1 + \epsilon],
@@ -1025,7 +1025,7 @@ The following lemma provides us with the means to form a probability bound for
     \end{equation*}
     with $\nabla h = (1/v, -u/v^{2})^{T}$.
 
-    As we have just shown for the polyserial ad-hoc estimator, $\nabla h = (1/v, -u/v^2)^T$ is bounded with
+    As we have just shown for the polyserial ad hoc estimator, $\nabla h = (1/v, -u/v^2)^T$ is bounded with
     \begin{equation*}
         \sup \norm{\nabla h}_2 = \sqrt{\left(\frac{1}{1- 3t}\right)^2 + \left(-\frac{(1 + 3t)}{(1 - 3t)^2}\right)^2} \coloneqq L.
     \end{equation*}
