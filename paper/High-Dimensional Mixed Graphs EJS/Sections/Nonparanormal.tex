@@ -1,7 +1,7 @@
 
-\citet{Fan17} propose the binary LGCM, a special case of the LGCM allowing for the presence of binary and continuous variables. Following the approach of the nonparanormal SKEPTIC \citep{Liu12}, they circumvent the direct estimation of monotone transformation functions $\{f_j\}_{j=1}^d$ by employing rank correlation measures, such as Kendall's tau or Spearman's rho. These measures remain invariant under monotone transformations. Notably, for \textit{Case I}, a well-known mapping exists between Kendall's tau, Spearman's rho, and the underlying Pearson correlation coefficient $\Sigma_{jk}$. As a result, the primary contribution of \citet{Fan17} lies in deriving corresponding bridge functions for cases II and III. When considering the general mixed case, they advocate for binarizing all ordinal variables.
+\citet{Fan17} propose the binary LGCM, a special case of the LGCM allowing for the presence of binary and continuous variables. Following the approach of the nonparanormal SKEPTIC \citep{Liu12}, they circumvent the direct estimation of monotone transformation functions $\{f_j\}_{j=1}^d$ by employing rank correlation measures, such as Kendall's tau or Spearman's rho. These measures remain invariant under monotone transformations. Notably, for \textit{Case I}, a well-known mapping exists between Kendall's tau, Spearman's rho, and the underlying Pearson correlation coefficient $\Sigma_{jk}$. As a result, the primary contribution of \citet{Fan17} lies in deriving corresponding bridge functions for cases II and III. To reduce computational burden \citet{Yoon21} propose a hybrid multilinear interpolation and optimization scheme of the underlying latent correlation.
 
-This concept has been embraced by \citet{Feng19}, who suggest an initial step of binarizing all ordinal variables to create preliminary estimators. Subsequently, these estimators are meaningfully combined using a weighted aggregate. To extend the binary latent Gaussian copula model and explore generalizations regarding bridge functions, \citet{Quan18} ventured into scenarios where a combination of continuous, binary, and ternary variables is present. However, a notable drawback of this approach becomes evident. Dealing with a mix of binary and continuous variables requires three bridge functions- one for each case. The complexity grows as discrete variables introduce distinct state spaces. In fact, a combination of continuous variables and discrete variables with $k$ different state spaces necessitates $\binom{k+2}{2}$ bridge functions. To reduce computational burden \cite{Yoon21} propose a hybrid multilinear interpolation and optimization scheme of the underlying latent correlation.
+When considering the general mixed case, \citet{Fan17} advocate for binarizing all ordinal variables. This concept has been embraced by \citet{Feng19}, who suggest an initial step of binarizing all ordinal variables to create preliminary estimators. Subsequently, these estimators are meaningfully combined using a weighted aggregate. To extend the binary latent Gaussian copula model and explore generalizations regarding bridge functions, \citet{Quan18} ventured into scenarios where a combination of continuous, binary, and ternary variables is present. However, a notable drawback of this approach becomes evident. Dealing with a mix of binary and continuous variables requires three bridge functions -- one for each case. The complexity grows as discrete variables introduce distinct state spaces. In fact, a combination of continuous variables and discrete variables with $k$ different state spaces necessitates $\binom{k+2}{2}$ bridge functions.
 
 For this reason, we adopt an alternative approach to the latent Gaussian copula model when dealing with general mixed data, allowing discrete variables to possess any number of states. In this strategy, the number of cases to be considered remains consistent at three, as already introduced in the preceding section.
 
@@ -25,7 +25,7 @@ with $R_{ji}$ corresponding to the rank of $X_{ji}$ among $X_{j1}, \dots, X_{jn}
 In \textit{Case II}, the complexity increases. Employing a rank-based approach for the nonparanormal model makes direct application of the ML procedure unfeasible, given that the continuous variable is not observed in its Gaussian form. Nevertheless, a two-step approach remains viable. First, an estimate of \(f_j\) must be formulated and subsequently employed in Definition \ref{definition_case2}. Yet, scrutinizing convergence rates for this procedure poses challenges, as the estimated transformation appears in multiple instances within the first-order condition of the MLE. Section xx in the Supplementary Materials provides further details and compares the two-step likelihood approach to the one we propose below.
 
 Instead, we will proceed by suitably modifying other approaches that address the Gaussian case through a more direct \textit{ad-hoc} examination of the relationship between $\Sigma_{jk}$ and the point polyserial correlation \citep{Bedrick92, Bedrick96}.
-In Section \textcolor{red}{Xxx}\todo{Add this.} of the Supplementary Materials, we compare the nonparanormal \textit{Case II} estimation strategies.
+Section 2 of the Supplementary Materials compares the nonparanormal \textit{Case II} estimation strategies.
 
 In what follows, in the interest of readability, we omit the index in the monotone transformation functions but explicitly allow them to vary among the $\mathbf{Z}$. According to Definition \ref{def1}, we have the following Gaussian conditional expectation
 \begin{equation}
@@ -52,7 +52,9 @@ where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states
 
 To this end, consider the marginal distribution function of $X_k$, namely \[F_{X_k}(x)=P(X_k \leq x) = P(f(X_k) \leq f(x)) = \Phi(f(x)),\] such that $f(x) = \Phi^{-1}(F_{X_k}(x))$. In this setting, \citet{Liu09} propose to evaluate the quantile function of the standard normal at a Winsorized version of the empirical distribution function. This is necessary as the standard Gaussian quantile function $\Phi^{-1}(\cdot)$ diverges when evaluated at the boundaries of the $[0,1]$ interval. More precisely, consider $\hat{f}(u) = \Phi^{-1}(W_{\delta_n}[\hat{F}_{X_k}(u)])$,where $W_{\delta_n}$ is a Winsorization operator, i.e. \[W_{\delta_n}(u) \equiv \delta_n I(u < \delta_n) + u I(\delta_n \leq u \leq (1-\delta_n)) + (1-\delta_n) I(u > (1-\delta_n)).\] The truncation constant $\delta_n$ can be chosen in several ways.
 %In the low-dimensional scheme, \citet{Klaassen97} derive efficiency results by setting $\delta_n = 1/(n+1)$. As this does not translate to high-dimensional frameworks
-\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off.\todo{Ask Mathias, is this not very conservative?} Thus, equipped with an estimator for the transformation functions, the product-moment correlation is obtained the usual way, i.e.
+\citet{Liu09} propose to use $\delta_n = 1/(4n^{1/4}\sqrt{\pi\log n})$ in order to control the bias-variance trade-off.
+%\todo{Ask Mathias, is this not very conservative?}
+Thus, equipped with an estimator for the transformation functions, the product-moment correlation is obtained the usual way, i.e.
 \begin{equation*}
     r^{(n)}_{\hat{f}(X_k),X_j} = \frac{\sum_{i=1}^n (\hat{f}(X_{ik}) - \mu(\hat{f}))(X_{ij} - \mu(X_j)}{\sqrt{\sum_{i=1}^n \Big(\hat{f}(X_{ik}) - \mu(\hat{f})\Big)^2}\sqrt{\sum_{i=1}^n \Big(X_{ij} - \mu(X_j)\Big)^2}},
 \end{equation*}
@@ -70,7 +72,7 @@ where $\mu(\hat{f}) \equiv 1/n\sum_{i=1}^n \hat{f}(X_{ik})$ and $\mu(X_j) \equiv
 
 \subsection{Nonparanormal Case III}\label{sec::nonparanormal_case3}
 
-Lastly, let us turn to \textit{Case III} where both $X_j$ and $X_k$ are discrete, but they might differ in their respective state spaces. In the previous section, the ML procedure could no longer be applied directly because we do not observe the continuous variable in its Gaussian form. In \textit{Case III} however, we only observe the discrete variables generated by the latent scheme outlined in Definition \ref{def1}. Due to the monotonicity of the transformation functions, the ML procedure for \textit{Case III} from Section \ref{sec::latent_gaussian} can still be applied, i.e.
+Lastly, let us turn to \textit{Case III} where both $X_j$ and $X_k$ are discrete, but they might differ in their respective state spaces. In the previous section, the ML procedure could no longer be applied directly because we do not observe the continuous variable in its Gaussian form. In \textit{Case III}, however, we only observe the discrete variables generated by the latent scheme outlined in Definition \ref{def1}. Due to the monotonicity of the transformation functions, the ML procedure for \textit{Case III} from Section \ref{sec::latent_gaussian} can still be applied, i.e.
 
 \begin{definition}[Nonparanormal estimator $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III} ]
     The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
@@ -93,7 +95,9 @@ We start by highlighting that we set the LGCM model up such that for each $\Gamm
         &= P(Z_j \leq \gamma_j^r) = P(f_j(Z_j) \leq f_j(\gamma_j^r)) = \Phi(\Gamma^r_j).
     \end{split}
 \end{equation}
-From this equation, it is immediately clear that the thresholds satisfy $\Gamma^{r}_{j} = \Phi^{-1}( \pi^r_j )$.\todo{Ask Mathias why here we don't need Winsorization.} Consequently, when forming sample estimates of the unknown thresholds, we replace the cumulative probability vector with its sample equivalent, namely
+From this equation, it is immediately clear that the thresholds satisfy $\Gamma^{r}_{j} = \Phi^{-1}( \pi^r_j )$.
+%\todo{Ask Mathias why here we don't need Winsorization.}
+Consequently, when forming sample estimates of the unknown thresholds, we replace the cumulative probability vector with its sample equivalent, namely
 \begin{equation}
     \hat\pi^r_j = \sum_{k=1}^r \Big[\frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ij} = x^k_j)}\Big] = \frac{1}{n} \sum_{i=1}^n \mathbbm{1}{(X_{ij} \leq x^r_j)},
 \end{equation}
@@ -105,8 +109,8 @@ and plug it into the identity, i.e. $\hat\Gamma^r_j = \Phi^{-1}\big( \hat\pi^r_j
     \end{equation*}
 \end{lemma}
 
-The proof\todo{Fix proof!} of Lemma \ref{lemma::thresholds} is given in Section 4 %\ref{lemma_threshold_proof}%
-of the Supplementary Materials. The requirement that the estimated thresholds are bounded away from infinity typically does not pose any restriction in finite samples. All herein-developed methods are applied in a two-step fashion. We stress this by denoting the estimated thresholds as $\bar{\Gamma}_j^r$ in the ensuing theoretical results.
+The proof of Lemma \ref{lemma::thresholds} is given in Section 5 %\ref{lemma_threshold_proof}%
+of the Supplementary Materials. The requirement that the estimated thresholds are bounded away from infinity typically does not pose any restriction in finite samples. All herein-developed methods are applied in a two-step fashion. In the ensuing theoretical results, we stress this by denoting the estimated thresholds as $\bar{\Gamma}_j^r$.
 
 \subsection{Concentration results}\label{sec::convergence_results}
 
@@ -121,7 +125,7 @@ Define \(\mathbf{\Sigma}^*\) and \(\mathbf{\Omega}^*\) as the true covariance ma
 \end{assumption}
 
 \begin{assumption}\label{ass3}
-    Let $j < k$ and consider the log-likelihood functions in Definition \ref{definition_case2} and in Definition \ref{definition_case3}. We assume that with probability one
+    Let $j < k$ and consider the log-likelihood functions in Definition \ref{definition_case2} and in Definition \ref{definition_case3}. We assume that with probability one,
     \begin{itemize}
         \item $\{-1+\delta, 1 - \delta\}$ are not critical points of the respective log-likelihood functions.
         \item The log-likelihood functions have a finite number of critical points.
@@ -197,7 +201,5 @@ To select the tuning parameter in Eq. \eqref{glasso}
 \begin{equation}\label{EBIC}
     eBIC_\theta = -2 \ell^{(n)}(\hat{\mathbf\Omega}(E)) + \Abs{E} \log(n) + 4 \Abs{E}\theta \log(d),
 \end{equation}
-where $\theta \in [0,1]$ governs penalization of large graphs. Furthermore, $\abs{E}$ represents the cardinality of the edge set of a candidate graph on $d$ nodes and $\ell^{(n)}(\hat{\mathbf\Omega}(E))$ denotes the corresponding maximized log-likelihood \citep[see][for more details]{Foygel10} which in turn depends on $\lambda$ from Eq. \eqref{glasso}.
-
-In practice, first, one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each model in the path and select the one with the minimal value.
+where $\theta \in [0,1]$ governs penalization of large graphs. Furthermore, $\abs{E}$ represents the cardinality of the edge set of a candidate graph on $d$ nodes and $\ell^{(n)}(\hat{\mathbf\Omega}(E))$ denotes the corresponding maximized log-likelihood which in turn depends on $\lambda$ from Eq. \eqref{glasso}. In practice, first, one retrieves a small set of models over a range of penalty parameters $\lambda > 0$ (called \textit{glasso path}). Then, we calculate the eBIC for each model in the path and select the one with the minimal value.
 

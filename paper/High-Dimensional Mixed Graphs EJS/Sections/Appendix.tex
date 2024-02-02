@@ -35,7 +35,7 @@ with $\tilde{X_k} = \frac{X_k-\mu_k}{\sigma_k}$ and $\Phi(t)$ denoting the stand
     \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) = \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x_{j}^{r} \mid x_{ik}, \Sigma_{jk}))\big].
 \end{equation}
 
-Due to the heavy computational burden involved when estimating all parameters simultaneously, a \textit{two-step estimator} has been proposed \citet{Olsson82}. That is, in a first step $\mu_k, \sigma_k^2$ are estimated by $\bar{X_k}$ and $s_k^2$, respectively. Moreover, the thresholds $\Gamma_j^r, r = 1, \dots, l_{j}$ are estimated by the quantile function of the standard normal distribution evaluated at the cumulative marginal proportions of $x_j^r$ just as described in Section 3.4. %\ref{sec::thresholds}.
+Due to the heavy computational burden involved when estimating all parameters simultaneously, a \textit{two-step estimator} has been proposed \cite{Olsson82}. That is, in a first step $\mu_k, \sigma_k^2$ are estimated by $\bar{X_k}$ and $s_k^2$, respectively. Moreover, the thresholds $\Gamma_j^r, r = 1, \dots, l_{j}$ are estimated by the quantile function of the standard normal distribution evaluated at the cumulative marginal proportions of $x_j^r$ just as described in Section 3.4. %\ref{sec::thresholds}.
 
 In a second step, all that remains is obtaining the MLE for $\Sigma_{jk}$ now with the readily computed estimates from the first step:
 \begin{equation}\label{FOC}
@@ -101,7 +101,7 @@ where $\Phi_2(u,v,\rho)$ is the standard bivariate normal distribution function 
 
 Again, setting the derivative to zero and solving for $\Sigma_{jk}$ using some quasi-Newton method yields the \textit{Case III} two-step MLE for $\Sigma_{jk}$.
 
-\section{Comparison of \textit{Case II} estimators under the LGCM}
+\section{Comparison of \textit{Case II} estimators under the LGCM}\label{sec::case2_comparison}
 
 In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad-hoc estimator presented in Section 3.2 of the Manuscript.
 
@@ -146,7 +146,7 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
 
 %Assume that $E[X_k \mid Z_j] = \mu_{k} + \Sigma_{jk}^*\sigma_{k}Z_j$ for $j \in d_1+1, \dots, d_2$ and $k \in 1, \dots, d_1$ and that the standardized continuous and the latent continuous variable are identically distributed, i.e. $X_k \sim Z_j$.
 
-%Denote $\Xi(t) = P((X_k - \mu_k)/\sigma_k \leq t)$ and set $\lambda(\Xi; x^j, \xi^j) = \sum_{r=1}^{l_{j}} x^r_j \int_{\xi_{r-1}^{j}}^{\xi_{r}^{j}} z d\Xi(z)$ where $\xi^j = (\xi_j^0, \xi^j_1, \dots, \xi_j^{l_j +1})^\prime$ and $\xi^r_j = \Xi^{-1}(p_{\cdot r}^j)$ then by \citet[p. 430]{Bedrick96} we obtain
+%Denote $\Xi(t) = P((X_k - \mu_k)/\sigma_k \leq t)$ and set $\lambda(\Xi; x^j, \xi^j) = \sum_{r=1}^{l_{j}} x^r_j \int_{\xi_{r-1}^{j}}^{\xi_{r}^{j}} z d\Xi(z)$ where $\xi^j = (\xi_j^0, \xi^j_1, \dots, \xi_j^{l_j +1})^\prime$ and $\xi^r_j = \Xi^{-1}(p_{\cdot r}^j)$ then by \cite[p. 430]{Bedrick96} we obtain
 %\begin{equation}\label{eq:polyserial_adhoc}
 %    \Sigma_{jk}^* = \frac{\rho_{X_j X_k} \sigma_j}{\lambda(\Xi; x^j, \xi^j)}.
 %\end{equation}
@@ -209,7 +209,7 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
     \begin{equation*}
         \abs{\frac{\partial\ell_{jk}(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}} \leq \kappa L_1,
     \end{equation*}
-    and $\Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big)$ is zero-mean and bounded. Then by Hoeffding's (\citeyear{Hoeffding63}) lemma  the gradient of the log-likelihood function is $\tau^2$-sub-Gaussian with $\tau = 2\kappa L_1$
+    and $\Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big)$ is zero-mean and bounded. Then by  \citeauthor{Hoeffding63}'s \cite{Hoeffding63} lemma, the gradient of the log-likelihood function is $\tau^2$-sub-Gaussian with $\tau = 2\kappa L_1$
 
     \paragraph{\textit{Case III}}: Recall that we have
     \begin{equation*}
@@ -1068,10 +1068,9 @@ follows by plugging in the corresponding concentration bounds and simplifying.
 
 \section{Additional simulation setup and results}\label{sec::additional_setup_results}
 
-\subsection{FPR and TPR results for binary and genral mixed data}
+\subsection{FPR and TPR results for binary and general mixed data}
 
-
-
+This section provides additional simulation results for the binary-continuous and general mixed data setting. In particular, we report TPR and FPR for the latent Gaussian model and the LGCM with \(f_j(x) = x^{1/3}\) for all \(j\). The results are depicted in Figures \ref{fig:bench_tpr_fpr_binary} and \ref{fig:bench_tpr_fpr_general} for the binary-continuous and general mixed data settings, respectively.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{Figures/binary_fpr_tpr.pdf}
@@ -1079,7 +1078,9 @@ follows by plugging in the corresponding concentration bounds and simplifying.
     \label{fig:bench_tpr_fpr_binary}
 \end{figure}
 
+\figref{fig:bench_tpr_fpr_binary} illustrates that our \texttt{poly} estimator performs almost identical to the gold standard \texttt{bridge} estimator proposed by \citet{Fan17}. In the right column, the \texttt{mle} estimator is misspecified, and TPR is noticeably lower than for the remaining estimators. Interestingly, it appears that the misspecified \texttt{mle} estimator does not infer additional edges, which is reflected in the FPR holding level with the other estimators.
 
+The general mixed data setting results reported in \figref{fig:bench_tpr_fpr_general} are similar. The \texttt{poly} estimator performs almost identically to the \texttt{mle} estimator under the latent Gaussian model in terms of FPR and TPR. The \texttt{bridge} estimator has higher FPR and TPR in the \(d=50\) case and lower FPR and TPR in the \(d=750\) case. Under the LGCM, similar to the binary-continuous data setting, the \texttt{mle} estimator is misspecified and has a lower TPR than the other estimators while the FPR holds level. The \texttt{bridge} ensemble estimator has an even higher FPR and TPR in the \(d=50\) case and a slightly lower FPR and TPR in the \(d=750\) case.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{Figures/general_fpr_tpr.pdf}
@@ -1087,186 +1088,37 @@ follows by plugging in the corresponding concentration bounds and simplifying.
     \label{fig:bench_tpr_fpr_general}
 \end{figure}
 
-
-In the simulations carried out we start by constructing the true latent graph $\boldsymbol{\Omega}^*$. We set $\boldsymbol{\Omega}^*_{jj} = 1$ and $\boldsymbol{\Omega}_{jk}^* = s b_{jk}$ if $j\neq k$, where $s$ is the constant signal strength so as to assure positive definiteness. Furthermore, $b_{jk}$ are realizations of a Bernoulli random variable with corresponding success probability $p_{jk} = (2\pi)^{-1/2} \exp\big[\Norm{v_j - v_k}_2 / (2c) \big]$. In particular $v_j = (v_j^{(1)}, v_j^{(2)})$ are independent realizations of a bivariate uniform $[0,1]$ distribution and $c$ controls the sparsity of the graph. Throughout the experiments, $\hat{\Omega}$ is chosen by minimizing the eBIC according to the procedure outlined in Section 3.6 of the Manuscript %\ref{sec:precision_matrix} %
-with $\theta = 0.1$ for the low and medium, $\theta = 0.5$ for the high dimensional graphs.
-
-We set $s = 0.15$ and incrementally increase the dimensionality of each graph: $d= 50,250,750$ representing a transition from small to large scale graphs. We let $\boldsymbol{\Sigma}^* = (\boldsymbol{\Omega}^*)^{-1}$ rescaled such that all diagonal elements are equal to $1$. Equipped with $\Sigma^*$ we draw $n$ iid. samples from $\text{N}_d(\boldsymbol{0}, \boldsymbol{\Sigma}^*)$ obtaining realizations for the case of the latent Gaussian model. For the nonparanormal family, we sample from $\text{NPN}(\boldsymbol{0}, \boldsymbol{\Sigma}^*, f)$ where $f_j(x) = x^3$ for all $1 \leq j \leq d$.
-
-In order to agree with the latent setup according to Definition 2.2
-%\ref{def1}% 
-let $\boldsymbol{X}_1$ be partitioned into equally sized collections of binary, ordinal and Poisson distributed random variables i.e. $\boldsymbol{X}_1 = (\boldsymbol{X}_1^{\text{bin}}, \boldsymbol{X}_1^{\text{ord}},\boldsymbol{X}_1^{\text{pois}})$ where the generative procedure is according to Eq. (1) of the main Manuscript. %\eqref{latent_ordered}. 
-
-Recall, that for any continuous random variable $X$ with corresponding cumulative distribution function (CDF) $F_X$, $Y \coloneqq F_X(X)$ is a standard uniformly distributed random variable. Then, given $Y$ and with the aid of the inverse probability integral transform we can generate random samples from any cumulative distribution function \citep{Angus94}. Incidentally, this corresponds exactly to the relationship described in Eq. (1) of the main Manuscript.
-%\eqref{latent_ordered}. %
-For $\boldsymbol{X}_1^{\text{bin}}$ the aforementioned transformation is employed with success probability drawn from Uniform$[0.4,0.6]$ for $80\%$ of $\boldsymbol{X}_1^{\text{bin}}$. The remaining $20\%$ mimic unbalanced classes and success probability is drawn from Uniform$[0.05,0.1]$.
-
-Regarding $\boldsymbol{X}_1^{\text{ord}}$, the inverse probability integral transform is used to generate samples from the multinomial distribution. To that end, the state space is drawn from Uniform$[3,10]$ and the corresponding probability of falling into one of these states is chosen to be proportional to the amount of states. Lastly, $\boldsymbol{X}_1^{\text{pois}}$ is generated with the inverse probability integral transform and the rate parameter set equal to $6$.
-
 \subsection{Ternary mixed data results}
 
-We now compare our method against \citeauthor{Quan18}'s (2018) generalization of the bridge function approach by \citet{Fan17} when a mix of ternary, binary, and continuous data is present. Recall that in this case $ \binom{2+2}{2} = 6$ bridge functions are needed.
+We additionally compare our \texttt{poly} and \texttt{mle} estimators with a generalization of the bridge function approach proposed by \citet{Quan18} given a mix of ternary, binary, and continuous data. In this case, $ \binom{2+2}{2} = 6$ individual bridge functions are needed.
 
-The $(d,n)$-setup is analogous to the binary mixed case. Overall, when additionally to binary also ternary data is present both according to Table \ref{ternary_table} estimation error and graph recovery error reduce slightly. This is unsurprising as we now have more information about the underlying latent variables. Note that we expect the oracle $\hat{\Omega}$ to be roughly equivalent to the previous binary mixed case.
-
-Starting with $\hat{\Omega}_{\text{MLE}}$ the pattern from the binary/continuous case continues to show in the ternary-binary mix: whenever $f(x)=x$ it generally performs best, in particular with respect to graph recovery.
+The $(d,n)$-setup is analogous to the binary-continuous data setting from the main text. Starting with \texttt{mle}, the pattern from the binary-continuous setting continues to show in the ternary-binary-continuous mix. Whenever $f(x)=x$, the \texttt{mle} estimator generally performs best, in particular concerning graph recovery.
 
 \input{Tables/ternary_table}
-However, when $f_j(x)=x^3$ performance drops notably which again is driven not by an increased FPR but by a decreased TPR.
-Again, results for $\hat{\boldsymbol\Omega}_\tau$ and $\hat{\boldsymbol\Omega}_r$ are similar although there appears to be a pattern in the sense of some evidence of smaller estimation error and better graph recovery all throughout the experiments by using our estimator $\hat{\boldsymbol\Omega}_r$.
 
-Overall, no performance reduction neither in terms of estimation error nor in graph recovery can be detected when comparing $\hat{\boldsymbol\Omega}_r$ to the ternary $\hat{\boldsymbol\Omega}_\tau$. In fact, the opposite is the case. Consequently, in both special cases of Definition 2.2 %\ref{def1}%
--- the binary and the ternary mixed scheme --
-these results support the use of the polychoric and polyserial estimation strategies as a simpler and more general approach as compared with constructing bridge functions for every combination of variables and their state spaces.
-
-
+However, when $f_j(x)=x^3$, performance drops notably, which is driven not by an increased FPR but by a decreased TPR.
+Again, results for \texttt{bridge} and \texttt{poly} behave similarly across metrics. No performance reduction, neither in estimation error nor in graph recovery, can be detected when comparing \texttt{poly} to the ternary \texttt{bridge} estimator.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\clearpage
 %\newpage
 %\pagebreak
 
-\section{Variable Description for real world data application}
+\section{Application to COVID-19 data}\label{sec::empirical_application}
 
-Table \ref{tab:var_descr} gives an overview over the variables present in the UK Biobank data set.
+\input{Sections/Empirical_example}
+
+\subsection{Variable Description for real-world data application}
+
+Table \ref{tab:var_descr} gives an overview of the variables present in the UK Biobank data set.
 
 \input{Tables/variables}
 
-\begin{comment}
-
-
-\newpage
-
-\section{Data Simulation Function}
-\textbf{Input of \texttt{simulate.mixed.data}:}
-\begin{itemize}
-    \item Number of observations \texttt{N}
-    \item Vector \texttt{pfrac=c(gauss,poiss,bin,negbin,multinom)} with number of normally,  poisson,  binary, negative binomial and multinomial variables
-    \item \texttt{Omega}: (opt.) precision matrix of the underlying latent Gaussian variables
-    \item Seed \texttt{seed}
-    \item Sparsity level \texttt{sparsity}
-    \item \texttt{lambda}: (opt) vector of length \texttt{poiss} containing $\lambda$'s
-    \item  \texttt{pbin}: (opt) vector of length \texttt{bin} containing the probabilities of success
-    \item  \texttt{negbin}: (opt) list with first element being a vector of number of successes and the second element being a vector of probabilities of success
-    \item  \texttt{multinom}: (opt) list of length \texttt{multinom} of vectors containing prob breaks
-\end{itemize}
-\textbf{Output of \texttt{simulate.mixed.data}:}
-\begin{itemize}
-    \item  data matrix \texttt{Xdata}
-    \item adjacency matrix \texttt{A}
-    \item underlying latent Gaussian data matrix \texttt{X}
-    \item  the true precision matrix \texttt{K}
-\end{itemize}
-
-
-\subsection*{Data Simulation Process}
-\begin{itemize}
-    \item[\textbf{1}.] Draw $\texttt{X}\sim N(\mu,K^{-1})$ with $\texttt{X}$ being of dimension $N \times $\texttt{ptotal} with
-
-        \texttt{ptotal} =\texttt{gauss}+\texttt{poiss}+\texttt{bin}+\texttt{negbin}+\texttt{multinom} and where $\mu \sim N(0,1)$  and $K$ being sparse with sparsity level \texttt{spars}
-
-    \item[\textbf{2}.] Every non-zero entry $k \in K$ other than the main diagonal corresponds to a entry of 1 in matrix \texttt{A}
-
-    \item[\textbf{3}.] \texttt{X} is now being split into \texttt{Xgauss} ($N\times \texttt{gauss}$), \texttt{Xpoiss} ($N\times \texttt{poiss}$), \texttt{Xbin} ($N\times \texttt{bin}$), \texttt{Xnegbin} ($N\times \texttt{negbin}$) and \texttt{Xmultinom} ($N\times \texttt{multinom}$)
-
-    \item[\textbf{4}.] We then transform  \texttt{Xpoiss},\texttt{Xbin},  \texttt{Xnegbin},\texttt{Xmultinom} into their corresponding variable type:
-        \begin{itemize}
-            \item[ \texttt{Xpoiss}::]  qpois(pnorm(scale(\texttt{Xpoiss})), lambda=lambda):
-                \begin{itemize}
-                    \item[i] lambda=abs(rnorm(\texttt{poiss}))*5 (default)
-                    \item[] or
-                    \item[ii] lambda=\texttt{lambda} being a vector of length \texttt{poiss} set by the user
-                \end{itemize}
-
-
-            \item[\texttt{Xbin}::]  qbinom(pnorm(scale(\texttt{Xbin})),  size = 1,  prob = prob):
-                \begin{itemize}
-                    \item[i] prob=runif(\texttt{bin},0.2,0.8) (default)
-                    \item[] or
-                    \item[ii] prob=\texttt{pbin} being a vector of probabilities of  length \texttt{bin} set by the user
-                \end{itemize}
-
-            \item[\texttt{Xnegbin}::] qnbinom(pnorm(scale(\texttt{Xnegbin})),  size=negbin{\_}size,  prob=negbin{\_}prob):
-                \begin{itemize}
-                    \item[i] negbin{\_}size= round(runif(\texttt{negbin},0,1)*5) (default)
-                    \item[i] negbin{\_}prob= runif(\texttt{negbin},0.2,0.8) (default)
-                    \item[] or
-                    \item[ii] negbin{\_}size= \texttt{negbin}[1] vector of length \texttt{negbin} specified by user
-                    \item[ii] negbin{\_}prob= \texttt{negbin}[2] vector of length \texttt{negbin} specified by user
-                \end{itemize}
-
-
-            \item[\texttt{Xmultinom}::]  cut(pnorm(scale(\texttt{Xmultinom})),  breaks=cum.mat):
-                \begin{itemize}
-                    \item[i] cum.mat=c(0,cumsum(sort(
-
-                        runif(round(runif(1,0,2)*5)))/sum(runif(round(runif(1,0,2)*5)))))
-                    \item[] or
-                    \item[ii] cum.mat =\texttt{multinom}  being \texttt{multinom} dimensional list of vectors containing the breaks specified by user
-                \end{itemize}
-        \end{itemize}
-
-
-    \item[\textbf{5}.] After the previous step we create  \texttt{Xdata} by concatenating the transformed parts of \texttt{X} such that  \texttt{Xdata}=\texttt{cbind}(\texttt{Xgauss},\texttt{Xpoiss},\texttt{Xbin},  \texttt{Xnegbin},\texttt{Xmultinom})
-
-\end{itemize}
-
-
-%\clearpage\newpage
-
-
-%%%%%%%%%%%%%%%%%
-\section{Additional Simulation Results}
-
-
-\begin{figure}
-    \hspace*{-2ex}
-    \hfill
-    \subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_B_large.pdf}}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_B_largecorr_largeN.pdf}}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_B_01_large.pdf}}
-    \label{fig:ROCs_based_on_data_set_B_large}
-    \caption{ROCs based on data set B with sample size increased four times. On the left, (a), using empirical parameters, in the middle, (b), using empirical parameters but only evaluating partial correlations with absolute value larger than 0.1 and on the right, (c), using empirical parameters with sparser, thresholded precision as input.}
-\end{figure}
-
-
-
-\begin{figure}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D.pdf}}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D_largecorr.pdf}}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D_01.pdf}}
-    \label{fig:ROCs_based_on_data_set_D}
-    \caption{ROCs based on data set D. On the left, (a), using empirical parameters, in the middle, (b), using empirical parameters but only evaluating partial correlations with absolute value larger than 0.1 and on the right, (c), using empirical parameters with sparser, thresholded precision as input.}
-\end{figure}
-
-
-
-\begin{figure}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D_large.pdf}}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D_largecorr_largeN.pdf}}
-    \hspace*{-2ex}
-    \hfill\subfigure[]{\includegraphics[width=0.32\textwidth]{Figures/ROCs_based_on_data_set_D_01_large.pdf}}
-    \label{fig:ROCs_based_on_data_set_D_large}
-    \caption{ROCs based on data set D with sample size increased four times. On the left, (a), using empirical parameters, in the middle, (b), using empirical parameters but only evaluating partial correlations with absolute value larger than 0.1 and on the right, (c), using empirical parameters with sparser, thresholded precision as input.}
-\end{figure}
-
-
-
-\end{comment}
-
-%\clearpage\newpage
-
-
 %%%%%%%%%%%%%%%%%
 
-\section{Additional Empirical Results}
+\subsection{Additional Empirical Results}
 
-\subsection*{Empirical Results for Subset B}
+\subsubsection*{Empirical Results for Subset B}
 Figures \ref{fig:corrplot_admat_B} and \ref{fig:corrplot_omega_B} exemplify additional empirical results for subset B.
 
 \begin{figure}[ht]
@@ -1285,7 +1137,7 @@ Figures \ref{fig:corrplot_admat_B} and \ref{fig:corrplot_omega_B} exemplify addi
 
 
 %\newpage
-\subsection*{Empirical Results for Subset C}
+\subsubsection*{Empirical Results for Subset C}
 
 Figures \ref{fig:corrplot_admat_C} and \ref{fig:corrplot_omega_C} exemplify additional empirical results for subset C.
 
