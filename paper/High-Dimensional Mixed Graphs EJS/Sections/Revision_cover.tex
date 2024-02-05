@@ -46,13 +46,13 @@ In the response below, we address the reviewers' comments point-by-point. We wan
     In the ensuing empirical evaluation, the data generation scheme is as follows: First, we generate \(n\) data points \((z_{ij}, x_{ik})_{i=1}^n\) from a standard bivariate normal with correlation \(\Sigma^*_{jk}\). Second, we apply the same transformation \(f_t^{-1}(x) = 5x^5\) for \(t \in \{j,k\}\) to all the data points. Third, we generate binary data \(x_{ij}^r\) by randomly choosing appropriate \(f^{-1}_j(z_{ij})\)-thresholds and then applying inversion sampling.
 
     Computing the transformation-plugged-in MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.
-    \begin{equation}\label{eq:plugged_in_objective}
+    \begin{equation*}
         \begin{split}
             \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f}_k(x_k)) & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \log(p(x_{j}^{r} \mid \hat{f}_k(x_{ik}), \Sigma_{jk}))\big]                      \\
             & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \Phi(\tilde{\Gamma}_j^{r}(\hat{f_k})) - \Phi(\tilde{\Gamma}_j^{r-1}(\hat{f_k}))\big].
         \end{split}
-    \end{equation}
-    One strategy entails the direct maximization of Eq. \eqref{eq:plugged_in_objective} by employing a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$; This strategy is used, for instance, in the R package \texttt{polycor} \citep{polycor2022}. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. We employ Broyden's method \citep{Broyden1965}.
+    \end{equation*}
+    One strategy entails the direct maximization by employing a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$; This strategy is used, for instance, in the R package \texttt{polycor} \citep{polycor2022}. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. We employ Broyden's method \citep{Broyden1965}.
 
     In Figure 1, we generate data according to the scheme above for \(n=1000\) and a grid of true correlation values \(\Sigma^*_{jk} \in [0, 0.98]\) with a step size of \(s=0.02\). Due to symmetry, taking only positive correlations is sufficient for comparison purposes. For each correlation value along the grid, we generate \(100\) mixed binary-continuous data pairs and compute the MLE (using the abovementioned strategies) and the ad hoc estimator from Section 3.2 in the main text. We plot the true correlation values against the absolute difference between estimates and true correlation and the corresponding Monte-Carlo standard error for the MLE and the ad hoc estimator.
 
@@ -84,9 +84,9 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 
     \begin{theorem*}
         Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
-        \begin{equation}
+        \begin{equation*}
             P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} \geq D\sqrt{\frac{\log(n)}{n} \log\bigg(\frac{B}{\alpha}\bigg)}\Bigg) \leq \frac{d(d-1)}{2}\alpha.
-        \end{equation}
+        \end{equation*}
     \end{theorem*}
     \textit{Case I} of the latent Gaussian model addresses the well-understood scenario involving observed Gaussian variables, with concentration results and rates of convergence readily available -see, for example, Lemma 1 in \citet{Ravikumar11}. Consequently, the MLEs converge to \(\mathbf{\Sigma}^{*}\) at the optimal rate of \(n^{-1/2}\), mirroring the convergence rate as if the underlying latent variables were directly observed.
 \end{change}
@@ -140,9 +140,9 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \begin{change}
     \begin{theorem*}
         Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
-        \begin{equation}
+        \begin{equation*}
             P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} \geq D\sqrt{\frac{\log(n)}{n} \log\bigg(\frac{B}{\alpha}\bigg)}\Bigg) \leq \frac{d(d-1)}{2}\alpha.
-        \end{equation}
+        \end{equation*}
     \end{theorem*}
     \textit{Case I} of the latent Gaussian model addresses the well-understood scenario involving observed Gaussian variables, with concentration results and rates of convergence readily available -see, for example, Lemma 1 in \citet{Ravikumar11}. Consequently, the MLEs converge to \(\mathbf{\Sigma}^{*}\) at the optimal rate of \(n^{-1/2}\), mirroring the convergence rate as if the underlying latent variables were directly observed.
 \end{change}

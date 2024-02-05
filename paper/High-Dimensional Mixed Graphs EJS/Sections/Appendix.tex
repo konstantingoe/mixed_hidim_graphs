@@ -6,7 +6,7 @@ In the following sections, we derive the MLEs for the latent Gaussian model. The
 
 \subsection{\textit{Case II} MLE derivation}
 
-In \textit{Case II}, we consider the instance where $X_j$ is ordinal and $X_k$ is continuous. Recall that in the latent Gaussian model, we take all \(\{f_k\}_{k=1}^d\) to be the identity. Consequently, \(X_k\) is Gaussian and \(\Gamma_j^r = f_j(\gamma_j^r) = \gamma_j^r\) for all \(j \in [d_1]\) and \(r \in [l_j]\). Recall that we are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed, but only the ordered categories (Eq. (1) in the Manuscript) are given. The likelihood of the $n$-sample is defined by:
+In \textit{Case II}, we consider the instance where $X_j$ is ordinal and $X_k$ is continuous. Recall that in the latent Gaussian model, we take all \(\{f_k\}_{k=1}^d\) to be the identity. Consequently, \(X_k\) is Gaussian and \(\Gamma_j^r = f_j(\gamma_j^r) = \gamma_j^r\) for all \(j \in [d_1]\) and \(r \in [l_j]\). Recall that we are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed, but only the ordered categories (Eq. (2) in the Manuscript) are given. The likelihood of the $n$-sample is defined by:
 \begin{equation}\label{polyserial_likelihood_appendix}
     \begin{split}
         L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) &= \prod_{i=1}^n p(x_{ij}^{r},x_{ik}, \Sigma_{jk}) \\
@@ -18,7 +18,7 @@ where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j
     p(x_{ik}) = \big(2\pi\sigma\big)^{-\frac{1}{2}} \exp\Bigg[-\frac{1}{2}\bigg(\frac{x_{ik} - \mu}{\sigma_{ik}}\bigg)^2\Bigg].
 \end{equation*}
 Furthermore, the conditional probability of $X_j$ in Eq. %\eqref{polyserial_likelihood}%
-(3)\todo{Is this still correct?} in the Manuscript can be written as:
+(5) in the Manuscript can be written as:
 \begin{equation}\label{threshold_conditionalprob}
     \begin{split}
         p(X_j = x_j^r \mid X_k, \Sigma_{jk}) = p(\Gamma_j^{r-1} \leq Z_j < \Gamma_j^r \mid X_k, \Sigma_{jk}) \\
@@ -185,7 +185,7 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
     \begin{equation}
         \mathbb{E}\Bigg[\exp\Bigg(\lambda \Big(\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} - \mathbb{E}\frac{\partial\ell_{jk}}{\partial \Sigma_{jk}} \Big) \Bigg)\Bigg] \leq \exp\Big(\frac{\tau^2\lambda^2}{2}\Big),
     \end{equation}
-    where $\ell_{jk}$ corresponds to the log-likelihood functions in Definitions 2.3 and 2.4 of the main Manuscript, respectively.\todo{Numbering still correct?}
+    where $\ell_{jk}$ corresponds to the log-likelihood functions in Definitions 2.4 and 2.5 of the main Manuscript, respectively.
     %\ref{definition_case2} and \ref{definition_case3}.
     \paragraph{\textit{Case II}}: Recall that
     \begin{equation*}
@@ -242,7 +242,7 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
     \begin{equation*}
         \Norm{X}_{\psi_{1}} \coloneqq \sup_{p\geq 1} \frac{1}{p}\mathbb{E}\Big(\abs{X - \mathbb{E}(X)}^p\Big)^{\frac{1}{p}}.
     \end{equation*}
-    Note that $\ell_{jk}$ corresponds to the respective log-likelihood functions in Definitions 2.3 and 2.4.\todo{Still correct?}% \ref{definition_case2} and \ref{definition_case3}.
+    Note that $\ell_{jk}$ corresponds to the respective log-likelihood functions in Definitions 2.4 and 2.5.% \ref{definition_case2} and \ref{definition_case3}.
 
     \paragraph{\textit{Case II}}: We have
     \begin{equation}\label{hessian_case2}
@@ -265,13 +265,14 @@ The right panel of \figref{fig:case2_speed} demonstrates computation time across
              & -  \frac{\phi^\prime({\tilde{\Gamma}}_j^{r-1})({\Gamma}_j^{r-1}\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} - \frac{\phi({\tilde{\Gamma}}_j^{r-1}){\Gamma}_j^{r-1}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}.
         \end{aligned}
     \end{multline}
-    \begin{equation*}
-        \begin{split}
-            \text{Thus: } \abs{\frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell_{jk}(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}\Bigg)} \leq &\abs{\frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\Gamma}}_j^{r})({\Gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})} \\
-            + &\abs{\frac{\phi^\prime({\tilde{\Gamma}}_j^{r})({\Gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\tilde{\Gamma}}_j^{r}){\Gamma}_j^{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}} \leq L_2,
-        \end{split}
-    \end{equation*}
-    due to Assumptions 3.1 and 3.2\todo{Check numeration.} % \ref{ass1} and \ref{ass2} %
+    Thus,
+    \begin{align*}
+        \abs{\frac{\partial}{\partial \Sigma_{jk}} \Bigg(\frac{\partial\ell_{jk}(\Sigma_{jk}, x_j^r,x_k)}{\partial \Sigma_{jk}}\Bigg)}
+         & \leq \abs{\frac{3\Sigma_{jk}}{1-\Sigma_{jk}^2} (1-(\Sigma_{jk})^2)^{-\frac{3}{2}} \phi({\tilde{\Gamma}}_j^{r})({\Gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})}                                                 \\
+         & + \abs{\frac{\phi^\prime({\tilde{\Gamma}}_j^{r})({\Gamma}_j^r\Sigma_{jk} - {\tilde{x}}_{k})^2}{(1-\Sigma_{jk}^2)^3} + \frac{\phi({\tilde{\Gamma}}_j^{r}){\Gamma}_j^{r}}{(1-\Sigma_{jk}^2)^{-\frac{3}{2}}}} \\
+         & \leq L_2,
+    \end{align*}
+    due to Assumptions 3.1 and 3.2 % \ref{ass1} and \ref{ass2} %
     and because both $\phi(t)$ and $\phi^{\prime}(t)$ are bounded for all $t\in\mathbb{R}$. Therefore, the inequality in Eq. \eqref{hessian_case2} follows and $\frac{\partial^2\ell_{jk}}{\partial \Sigma_{jk}^{2}} - \mathbb{E}\bigg(\frac{\partial^2\ell_{jk}}{\partial \Sigma_{jk}^{2}}\bigg)$ is bounded by $2(\kappa L_2 + \kappa^2 L_1^2)$. Hence, for all $p\geq1$
     \begin{equation}
         \frac{1}{p}\mathbb{E}\Bigg[\abs{\partial^2\ell_{jk}/\partial \Sigma_{jk}^{2} - \mathbb{E}\big(\partial^2\ell_{jk}/\partial \Sigma_{jk}^{2}\big)}^p\Bigg]^{\frac{1}{p}} \leq \frac{2}{p}\big(\kappa L_2 + \kappa^2 L_1^2\big).
@@ -428,14 +429,14 @@ Lastly, we define $R_{jk}(\Sigma_{jk}) = \mathbb{E}_{\Sigma_{jk}^*}\hat{R}_{jk}^
         %\ref{ass2} and \ref{ass3}.
         To see this note that in Eq. \eqref{case2_firstdiff} $\partial p(x_j^{r} \mid x_{k}, \Sigma_{jk}^*) / \partial \Sigma_{jk}$ can only be zero if either ${\Gamma}^r_j = {\Gamma}^{r-1}_j$ which we ruled out in the definition of the LGCM, or if $\Abs{{\Gamma}^r_j} = \Abs{{\Gamma}^{r-1}_j} = \infty$ which is ruled out by Assumption 3.2.
         %\ref{ass2}.%
-        We would not observe any discrete states in the first place if we had $r=\{0,l_{j}+1\}$. Assumption 3.3\todo{check}
+        We would not observe any discrete states in the first place if we had $r=\{0,l_{j}+1\}$. Assumption 3.3
         %\ref{ass3} %
         rules this case out.
         Consequently, there exist $\epsilon > 0$ and $\eta > 0$ such that $R_{jk}(\Sigma_{jk})$ is $(\epsilon,\eta)$\textit{-strongly Morse}
     \end{condition}
 \end{condition}
 
-With these considerations, we have verified the required four conditions to hold such that Theorem 2 in \cite{Mei18} %\ref{uniform_convergence}%
+With these considerations, we have verified the required four conditions to hold such that Theorem 2 in \citet{Mei18} %\ref{uniform_convergence}%
 holds for each couple $(j,k)$ according to cases II and III. More precisely, let $\alpha \in (0,1)$. Now, letting  $n \geq 4 C \log(n) \log(\frac{B}{\alpha})$
 where $C = C_0 \Big(\frac{\tau^2}{\epsilon^2} \vee \frac{\tau^4}{\eta^2} \vee \frac{\tau^2L^2}{\eta^4} \Big)$ and $B = \tau(1-\delta)$
 with $\tau = 2 [\kappa L_1 \vee \xi K_1]$  and $C_0$ denoting a universal constant. Letting further $L = \sup_{\Sigma_{jk}: \Abs{\Sigma_{jk}} \leq 1- \delta} \Abs{R_{jk}^{\prime\prime\prime}(\Sigma_{jk})}$ we obtain
@@ -609,7 +610,7 @@ Recall that we treat the threshold estimates as given. In particular, we have he
 \begin{equation*}
     \abs{\phi(\bar{\Gamma}^r_j) - \phi(\Gamma^r_j)} \leq L_0 \abs{\bar{\Gamma}^r_j - \Gamma^r_j} \leq \abs{\bar{\Gamma}^r_j - \Gamma^r_j},
 \end{equation*}
-as $L_0 < 1$. Consequently, the statements regarding the accuracy of the threshold estimates in Section 3.4\todo{Check} %\ref{sec::thresholds} %
+as $L_0 < 1$. Consequently, the statements regarding the accuracy of the threshold estimates in Section 3.4 %\ref{sec::thresholds} %
 still hold here.
 
 The outline of the proof is as follows: We start by forming concentration bounds for the sample covariance and the sample standard deviation separately. Then, we argue that the quotient of the two will be accurate in terms of a Lipschitz condition on the corresponding compactum. Let us start with the sample covariance. To study the Winsorized estimator, we consider the interval $[g(-\sqrt{M\log n}), g(\sqrt{M\log n})]$ for a choice of $M>2$. As the behavior of the estimator is different for the endpoints, we further split this interval into a middle and an end part, respectively, i.e.,
@@ -650,7 +651,7 @@ for $r = 1, \dots, l_{j}$. Furthermore, consider the event $\mathcal{A}_n$, wher
 \begin{equation*}
     \mathcal{A}_n \equiv \{g(-\sqrt{M\log n}) \leq X_{1k}, \dots, X_{nk} \leq g(\sqrt{M\log n}), k = d_1 + 1, \dots, d\}.
 \end{equation*}
-The bound for the complement arises from the Gaussian maximal inequality \citep[Lemma 13]{Liu09}, i.e.,
+The bound for the complement arises from the Gaussian maximal inequality \citet[Lemma 13]{Liu09}, i.e.,
 \begin{equation*}
     P(\mathcal{A}_n^c) \leq P\left(\max_{i,k\in \{1,\dots,n\}\times\{d_1+1, \dots, d\}} \abs{f(X_{ik})} > \sqrt{2\log(nd_2)}\right) \leq \frac{1}{2\sqrt{\pi\log(nd_2)}}.
 \end{equation*}

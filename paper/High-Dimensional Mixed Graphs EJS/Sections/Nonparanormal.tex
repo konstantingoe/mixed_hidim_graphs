@@ -22,7 +22,7 @@ with $R_{ji}$ corresponding to the rank of $X_{ji}$ among $X_{j1}, \dots, X_{jn}
 
 \subsection{Nonparanormal Case II}\label{sec::nonparanormal_case2}
 
-In \textit{Case II}, the complexity increases. Employing a rank-based approach for the nonparanormal model makes direct application of the ML procedure unfeasible, given that the continuous variable is not observed in its Gaussian form. Nevertheless, a two-step approach remains viable. First, an estimate of \(f_j\) must be formulated and subsequently employed in Definition \ref{definition_case2}. Yet, scrutinizing convergence rates for this procedure poses challenges, as the estimated transformation appears in multiple instances within the first-order condition of the MLE. Section xx in the Supplementary Materials provides further details and compares the two-step likelihood approach to the one we propose below.
+In \textit{Case II}, the complexity increases. Employing a rank-based approach for the nonparanormal model makes direct application of the ML procedure unfeasible, given that the continuous variable is not observed in its Gaussian form. Nevertheless, a two-step approach remains viable. First, an estimate of \(f_j\) must be formulated and subsequently employed in Definition \ref{definition_case2}. Yet, scrutinizing convergence rates for this procedure poses challenges, as the estimated transformation appears in multiple instances within the first-order condition of the MLE. Section 2 in the Supplementary Materials provides further details and compares the two-step likelihood approach to the one we propose below.
 
 Instead, we will proceed by suitably modifying other approaches that address the Gaussian case through a more direct \textit{ad hoc} examination of the relationship between $\Sigma_{jk}$ and the point polyserial correlation \citep{Bedrick92, Bedrick96}.
 Section 2 of the Supplementary Materials compares the nonparanormal \textit{Case II} estimation strategies.
@@ -141,7 +141,7 @@ Define \(\mathbf{\Sigma}^*\) and \(\mathbf{\Omega}^*\) as the true covariance ma
 Assumptions \ref{ass1} and \ref{ass2} ensure that $f(X_j)$ and $f(X_k)$ are not perfectly linearly dependent and that the thresholds are bounded away from infinity, respectively. Importantly, these constraints impose minimal restrictions in practice. Assumption \ref{ass3} guarantees that the likelihood functions in Section \ref{latent_gaussian_cm} exhibit a ``nice'' behavior, representing a mild technical requirement.
 
 \paragraph{Convergence results for latent Gaussian models}
-The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 2 of the Supplementary Materials. This convergence result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. Notably, a comparable methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
+The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 3 of the Supplementary Materials. This convergence result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. Notably, a comparable methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
 
 \begin{theorem}\label{uniform_convergence}
     Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
@@ -172,7 +172,7 @@ The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all
     \end{multline*}
 
 \end{theorem}
-The proof of the theorem is given in Section 5
+The proof of the theorem is given in Section 6
 %\ref{proof_concentration2} %
 of the Supplementary Materials. Regarding the scaling of the dimension in terms of sample size, the ensuing corollary follows immediately.
 \begin{corollary}
