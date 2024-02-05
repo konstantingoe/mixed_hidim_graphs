@@ -1,6 +1,6 @@
 rm(list = ls())
 
-setwd("/Users/kgoebler/hume_revisions/mixed_hidim_graphs")
+setwd("/home/goebler/linux/mixed_hidim_graphs")
 source("./Packages/packages.R")
 source("./Functions/simulation_functions.R")
 
