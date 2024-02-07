@@ -18,7 +18,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 % \noindent\textit{You are completely right. In fact, this is not the only identifiability issue that the latent Gaussian copula model (LGCM) faces. We added the following lines to the manuscript to address this and related issues:}
 
 \begin{change}
-    Furthermore, the latent Gaussian copula class suffers from several identifiability issues. First, the mean and the variances are not identifiable unless the monotone transformations \(f\) preserve them. Note that this only affects the diagonal entries in \(\mathbf\Sigma\), not the full covariance matrix. We denote \([d] = \{1,\dots,d\}\), \([d_1] = \{1,\dots,d_1\}\), and \([d_2] = \{d_1 +1, \dots, d_2\}\), respectively. Therefore, without loss of generality, we assume the mean to be the zero vector and \(\Sigma_{jj} = 1\) for all \(j \in [d]\). Another identifiability issue relates to the unknown threshold parameters. To ease notation, denote \(\Gamma_j^r \equiv f_j(\gamma_j^r)\) and \(\Gamma_j \equiv \{f_j(\gamma_j^r)\}_{r=0}^{l_j+1}\). In the LGCM, only the transformed thresholds \(\Gamma_j\) rather than the original thresholds are identifiable from the discrete variables. We assume that the transformed thresholds retain the limiting behavior of the original thresholds, i.e., \(\Gamma_{j}^{0} = -\infty\) and \(\Gamma_j^{l_j+1} = \infty\).
+    The latent Gaussian copula class suffers from several identifiability issues. First, the mean and the variances are not identifiable unless the monotone transformations \(f\) preserve them. Note that this only affects the diagonal entries in \(\mathbf\Sigma\), not the full covariance matrix. Therefore, without loss of generality, we assume the mean to be the zero vector and \(\Sigma_{jj} = 1\) for all \(j \in [d]\). Another identifiability issue relates to the unknown threshold parameters. To ease notation, denote \(\Gamma_j^r \equiv f_j(\gamma_j^r)\) and \(\Gamma_j \equiv \{f_j(\gamma_j^r)\}_{r=0}^{l_j+1}\). In the LGCM, only the transformed thresholds \(\Gamma_j\) rather than the original thresholds are identifiable from the discrete variables. We assume that the transformed thresholds retain the limiting behavior of the original thresholds, i.e., \(\Gamma_{j}^{0} = -\infty\) and \(\Gamma_j^{l_j+1} = \infty\).
 \end{change}
 
 
@@ -27,7 +27,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thank you for pointing me in this direction. We engaged in a short comparison of the two approaches and added the paragraphs below to the Supplementary Materials:
+    Thank you for pointing me in this direction. We engaged in a short comparison of the two approaches and added the paragraphs below to the Supplementary Materials. Formulating concentration inequalities for this pseudolikelihood approach becomes even more complex due to the polyserial likelihood function's intricate form and the multiple occurrences of the estimated transformations. Therefore, we lead with this empirical study to demonstrate the ad hoc estimator's computational efficiency. However, the pseudolikelihood approach is an interesting avenue for future research.
 \end{reply}
 
 \begin{change}
@@ -76,7 +76,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    We apologize for the confusion. We clarified the structure of the section and fixed the typo in the statement of Theorem 3.2.
+    We apologize for the confusion. We clarified the structure of the section and fixed the statement of Theorem 3.2.
 \end{reply}
 
 \begin{change}
@@ -100,7 +100,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{reply}
 
 \begin{change}
-    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \(\hat{f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. Indeed, we show empirically that Theorem \ref{concentration_caseII} gives a worst-case rate, which we find is often conservative in practice.
+    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation functions \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
 \end{change}
 
 
@@ -134,7 +134,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thanks for the suggestion. We added a comparison of the concentration results to the existing rates for Gaussian graphical models. We also discuss the suboptimal rate of convergence in Theorem 3.3.
+    Thanks for the suggestion. We added a comparison of the concentration results to the existing rates for Gaussian graphical models. We also discuss the suboptimal rate of convergence in Theorem 3.3. As we mention below, there is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one. This is something we are currently investigating further.
 \end{reply}
 
 \begin{change}
@@ -148,7 +148,9 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{change}
 
 \begin{change}
-    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \(\hat{f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. Indeed, we show empirically that Theorem \ref{concentration_caseII} gives a worst-case rate, which we find is often conservative in practice.
+    The first four terms in the probability bound stem from finding bounds to different regions of the support of the transformed continuous variable. The last term is a consequence of the fact that we estimate the transform directly.
+
+    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
 \end{change}
 
 \begin{point}
@@ -156,9 +158,9 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thanks again for the helpful suggestions. We agree with your points and thus condensed the tables into plots and moved some of the details to the Supplementary Materials, including the real data analysis. We added the simulation setup back to the main text. The low number of replicates in the simulation study has been set due to the \(d=750\) scenario. Unfortunately, running the \textit{glasso} routine for each penalty parameter \(\lambda\) along a grid of length 30 for four different estimators is computationally expensive. We added a little microbenchmark to give an idea of the computational feasibility of the proposed and existing methods.
+    Thanks again for the helpful suggestions. We agree with your points and thus condensed the tables into plots and moved some of the details to the Supplementary Materials, including the real data analysis. We added the simulation setup back to the main text. The low number of replicates in the simulation study has been set due to the \(d=750\) scenario. Calculating \({750\choose 2}\) correlation pairs, plugging the corresponding correlation matrix into the \textit{glasso} routine for each penalty parameter \(\lambda\) along a grid of length 30 for four different estimators is computationally expensive. We added a microbenchmark of the correlation matrix estimation to give an idea of the computational feasibility of the proposed and existing methods. When applied in practice, one typically only runs the procedure once for a given dataset.
 \end{reply}
 
 \begin{change}
-    Add table here!
+    Add microbenchmark table here, as soon as it is available.
 \end{change}
