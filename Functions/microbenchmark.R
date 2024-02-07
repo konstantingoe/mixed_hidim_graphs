@@ -1,6 +1,6 @@
 rm(list = ls())
 
-setwd("/home/goebler/linux/mixed_hidim_graphs")
+# setwd("/home/goebler/linux/mixed_hidim_graphs")
 source("./Packages/packages.R")
 source("./Functions/simulation_functions.R")
 
@@ -56,11 +56,13 @@ corr_mat_benchmark <- data.frame(cbind(
         d_seq, function(k) {
             graph_learner_timing(
                 dimension = k,
-                sim_runs = 100
+                sim_runs = 20
             )
         }
     ))
 ))
+
+print(corr_mat_benchmark)
 
 save(corr_mat_benchmark, file = "./simulation_results/corrmat_speed.RData")
 
