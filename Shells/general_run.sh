@@ -6,11 +6,11 @@
 #SBATCH --clusters=inter
 #SBATCH --partition=teramem_inter
 #SBATCH --mem=2600000mb
-#SBATCH --cpus-per-task=50
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=konstantin.goebler@tum.de
 #SBATCH --export=NONE
-#SBATCH --time=200:00:00
+#SBATCH --time=24:00:00
 #--------------------------------------
 
 module load slurm_setup
