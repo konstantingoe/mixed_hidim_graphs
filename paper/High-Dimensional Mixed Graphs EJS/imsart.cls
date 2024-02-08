@@ -66,65 +66,65 @@
 % Requires Latex2e, ver.2000.06
 % 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{imsart}[2022/04/21 driver class for package imsart.sty]
+\ProvidesClass{imsart}[2023/10/10 driver class for package imsart.sty]
 % 
 % set various options for different journals:
 \DeclareOption{ps}{%
-    \PassOptionsToClass{10pt,oneside}{article}%
-    }
+    \PassOptionsToClass{10pt,twoside}{article}%
+}
 % 
 \DeclareOption{ss}{%
-    \PassOptionsToClass{10pt,oneside}{article}%
-    }
+    \PassOptionsToClass{10pt,twoside}{article}%
+}
 % 
 \DeclareOption{ejs}{%
-    \PassOptionsToClass{10pt,oneside}{article}%
-    }
+    \PassOptionsToClass{10pt,twoside}{article}%
+}
 % 
 \DeclareOption{aap}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
-    }
+}
 % 
 \DeclareOption{aop}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
-    }
+}
 % 
 \DeclareOption{aos}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
-    }
+}
 % 
 \DeclareOption{aoas}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
-    }
+}
 % 
 \DeclareOption{sts}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
-    }
+}
 % 
 \DeclareOption{bj}{%
     \PassOptionsToClass{10pt,oneside}{article}%
     \g@addto@macro\@classoptionslist{,nosetpagesize}%
     \PassOptionsToPackage{sort&compress}{natbib}%
-    }
+}
 % 
 \DeclareOption{aihp}{%
     \PassOptionsToClass{10pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%
     \PassOptionsToPackage{numbers,sort&compress}{natbib}%
-    }
+}
 % 
 \DeclareOption{bjps}{%
     \PassOptionsToClass{11pt,twoside}{article}%
-    }
+}
 % 
 \DeclareOption{ba}{%
     \PassOptionsToClass{10pt,oneside}{article}%
-    }
+}
 % 
 \PassOptionsToPackage{cmex10}{amsmath}
 % 
@@ -134,16 +134,16 @@
 \LoadClass{article}
 % 
 \IfFileExists{imsart.sty}%
-    {}%
+{}%
+{%
+    \ClassError{imsart}%
+    {The complimentary style file "imsart.sty" is required}%
     {%
-        \ClassError{imsart}%
-            {The complimentary style file "imsart.sty" is required}%
-            {%
-                The complimentary style file "imsart.sty" is required\MessageBreak
-                You need to install file "imsart.sty" in your system\MessageBreak
-                File could be downloaded from http://www.e-publications.org/ims/support
-            }%
-    }
+        The complimentary style file "imsart.sty" is required\MessageBreak
+        You need to install file "imsart.sty" in your system\MessageBreak
+        File could be downloaded from http://www.e-publications.org/ims/support
+    }%
+}
 % 
 % Load additional macros and modifications for "article.cls"
 \RequirePackage{imsart}
