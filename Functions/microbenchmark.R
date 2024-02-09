@@ -48,7 +48,7 @@ graph_learner_timing <- function(dimension = 50, sim_runs = 100) {
 
 
 d_seq <- c(50, 250, 750)
-final_seq <- rep(d_seq, each = 2)
+final_seq <- rep(d_seq, each = 3)
 
 corr_mat_benchmark <- data.frame(cbind(
     final_seq,
@@ -56,7 +56,7 @@ corr_mat_benchmark <- data.frame(cbind(
         d_seq, function(k) {
             graph_learner_timing(
                 dimension = k,
-                sim_runs = 10
+                sim_runs = 5
             )
         }
     ))
