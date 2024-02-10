@@ -162,18 +162,16 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{reply}
 
 \begin{change}
-    Add microbenchmark table here, ass soon as it is available.
+    Below, we provide a small microbenchmark study regarding the computational feasibility of the proposed and existing methods. We compare the computation time of the correlation matrix estimation for the \texttt{oracle} estimator \cite{Liu12}, our proposed polyserial/polychoric method, and the \texttt{bridge} ensemble estimator \cite{Feng19}. The results are displayed in Table \ref{table::timing}.
 
-    \begin{table}
-        \centering
-        \caption{Microbenchmark of the correlation matrix estimation.}
-        \begin{tabular}{lcc}
-            \toprule
-            Method          & Time (s) \\
-            \midrule
-            Proposed        & 0.5      \\
-            \textit{glasso} & 1        \\
-        \end{tabular}
+    \begin{table}[htbp!]
+        \caption{Microbenchmark of the correlation matrix estimation. Displayed are mean compute times of the correlation matrix of the general mixed simulation setup described in Section \ref{sec::setup} for the \texttt{oracle} estimator, our proposed polyserial/polychoric method, and the \texttt{bridge} ensemble estimator.}
+
+        \begin{center}
+            \input{Tables/timing.tex}
+        \end{center}
+        \label{table::timing}
     \end{table}
 
+    The general mixed data simulation setup we use here is detailed in Section \ref{sec::setup}. We report the mean computation time in seconds over \(20\) repetitions. The \texttt{oracle} estimator is the fastest, followed by the polyserial/polychoric method and the \texttt{bridge} ensemble estimator. Computing polyserial/polychoric correlations is roughly three times faster than the bridge function approach.
 \end{change}

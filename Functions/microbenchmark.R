@@ -66,17 +66,11 @@ print(corr_mat_benchmark)
 
 save(corr_mat_benchmark, file = "./simulation_results/corrmat_speed.RData")
 
-# microbench_a <- ggplot(corr_mat_benchmark) +
-#     geom_line(aes(y = median, x = final_seq, colour = expr)) +
-#     geom_ribbon(aes(
-#         ymin = lq, ymax = uq,
-#         x = final_seq, colour = expr
-#     ), alpha = .2) +
-#     ylab("milliseconds") +
-#     xlab("sample size") +
-#     labs(colour = "Estimation method") +
-#     scale_colour_manual(values = cbPalette) +
-#     theme_minimal(base_size = 16) +
-#     theme(legend.position = "none")
+load("./simulation_results/corrmat_speed.RData")
 
-# ggplot2::ggsave(filename = "case_2_speed.pdf", path = "./paper/High-Dimensional Mixed Graphs EJS/Figures/")
+results <- corr_mat_benchmark[, c("expr", "final_seq", "mean")]
+results$mean <- results$mean / 1000
+names(results) <- c("Method", "Dimension", "Time (s)")
+
+knitr::kable(results, "latex", booktabs = T, digits = 4) %>%
+    cat(., file = "./paper/High-Dimensional Mixed Graphs EJS/Tables/timing.tex")
