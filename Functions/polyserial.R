@@ -176,7 +176,7 @@ ggplot(melt_df) +
     geom_ribbon(aes(
         ymin = corr_seq - value - value_sd, ymax = corr_seq - value + value_sd,
         x = corr_seq, colour = variable
-    ), alpha = .1) +
+    ), alpha = .02) +
     ylab(TeX("$\\Delta$ betweem $\\Sigma^{*}_{jk}$ and $\\hat{\\Sigma}_{jk}$")) +
     xlab(TeX("$\\Sigma^{*}_{jk}$")) +
     labs(colour = "Estimation method") +
