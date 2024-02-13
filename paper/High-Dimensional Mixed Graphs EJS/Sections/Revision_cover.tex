@@ -18,7 +18,9 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 % \noindent\textit{You are completely right. In fact, this is not the only identifiability issue that the latent Gaussian copula model (LGCM) faces. We added the following lines to the manuscript to address this and related issues:}
 
 \begin{change}
-    The latent Gaussian copula class suffers from several identifiability issues. First, the mean and the variances are not identifiable unless the monotone transformations \(f\) preserve them. Note that this only affects the diagonal entries in \(\mathbf\Sigma\), not the full covariance matrix. Therefore, without loss of generality, we assume the mean to be the zero vector and \(\Sigma_{jj} = 1\) for all \(j \in [d]\). Another identifiability issue relates to the unknown threshold parameters. To ease notation, denote \(\Gamma_j^r \equiv f_j(\gamma_j^r)\) and \(\Gamma_j \equiv \{f_j(\gamma_j^r)\}_{r=0}^{l_j+1}\). In the LGCM, only the transformed thresholds \(\Gamma_j\) rather than the original thresholds are identifiable from the discrete variables. We assume that the transformed thresholds retain the limiting behavior of the original thresholds, i.e., \(\Gamma_{j}^{0} = -\infty\) and \(\Gamma_j^{l_j+1} = \infty\).
+    %The latent Gaussian copula class suffers from several identifiability issues.
+    Several identifiability issues arise in the latent Gaussian copula class.
+    First, the mean and the variances are not identifiable unless the monotone transformations \(f\) were restricted to preserve them. Note that this only affects the diagonal entries in \(\mathbf\Sigma\), not the full covariance matrix. Therefore, without loss of generality, we assume the mean to be the zero vector and \(\Sigma_{jj} = 1\) for all \(j \in [d]\). Another identifiability issue relates to the unknown threshold parameters. To ease notation, let \(\Gamma_j^r \equiv f_j(\gamma_j^r)\) and \(\Gamma_j \equiv \{f_j(\gamma_j^r)\}_{r=0}^{l_j+1}\). In the LGCM, only the transformed thresholds \(\Gamma_j\) rather than the original thresholds are identifiable from the discrete variables. We assume, without loss of generality, that the transformed thresholds retain the limiting behavior of the original thresholds, i.e., \(\Gamma_{j}^{0} = -\infty\) and \(\Gamma_j^{l_j+1} = \infty\).
 \end{change}
 
 
@@ -27,13 +29,13 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thank you for pointing me in this direction. We engaged in a short comparison of the two approaches and added the paragraphs below to the Supplementary Materials. Formulating concentration inequalities for this pseudolikelihood approach becomes even more complex due to the polyserial likelihood function's intricate form and the multiple occurrences of the estimated transformations. Therefore, we lead with this empirical study to demonstrate the ad hoc estimator's computational efficiency. However, the pseudolikelihood approach is an interesting avenue for future research.
+    Thank you for pointing us in this direction. We engaged in a short comparison of the two approaches and added the paragraphs below to the Supplementary Materials. Formulating concentration inequalities for this pseudolikelihood approach becomes even more complex due to the polyserial likelihood function's intricate form and the multiple occurrences of the estimated transformations. Therefore, we lead with this empirical study to demonstrate the ad hoc estimator's computational efficiency. However, the pseudolikelihood approach is an interesting avenue for future research.
 \end{reply}
 
 \begin{change}
-    In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad hoc estimator presented in Section 3.2 of the Manuscript.
+    In this section, we conduct an empirical comparison of \textit{Case II} estimators within the framework of the LGCM. Specifically, we examine the \textit{Case II} MLE derived under the latent Gaussian model, as discussed in Section 2.1 of the Manuscript, which involves incorporating the estimated transformations \(\hat{f}\) at appropriate locations. Furthermore, we investigate the ad hoc estimator presented in Section 3.2 of the Manuscript in more detail.
 
-    Let us start by rewriting Eq. 6, where we replace occurrences of the former Gaussian variables $X_k$ with the corresponding transformation $\hat{f}_k(X_k)$. The resulting transformation-plugged-in first order condition (FOC) for the \textit{Case II} MLE under the LGCM becomes:
+    We start by rewriting Eq. (6), where we replace occurrences of the $X_k$ with the corresponding transformation $\hat{f}_k(X_k)$. The resulting transformation-based first-order condition (FOC) for the \textit{Case II} MLE under the LGCM becomes:
 
     \begin{align*}
         \MoveEqLeft \frac{\partial\ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f_k}(x_k))}{\partial \Sigma_{jk}}                                                                                                                                 \\
@@ -43,16 +45,16 @@ In the response below, we address the reviewers' comments point-by-point. We wan
     where
     \[\hat{f}_k(\tilde{x}_{ik}) = \frac{\hat{f}_k(x_{ik}) - \hat{f}_k(\bar{x}_k)}{\sqrt{\hat{f}_k(s_k)^2}} \quad \text{and} \quad {\tilde{\Gamma}}_j^{r}(\hat{f}_k) = \frac{{\Gamma}_j^{r} - \Sigma_{jk}\hat{f}_k(\tilde{x}_{ik})}{\sqrt{1-(\Sigma_{jk})^2}}.\]
 
-    In the ensuing empirical evaluation, the data generation scheme is as follows: First, we generate \(n\) data points \((z_{ij}, x_{ik})_{i=1}^n\) from a standard bivariate normal with correlation \(\Sigma^*_{jk}\). Second, we apply the same transformation \(f_t^{-1}(x) = 5x^5\) for \(t \in \{j,k\}\) to all the data points. Third, we generate binary data \(x_{ij}^r\) by randomly choosing appropriate \(f^{-1}_j(z_{ij})\)-thresholds and then applying inversion sampling.
+    In the ensuing empirical evaluation, the data generation scheme is as follows. First, we generate \(n\) data points \((z_{ij}, x_{ik})_{i=1}^n\) from a standard bivariate normal with correlation \(\Sigma^*_{jk}\). Second, we apply the same transformation \(f_t^{-1}(x) = 5x^5\) for \(t \in \{j,k\}\) to all the data points. Third, we generate binary data \(x_{ij}^r\) by randomly choosing \(f^{-1}_j(z_{ij})\)-thresholds (guaranteeing relatively balanced classes) and then applying inversion sampling.
 
-    Computing the transformation-plugged-in MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.
+    Computing the transformation-based MLE for \textit{Case II} can be achieved in several ways. Consider the plugged-in log-likelihood function, i.e.,
     \begin{equation*}
         \begin{split}
             \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,\hat{f}_k(x_k)) & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \log(p(x_{j}^{r} \mid \hat{f}_k(x_{ik}), \Sigma_{jk}))\big]                      \\
             & = \sum_{i=1}^n \big[\log(p(\hat{f}_k(x_{ik}))) + \Phi(\tilde{\Gamma}_j^{r}(\hat{f_k})) - \Phi(\tilde{\Gamma}_j^{r-1}(\hat{f_k}))\big].
         \end{split}
     \end{equation*}
-    One strategy entails the direct maximization by employing a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$; This strategy is used, for instance, in the R package \texttt{polycor} \citep{polycor2022}. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. We employ Broyden's method \citep{Broyden1965}.
+    One strategy to optimize the function is direct maximization with a quasi-Newton optimization procedure to determine the optimal values for $\hat\Sigma_{jk}$. This strategy is used, for instance, in the R package \texttt{polycor} \citep{polycor2022}. Alternatively, another approach involves utilizing the FOC and solving for $\hat\Sigma_{jk}$ through a nonlinear root-finding method. To do this, we employ Broyden's method \citep{Broyden1965}.
 
     In Figure 1, we generate data according to the scheme above for \(n=1000\) and a grid of true correlation values \(\Sigma^*_{jk} \in [0, 0.98]\) with a step size of \(s=0.02\). Due to symmetry, taking only positive correlations is sufficient for comparison purposes. For each correlation value along the grid, we generate \(100\) mixed binary-continuous data pairs and compute the MLE (using the abovementioned strategies) and the ad hoc estimator from Section 3.2 in the main text. We plot the true correlation values against the absolute difference between estimates and true correlation and the corresponding Monte-Carlo standard error for the MLE and the ad hoc estimator.
 
@@ -61,7 +63,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
         \caption{Comparison of the \textit{Case II} MLE under the LGCM and the ad hoc estimator.}
     \end{figure}
 
-    As expected, both strategies for attaining the MLE yield the same results. The ad hoc estimator's bias shows only when the underlying correlation \(\Sigma^*_{jk}\) exceeds \(0.75\) and it remains at such a mild level that we consider it negligible; see \cite{Olsson82} for a similar observation. The strength of the ad hoc estimator lies in its simplicity and computational efficiency. The left panel of Figure 2 shows the median computation time surrounded by the first and third quartiles. We compare the two MLE optimization strategies and the ad hoc estimator for a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). Here we fix \(\Sigma^*_{jk} = .87\) and repeat each calculation \(100\) times recording the time elapsed.
+    As expected, both strategies for attaining the MLE yield the same results. The ad hoc estimator's bias becomes noticeable only when the underlying correlation \(\Sigma^*_{jk}\) exceeds \(0.75\) and it remains at such a mild level that we consider it negligible; see \cite{Olsson82} for a similar observation. The strength of the ad hoc estimator lies in its simplicity and computational efficiency. The left panel of Figure 2 shows the median computation time surrounded by the first and third quartiles. We compare the two MLE optimization strategies and the ad hoc estimator for a grid of sample sizes \(n \in [50, 10000]\) with a step size of \(s_t = 50\). Here we fix \(\Sigma^*_{jk} = .87\) and repeat each calculation \(100\) times recording the time elapsed.
 
     \begin{figure}\label{fig:case2_speed}
         \includegraphics[width=\textwidth]{Figures/case_2_speed_comp.pdf}
@@ -80,10 +82,10 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{reply}
 
 \begin{change}
-    The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 2 of the Supplementary Materials. This convergence result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. Notably, a comparable methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
+    The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 2 of the Supplementary Materials. This concentration result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. We remark that related methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
 
     \begin{theorem*}
-        Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
+        Suppose that Assumptions \ref{ass1}--\ref{ass3} hold, and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$, and let \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) for known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, it holds that
         \begin{equation*}
             P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} \geq D\sqrt{\frac{\log(n)}{n} \log\bigg(\frac{B}{\alpha}\bigg)}\Bigg) \leq \frac{d(d-1)}{2}\alpha.
         \end{equation*}
@@ -96,11 +98,11 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thanks for hinting at this issue. We added a discussion on the convergence rate below Corollary 3.4.:
+    Thanks for raising this issue. We added a discussion on the convergence rate below Corollary 3.4.:
 \end{reply}
 
 \begin{change}
-    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation functions \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
+    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\), which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation functions \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
 \end{change}
 
 
@@ -139,7 +141,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 
 \begin{change}
     \begin{theorem*}
-        Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
+        Suppose that Assumptions \ref{ass1}--\ref{ass3} hold, and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$, and let \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) for known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, it holds that
         \begin{equation*}
             P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} \geq D\sqrt{\frac{\log(n)}{n} \log\bigg(\frac{B}{\alpha}\bigg)}\Bigg) \leq \frac{d(d-1)}{2}\alpha.
         \end{equation*}
@@ -150,11 +152,11 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \begin{change}
     The first four terms in the probability bound stem from finding bounds to different regions of the support of the transformed continuous variable. The last term is a consequence of the fact that we estimate the transform directly.
 
-    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
+    The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\), which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \({f}_j\) and the corresponding truncation constant \(\delta_n\). Both \citet{Xue12} and \citet{Liu12} discuss room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
 \end{change}
 
 \begin{point}
-    \textbf{Numerical Analysis}: It seems that too many details are deferred to the supplementary materials that a reader cannot understand how the data are simulated by reading the main text. If space is of concern, the two tables can be condensed into two plots. Furthermore, some rows (e.g., TPR and FPR) can be deferred to the supplementary materials as there are no additional insights to learn from these numbers. In addition, the real data analysis can also be deferred to the supplementary materials. I fail to gain any new insights about Covid from this analysis, and the texts in Fig. 1 and 2 are too small to read. The data analysis can be improved, but, in my opinion, it serves only as a distraction to the paper considering that the main contribution of this paper is a general model. Lastly, the low number of replicates in simulation (100 in Tables 1 and 2) makes me concern about the computational feasibility of the proposed method. Maybe the authors can report the computing time, as this might give more insight into the proposal’s computational feasibility.
+    \textbf{Numerical Experiments}: It seems that too many details are deferred to the supplementary materials that a reader cannot understand how the data are simulated by reading the main text. If space is of concern, the two tables can be condensed into two plots. Furthermore, some rows (e.g., TPR and FPR) can be deferred to the supplementary materials as there are no additional insights to learn from these numbers. In addition, the real data analysis can also be deferred to the supplementary materials. I fail to gain any new insights about Covid from this analysis, and the texts in Fig. 1 and 2 are too small to read. The data analysis can be improved, but, in my opinion, it serves only as a distraction to the paper considering that the main contribution of this paper is a general model. Lastly, the low number of replicates in simulation (100 in Tables 1 and 2) makes me concern about the computational feasibility of the proposed method. Maybe the authors can report the computing time, as this might give more insight into the proposal’s computational feasibility.
 \end{point}
 
 \begin{reply}
@@ -173,5 +175,5 @@ In the response below, we address the reviewers' comments point-by-point. We wan
         \label{table::timing}
     \end{table}
 
-    The general mixed data simulation setup we use here is detailed in Section \ref{sec::setup}. We report the mean computation time in seconds over \(20\) repetitions. The \texttt{oracle} estimator is the fastest, followed by the polyserial/polychoric method and the \texttt{bridge} ensemble estimator. Computing polyserial/polychoric correlations is roughly three times faster than the bridge function approach.
+    The general mixed data simulation setup we use here is detailed in Section \ref{sec::setup}. We report the mean computation time in seconds over \(20\) repetitions. The \texttt{oracle} estimator is the fastest, followed by the polyserial/polychoric method and the \texttt{bridge} ensemble estimator. Computing polyserial/polychoric correlations is about three times faster than the bridge function approach. In the \(d=750\) setting, our polyserial/polychoric method takes, on average, around 2.5 hours to compute the correlation matrix. The \texttt{bridge} ensemble estimator requires about 7.7 hours.
 \end{change}

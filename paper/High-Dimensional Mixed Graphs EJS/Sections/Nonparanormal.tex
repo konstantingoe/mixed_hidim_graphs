@@ -141,10 +141,10 @@ Define \(\mathbf{\Sigma}^*\) and \(\mathbf{\Omega}^*\) as the true covariance ma
 Assumptions \ref{ass1} and \ref{ass2} ensure that $f(X_j)$ and $f(X_k)$ are not perfectly linearly dependent and that the thresholds are bounded away from infinity, respectively. Importantly, these constraints impose minimal restrictions in practice. Assumption \ref{ass3} guarantees that the likelihood functions in Section \ref{latent_gaussian_cm} exhibit a ``nice'' behavior, representing a mild technical requirement.
 
 \paragraph{Convergence results for latent Gaussian models}
-The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 3 of the Supplementary Materials. This convergence result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. Notably, a comparable methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
+The subsequent theorem, drawing on \citet{Mei18}, hinges on four conditions, all substantiated in Section 3 of the Supplementary Materials. This concentration result specifically pertains to the MLEs introduced in Section \ref{sec::latent_gaussian} within the framework of the latent Gaussian model. We remark that related methodology has been applied by \citet{Anne19} in addressing zero-inflated Gaussian data under double truncation.
 
 \begin{theorem}\label{uniform_convergence}
-    Suppose that Assumptions \ref{ass1}--\ref{ass3} hold and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$ and \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, the following holds
+    Suppose that Assumptions \ref{ass1}--\ref{ass3} hold, and let $j \in [d_1]$ and $k \in [d_2]$ for  \textit{Case II} and $j,k \in [d_1]$ for \textit{Case III}. Let $\alpha \in (0,1)$, and let \(n \geq 4 C \log(n) \log\Big(\frac{B}{\alpha}\Big)\) with some known constants $B$, $C$, and $D$ depending on cases II and III but independent of $(n,d)$. Then, it holds that
     \begin{equation}
         P\Bigg(\max_{j,k}\abs{\hat{\Sigma}_{jk}^{(n)} - \Sigma_{jk}^{*}} \geq D\sqrt{\frac{\log(n)}{n} \log\bigg(\frac{B}{\alpha}\bigg)}\Bigg) \leq \frac{d(d-1)}{2}\alpha.
     \end{equation}
@@ -184,7 +184,7 @@ Regarding the scaling of the dimension in terms of sample size, the ensuing coro
     \end{equation}
 \end{corollary}
 
-The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\) which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \({f}_j\) and the corresponding truncation constant \(\delta_n\). There is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one; see \citep{Xue12}. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
+The nonparanormal estimator for \textit{Case II} converges to \(\Sigma_{jk}^*\) at rate \(n^{-1/4}\), which is slower than the optimal parametric rate of \(n^{-1/2}\). This stems not from the presence of the discrete variable but from the direct estimation of the transformation function \({f}_j\) and the corresponding truncation constant \(\delta_n\). Both \citet{Xue12} and \citet{Liu12} discuss room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one. In the numerical analysis below, we find that Theorem \ref{concentration_caseII} gives a worst-case rate that does not appear to negatively impact performance compared to estimators that attain the optimal rate.
 
 
 \subsection{Estimating the precision matrix}\label{sec:precision_matrix}
