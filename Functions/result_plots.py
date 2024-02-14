@@ -6,8 +6,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import sys
 from seaborn.palettes import color_palette
+
+plt.rcParams.update({"font.size": 18})
+
 
 sim_path = "/Users/kgoebler/hume_revisions/mixed_hidim_graphs/simulation_results/"
 sim_runs = 100
@@ -201,7 +203,7 @@ def plot_simulation_results(
         ncols=2,
         nrows=2,
         layout="constrained",
-        figsize=(10, 4),
+        figsize=(16, 8),
         sharey="row",
     )
     g = sns.pointplot(
@@ -294,7 +296,7 @@ def plot_simulation_results(
 
 ### binary plots
 
-fig = plt.figure(layout="constrained", figsize=(10, 4))
+fig = plt.figure(layout="constrained", figsize=(16, 8))
 subfigs = fig.subfigures(nrows=2, ncols=2, wspace=0.07, hspace=0.2)
 
 axs_left_top = auc_sub_pointplot(
@@ -337,7 +339,7 @@ fig.savefig(location + plotname)
 
 # general plots
 
-fig = plt.figure(layout="constrained", figsize=(10, 4))
+fig = plt.figure(layout="constrained", figsize=(16, 8))
 subfigs = fig.subfigures(nrows=2, ncols=2, wspace=0.07, hspace=0.2)
 
 axs_left_top = auc_sub_pointplot(
@@ -393,143 +395,3 @@ plot_simulation_results(
     location=location,
     plotname="general_fpr_tpr.pdf",
 )
-
-# # Plotting
-# def plot_simulation_results(
-#     result_data: list[pd.DataFrame],
-#     frobenius_ylim: tuple[float, float] = (2, 12),
-#     save_fig: bool = False,
-#     location: str = "/Users/kgoebler/hume_revisions/mixed_hidim_graphs/paper/High-Dimensional Mixed Graphs EJS/Figures/",
-#     plotname: str = "simulation_results.pdf",
-# ):
-#     """plot simulation results"""
-#     fig, axs = plt.subplots(
-#         ncols=2, nrows=2, figsize=(12, 8), sharey="row", layout="tight"
-#     )
-#     g = sns.pointplot(
-#         x="dimension",
-#         y="value",
-#         hue="Method",
-#         errorbar="sd",
-#         data=result_data[0],
-#         ax=axs[0, 0],
-#         dodge=True,
-#     )
-#     g.set(ylabel="AUC")
-#     h = sns.pointplot(
-#         x="dimension",
-#         y="value",
-#         hue="Method",
-#         errorbar="sd",
-#         data=result_data[1],
-#         ax=axs[0, 1],
-#         dodge=True,
-#     )
-#     i = sns.boxplot(
-#         x="dimension",
-#         y="value",
-#         hue="Method",
-#         # errorbar="sd",
-#         data=result_data[2],
-#         ax=axs[1, 0],
-#         dodge=True,
-#     )
-
-#     i.set(ylabel="Frobenius Norm")
-#     j = sns.pointplot(
-#         x="dimension",
-#         y="value",
-#         hue="Method",
-#         errorbar="sd",
-#         data=result_data[3],
-#         ax=axs[1, 1],
-#         dodge=True,
-#     )
-#     axs[0, 0].set(ylim=(0.5, 1))
-#     axs[1, 0].set(ylim=frobenius_ylim)
-
-#     for ax_row in axs:
-#         for ax in ax_row:
-#             plt.setp(ax.collections, alpha=0.6)
-#             plt.setp(ax.lines, alpha=0.6)
-
-#     sns.move_legend(g, "upper right", bbox_to_anchor=(1.2, 0))
-#     axs[0, 1].get_legend().set_visible(False)
-#     axs[1, 1].get_legend().set_visible(False)
-#     axs[1, 0].get_legend().set_visible(False)
-#     sns.color_palette("colorblind")
-
-#     # Add individual titles to each subplot
-#     axs[0, 0].set_title(r"$f(x) = x$")
-#     axs[0, 1].set_title(r"$f(x) = x^{1/3}$")
-#     axs[1, 0].set_title(r"$f(x) = x$")
-#     axs[1, 1].set_title(r"$f(x) = x^{1/3}$")
-
-#     plt.show()
-#     if save_fig:
-#         fig.savefig(location + plotname)
-
-
-# plot_simulation_results(
-#     result_data=binary_df_list, save_fig=True, plotname="binary.pdf"
-# )
-
-# plot_simulation_results(
-#     result_data=general_df_list, save_fig=True, plotname="general.pdf"
-# )
-
-
-# f, axs = plt.subplots(ncols=2, nrows=2, figsize=(12, 8), sharey="row", layout="tight")
-# g = sns.pointplot(
-#     x="dimension",
-#     y="value",
-#     hue="Method",
-#     errorbar="sd",
-#     data=long_binary_auc_df,
-#     ax=axs[0, 0],
-#     dodge=True,
-# )
-# g.set(ylabel="AUC")
-# h = sns.pointplot(
-#     x="dimension",
-#     y="value",
-#     hue="Method",
-#     errorbar="sd",
-#     data=long_cubic_auc_df,
-#     ax=axs[0, 1],
-#     dodge=True,
-# )
-# i = sns.pointplot(
-#     x="dimension",
-#     y="value",
-#     hue="Method",
-#     errorbar="sd",
-#     data=long_binary_frobenius_df,
-#     ax=axs[1, 0],
-#     dodge=True,
-# )
-# i.set(ylabel="Frobenius Norm")
-# j = sns.pointplot(
-#     x="dimension",
-#     y="value",
-#     hue="Method",
-#     errorbar="sd",
-#     data=long_cubic_frobenius_df,
-#     ax=axs[1, 1],
-#     dodge=True,
-# )
-# axs[0, 0].set(ylim=(0.5, 1))
-# axs[1, 0].set(ylim=(2, 12))
-
-# for ax_row in axs:
-#     for ax in ax_row:
-#         plt.setp(ax.collections, alpha=0.6)
-#         plt.setp(ax.lines, alpha=0.6)
-
-# sns.move_legend(g, "upper right", bbox_to_anchor=(1.2, 0))
-# axs[0, 1].get_legend().set_visible(False)
-# axs[1, 1].get_legend().set_visible(False)
-# axs[1, 0].get_legend().set_visible(False)
-# sns.color_palette("colorblind")
-
-# plt.show()
