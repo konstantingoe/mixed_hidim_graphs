@@ -98,7 +98,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thanks for raising this issue. We added a discussion on the convergence rate below Corollary 3.4.:
+    Thanks for raising this issue. We added a discussion on the convergence rate below Corollary 3.4. As we mention below, there is room for improvement of the estimator for \(f_j\) to get a rate closer to the optimal one. This is something we are currently investigating further.
 \end{reply}
 
 \begin{change}
@@ -160,7 +160,7 @@ In the response below, we address the reviewers' comments point-by-point. We wan
 \end{point}
 
 \begin{reply}
-    Thanks again for the helpful suggestions. We agree with your points and thus condensed the tables into plots and moved some of the details to the Supplementary Materials, including the real data analysis. We added the simulation setup back to the main text. The low number of replicates in the simulation study has been set due to the \(d=750\) scenario. Calculating \({750\choose 2}\) correlation pairs, plugging the corresponding correlation matrix into the \textit{glasso} routine for each penalty parameter \(\lambda\) along a grid of length 30 for four different estimators is computationally expensive. We added a microbenchmark of the correlation matrix estimation to give an idea of the computational feasibility of the proposed and existing methods. When applied in practice, one typically only runs the procedure once for a given dataset.
+    Thanks again for the helpful suggestions. We agree with your points and thus condensed the tables into plots and moved some of the details to the Supplementary Materials, including the real data analysis. We added the simulation setup back to the main text. The low number of replicates in the simulation study has been set due to the \(d=750\) scenario. Calculating \({750\choose 2}\) correlation pairs, plugging the corresponding correlation matrix into the \textit{glasso} routine for each penalty parameter \(\lambda\) along a grid of length 30 for four different estimators is computationally expensive. We added a microbenchmark of the correlation matrix estimation to give an idea of the computational feasibility of the proposed and existing methods. We are currently updating the \texttt{hume} package to improve the computational efficiency and allow for parallel computing of the correlation matrix entries.
 \end{reply}
 
 \begin{change}
