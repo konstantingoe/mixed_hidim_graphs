@@ -8,7 +8,8 @@
 % All other lines should be ignored.  After editing, there should be
 % no instances of ??? after this line.
 
-\documentclass[arxiv]{imsart_arxiv}
+%\documentclass[arxiv]{imsart_arxiv}
+\documentclass[arxiv]{imsart}
 
 \RequirePackage{amsthm, amsmath, bm}
 \RequirePackage[numbers]{natbib}
@@ -20,7 +21,7 @@
 % \volume{0}
 % \firstpage{1}
 % \lastpage{1}
-\arxiv{}
+%\arxiv{}
 
 \usepackage{commath}
 \usepackage{mathtools}
@@ -256,16 +257,16 @@ the Medical Research Council [programme number
 %% be provided in {supplement} environment  %%
 %% with title and short description.        %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\clearpage
-%\newpage
+\clearpage
+\newpage
 %\appendix
-%\renewcommand{\thesection}{SM} % change the numbering scheme
-%\section*{Supplementary Materials}
+\renewcommand{\thesection}{SM} % change the numbering scheme
+\section*{Supplementary Materials}
 %\begin{supplement}
-%\input{Sections/Appendix}
+\input{Sections/Appendix}
 %\end{supplement}
 
-%\clearpage\newpage
+\clearpage\newpage
 %% If your bibliography is in BibTeX format, uncomment commands:
 \bibliographystyle{imsart-nameyear}
 \bibliography{refs}       % Bibliography file (usually '*.bib')

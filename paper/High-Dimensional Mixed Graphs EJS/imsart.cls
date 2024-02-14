@@ -81,6 +81,10 @@
     \PassOptionsToClass{10pt,twoside}{article}%
 }
 % 
+\DeclareOption{arxiv}{%
+    \PassOptionsToClass{10pt,oneside}{article}%
+}
+% 
 \DeclareOption{aap}{%
     \PassOptionsToClass{11pt,oneside,leqno}{article}%
     \PassOptionsToPackage{leqno}{amsmath}%

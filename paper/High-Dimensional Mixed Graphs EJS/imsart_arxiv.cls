@@ -1,4 +1,4 @@
-%% This is file `imsart.cls'
+%% This is file `imsart_arxiv.cls'
 %%
 %% LaTeX 2e class file for the processing of LaTeX2e files
 %% of the following IMS/BS journals:
@@ -140,7 +140,7 @@
 \IfFileExists{imsart.sty}%
 {}%
 {%
-    \ClassError{imsart}%
+    \ClassError{imsart_arxiv}%
     {The complimentary style file "imsart.sty" is required}%
     {%
         The complimentary style file "imsart.sty" is required\MessageBreak
@@ -150,7 +150,7 @@
 }
 % 
 % Load additional macros and modifications for "article.cls"
-\RequirePackage{imsart}
+\RequirePackage{imsart_arxiv}
 % 
 \endinput
 %%
