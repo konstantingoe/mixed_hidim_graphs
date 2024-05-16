@@ -1,0 +1,103 @@
+The objective of this paper is to learn the structure of undirected graphical models applicable to a wide range of mixed and high-dimensional data. To achieve this, we extend the Gaussian copula model \cite{Liu09, Liu12, Xue12}, enabling the incorporation of both discrete and continuous data of any nature.
+
+\begin{definition}[The nonparanormal model]
+    A random vector of continuous variables \(\mathbf{X} = (X_1, \dots, X_d)\) follows a $d$-dimensional nonparanormal distribution if there exists a set of monotone and differentiable univariate functions $f = \{f_1,\dots, f_d\}$ such that the transformed vector \(f(\mathbf{X}) = (f_1(X)_1, \dots, f_d(X)_d)\) is multivariate Gaussian with mean $0$ and covariance matrix \(\Sigma\), i.e. \(f(\mathbf{X})\sim N(0,\Sigma)\). We write
+    \begin{equation}\label{def::nonparanormal}
+        \mathbf{X} \sim \text{NPN}(0, \Sigma, f),
+    \end{equation}
+    where without loss of generality, the diagonal entries in \(\Sigma\) are equal to one.
+\end{definition}
+
+As demonstrated by \citet{Liu09}, the model in Eq. \eqref{def::nonparanormal} is a semiparametric Gaussian copula model. The following definition indicates how to extend this model to the presence of general mixed data.
+
+\begin{definition}[latent Gaussian copula model for general mixed data]\label{latent_gaussian_cm}
+    Let $\mathbf{X} = (\mathbf{X}_1,\mathbf{X}_2)$ be a $d$-dimensional random vector with \(\mathbf{X}_1\) a $d_1$-dimensional vector of possibly ordered discrete variables, and \(\mathbf{X}_2\) a $d_2$-dimensional vector of continuous variables with \(d = d_1 + d_2\). Suppose there exists a $d_1$-dimensional random vector of latent continuous variables $\mathbf{Z}_1 = (Z_1, \dots, Z_{d_1})^T$ such that the following relation holds:
+    \begin{equation}\label{latent_ordered}
+        X_j = x_j^{r} \quad if \quad \gamma_j^{r-1} \leq Z_j < \gamma_j^r \quad \text{for all } j = 1, \dots d_1 \ \text{and } r = 1, \dots, l_j+1,
+    \end{equation}
+    where $\gamma^r_j$ represents some unknown thresholds with $\gamma_j^0 = -\infty$ and $\gamma_j^{l_j +1} = +\infty$, $x^r_j \in \mathbb{N}_0$ and $l_{j} +1$ the number of discrete levels of $X_j$ for all $j \in 1, \dots, d_1$.
+
+    Then, $\mathbf{X}$ satisfies the latent Gaussian copula model if $\mathbf{Z} \coloneqq (\mathbf{Z}_1, \mathbf{X}_2) \sim \text{NPN}(0, \mathbf{\Sigma}, f)$. We write
+    \begin{equation}
+        \mathbf{X} \sim \text{LNPN}(0, \mathbf{\Sigma}, f, \mathbf{\gamma}),
+    \end{equation}
+    where $\mathbf{\gamma} = \cup_{j=1}^{d_1} \{\gamma_j^r, r = 0, \dots, l_j+1\}$.
+\end{definition}
+
+Note that Definition \ref{latent_gaussian_cm} entails the class of Gaussian copula models if no discrete variables are present and the class of latent Gaussian models if $\mathbf{Z} = (\mathbf{Z}_1, \mathbf{X}_2) \sim \text{N}(0, \mathbf{\Sigma})$. As shown by \citet{Fan17}, the latent Gaussian copula model (LGCM) is invariant concerning any re-ordering of the discrete variables.
+
+We denote \([d] = \{1,\dots,d\}\), \([d_1] = \{1,\dots,d_1\}\), and \([d_2] = \{d_1 +1, \dots, d_2\}\), respectively. Several identifiability issues arise in the latent Gaussian copula class.
+First, the mean and the variances are not identifiable unless the monotone transformations \(f\) were restricted to preserve them. Note that this only affects the diagonal entries in \(\mathbf\Sigma\), not the full covariance matrix. Therefore, without loss of generality, we assume the mean to be the zero vector and \(\Sigma_{jj} = 1\) for all \(j \in [d]\). Another identifiability issue relates to the unknown threshold parameters. To ease notation, let \(\Gamma_j^r \equiv f_j(\gamma_j^r)\) and \(\Gamma_j \equiv \{f_j(\gamma_j^r)\}_{r=0}^{l_j+1}\). In the LGCM, only the transformed thresholds \(\Gamma_j\) rather than the original thresholds are identifiable from the discrete variables. We assume, without loss of generality, that the transformed thresholds retain the limiting behavior of the original thresholds, i.e., \(\Gamma_{j}^{0} = -\infty\) and \(\Gamma_j^{l_j+1} = \infty\).
+
+Let $\mathbf{\Omega}= \mathbf{\Sigma}^{-1}$ denote the latent precision matrix. Then, the zero-pattern of $\mathbf{\Omega}$ under the LGCM still encodes the conditional independencies of the latent continuous variables \cite{Liu09}. Thus, the underlying undirected graph is represented by $\mathbf{\Omega}$ just as for the parametric normal. Note that the LGCM for general mixed data in Definition \ref{latent_gaussian_cm} agrees with that of \citet{Quan18} and of \citet{Feng19}. The problem phrased by \citet{Fan17} is a special case of  Definition \ref{latent_gaussian_cm}. A more detailed comparison between both approaches can be found in Section \ref{sec::nonparanormal}. Nominal discrete variables need to be transformed into a dummy system.
+
+For the remainder of the paper, assume we observe an independent $n$-sample of the $d$-dimensional vector $\mathbf{X}$ which is assumed to follow an LGCM of the form \(\text{LNPN}(0, \mathbf{\Sigma}, f, \Gamma)\), where \(\Gamma = \cup_{j=1}^{d_1}\Gamma_j\). We estimate $\mathbf{\Sigma}$ by considering the corresponding entries separately i.e. the couples $(X_j, X_k)$ for \(j,k \in [d]\). Consequently, we have to keep in view three possible cases depending on the couple's variable types, respectively:
+
+\begin{description}[labelwidth=4em,leftmargin =\dimexpr\labelwidth+\labelsep\relax, font=\mdseries]
+    \item[\textit{Case I}:] Both $X_j$ and $X_k$ are continuous, i.e. $j,k \in [d_2]$.
+    \item[\textit{Case II}:] $X_j$ is discrete and $X_k$ is continuous, i.e. \(j\in [d_1], k\in [d_2]\) and vice versa.
+    \item[\textit{Case III}:] Both $X_j$ and $X_k$ are discrete, i.e. $j,k \in [d_1]$.
+\end{description}
+
+\subsection{Maximum-likelihood estimation under the latent Gaussian model}\label{sec::latent_gaussian}
+
+At the outset, we examine each of the three cases under the latent Gaussian model, a special case of the LGCM where all transformations are identity functions. Consider \textit{Case I}, where both $X_j$ and $X_k$ are continuous. This corresponds to the regular Gaussian graphical model set-up discussed thoroughly, for instance, in \cite{Ravikumar11}. Hence, the estimator for $\mathbf\Sigma$ when both $X_j$ and $X_k$ are continuous is:
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case I}]\label{def1}
+    Let $\Bar{x}_j$ denote the sample mean of $X_j$. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{d_1 < j < k\leq d_2}$ of the correlation matrix $\mathbf{\Sigma}$ is defined by:
+    \begin{equation}
+        \hat{\Sigma}_{jk}^{(n)} = \frac{\sum_{i=1}^n(x_{ij}- \Bar{x}_j)(x_{ik}- \Bar{x}_k)}{\sqrt{\sum_{i=1}^n(x_{ij}- \Bar{x}_j)^2} \sqrt{\sum_{i=1}^n(x_{ik}- \Bar{x}_k)^2}}
+    \end{equation}
+    for all $d_1 < j < k \leq d_2$.
+\end{definition}
+This is the Pearson product-moment correlation coefficient, which, of course, coincides with the maximum likelihood estimator (MLE) for the bivariate normal couple $\{(X_j, X_k)\}_{i=1}^n$.
+
+Turning to \textit{Case II}, let $X_j$ be ordinal and $X_k$ be continuous. We are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (see Eq. \eqref{latent_ordered}). This is called the \textit{polyserial} correlation \cite{Olsson82}. The likelihood and log-likelihood of the $n$-sample are defined by:
+\begin{equation}\label{polyserial_likelihood}
+    \begin{split}
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) &= \prod_{i=1}^n p(x^r_{ij},x_{ik}, \Sigma_{jk}) = \prod_{i=1}^n p(x_{ik})p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}) \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) &= \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}))\big],
+    \end{split}
+\end{equation}
+where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$. MLEs are obtained by differentiating the log of the likelihood in Eq. \eqref{polyserial_likelihood} with respect to the unknown parameters, setting the partial derivatives to zero, and solving the system of equations for $\Sigma_{jk}, \mu, \sigma^2$, and $\Gamma_j^r$ for $r \in [l_j]$. Under the latent Gaussian model, we have the special case that the thresholds are identifiable from the observed data as \(\Gamma_j^r = \gamma_j^r\).
+
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case II}]\label{definition_case2}
+    Recall the log-likelihood in Eq. \eqref{polyserial_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ is defined by:
+    \begin{equation}
+        \begin{split}
+            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) \\
+            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k)
+        \end{split}
+    \end{equation}
+    for all $1 < j \leq d_1 < k \leq d_2$.
+\end{definition}
+\noindent Regularity conditions ensuring consistency and asymptotic efficiency, as well as asymptotic normality, can be verified to hold here \cite{Cox74}.
+
+Lastly, consider \textit{Case III}, where both $X_j$ and $X_k$ are ordinal. The probability of an observation with $X_j = x^r_j$ and $X_k = x^s_k$ is given by
+\begin{equation}\label{cell_probabilities}
+    \begin{split}
+        \pi_{rs} &\coloneqq p(X_j = x^r_j, X_k = x^s_k) \\
+        &= p(\Gamma_j^{r-1} \leq Z_j < \Gamma_j^r, \Gamma_k^{s-1} \leq Z_k < \Gamma_k^s) \\
+        &= \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} \int_{\Gamma_k^{s-1}}^{\Gamma_k^{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
+    \end{split}
+\end{equation}
+where $r = 1, \dots, l_j$ and $s = 1, \dots, l_k$ and $\phi(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as outlined by \citet{Olsson79} the likelihood and log-likelihood of the $n$-sample are defined as:
+\begin{equation}\label{polychoric_likelihood}
+    \begin{split}
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= C \prod_{r=1}^{l_{{j}}} \prod_{s=1}^{l_{{k}}} \pi_{rs}^{n_{rs}}, \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= \log(C) + \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{k}} n_{rs} \log(\pi_{rs}),
+    \end{split}
+\end{equation}
+where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^r_j$ and $X_k = x^s_k$ in a sample of size $n= \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs}$. Differentiating the log-likelihood, setting it to zero, and solving for the unknown parameters yields the estimator for $\Sigma$ for \textit{Case III}:
+\begin{definition}[MLE $\hat{\mathbf{\Sigma}}^{(n)}$ of $\mathbf{\Sigma}$; \textit{Case III}]\label{definition_case3}
+    Recall the log-likelihood in Eq. \eqref{polychoric_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of $\mathbf{\Sigma}$ is defined by:
+    \begin{equation}
+        \begin{split}
+            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) \\
+            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s),
+        \end{split}
+    \end{equation}
+    for all $1 < j < k \leq d_1 $.
+\end{definition}
+\noindent Regularity conditions ensuring consistency and asymptotic efficiency, as well as asymptotic normality, can again be verified to hold here \cite{Wallentin17}.
+
+Summing up, under the latent Gaussian model, a special case of the LGCM, $\hat{\mathbf{\Sigma}}^{(n)}$ is a consistent and asymptotically efficient estimator for the underlying latent correlation matrix $\mathbf{\Sigma}$. Corresponding concentration results are derived in Section \ref{sec::convergence_results}.

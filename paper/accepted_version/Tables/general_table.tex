@@ -1,0 +1,72 @@
+
+%\begin{table}[htbp!] 
+    %\centering 
+    
+    %\begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} clcccc}
+    \begin{longtable}[c]{@{}*{6}{>{\arraybackslash}p{0.135\linewidth}}@{}}
+    \caption{General mixed data structure learning; Simulated data with $100$ simulation runs. Standard errors in brackets \label{mix_table}}
+    \\[-1.8ex]\hline 
+    \hline \\[-1.8ex] 
+    $d,n,f(x)$ && Oracle $\hat{\Omega}$ & Oracle $\hat{\Omega}_{\rho}$ & $\hat{\Omega}_{\text{MLE}}$ & $\hat{\Omega}_r$ \\ 
+    \hline \\[-1.8ex] 
+    \multirow{8}{*}{$50,200,x$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $2.860$ & $2.845$ & $2.892$ & $2.890$ \\ [-.25em]
+    & & \footnotesize{($0.091$)} & \footnotesize{($0.097$)} & \footnotesize{($0.096$)} & \footnotesize{($0.097$)} \\ [.15em]
+    & FPR & $0.015$ & $0.019$ & $0.042$ & $0.044$ \\ [-.25em]
+    & & \footnotesize{($0.005$)} & \footnotesize{($0.005$)} & \footnotesize{($0.012$)} & \footnotesize{($0.012$)} \\ [.15em]
+    & TPR & $0.335$ & $0.343$ & $0.356$ & $0.356$ \\ [-.25em]
+    & & \footnotesize{($0.043$)} & \footnotesize{($0.044$)} & \footnotesize{($0.061$)} & \footnotesize{($0.059$)} \\ [.15em]
+    & AUC & $0.881$ & $0.864$ & $0.816$ & $0.811$ \\ [-.25em]
+    & & \footnotesize{($0.013$)} & \footnotesize{($0.015$)} & \footnotesize{($0.018$)} & \footnotesize{($0.017$)} \\  [1em]
+    %
+    %
+    \multirow{8}{*}{$50,200,x^3$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $2.869$ & $2.866$ & $3.014$ & $2.912$ \\ [-.25em]
+    & & \footnotesize{($0.101$)} & \footnotesize{($0.104$)} & \footnotesize{($0.094$)} & \footnotesize{($0.099$)} \\ [.15em] 
+    & FPR & $0.016$ & $0.019$ & $0.044$ & $0.042$ \\ [-.25em]
+    & & \footnotesize{($0.005$)} & \footnotesize{($0.007$)} & \footnotesize{($0.011$)} & \footnotesize{($0.010$)} \\ [.15em]
+    & TPR & $0.336$ & $0.338$ & $0.244$ & $0.352$ \\ [-.25em]
+    & & \footnotesize{($0.047$)} & \footnotesize{($0.049$)} & \footnotesize{($0.041$)} & \footnotesize{($0.053$)} \\ [.15em]
+    & AUC & $0.879$ & $0.862$ & $0.730$ & $0.807$ \\ [-.25em]
+    & & \footnotesize{($0.015$)} & \footnotesize{($0.015$)} & \footnotesize{($0.021$)} & \footnotesize{($0.018$)} \\ [1em]
+    %
+    %
+    \multirow{8}{*}{$250,200,x$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $3.201$ & $3.212$ & $3.503$ & $3.507$ \\ [-.25em]
+    & & \footnotesize{($0.109$)} & \footnotesize{($0.108$)} & \footnotesize{($0.104$)} & \footnotesize{($0.104$)} \\ [.15em]
+    & FPR & $0.006$ & $0.008$ & $0.016$ & $0.016$ \\ [-.25em]
+    & & \footnotesize{($0.001$)} & \footnotesize{($0.002$)} & \footnotesize{($0.002$)} & \footnotesize{($0.002$)} \\ [.15em]
+    & TPR & $0.297$ & $0.300$ & $0.257$ & $0.255$ \\ [-.25em]
+    & & \footnotesize{($0.040$)} & \footnotesize{($0.037$)} & \footnotesize{($0.038$)} & \footnotesize{($0.037$)} \\ [.15em]
+    & AUC & $0.879$ & $0.861$ & $0.816$ & $0.811$ \\ [-.25em]
+    & & \footnotesize{($0.015$)} & \footnotesize{($0.015$)} & \footnotesize{($0.016$)} & \footnotesize{($0.017$)} \\  [1em]
+    %
+    %
+    \multirow{8}{*}{$250,200,x^3$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $3.192$ & $3.209$ & $3.708$ & $3.503$ \\ [-.25em]
+    & & \footnotesize{($0.092$)} & \footnotesize{($0.091$)} & \footnotesize{($0.096$)} & \footnotesize{($0.090$)} \\ [.15em]
+    & FPR & $0.006$ & $0.008$ & $0.018$ & $0.017$ \\ [-.25em]
+    & & \footnotesize{($0.001$)} & \footnotesize{($0.001$)} & \footnotesize{($0.002$)} & \footnotesize{($0.002$)} \\ [.15em]
+    & TPR & $0.300$ & $0.289$ & $0.153$ & $0.255$ \\ [-.25em]
+    & & \footnotesize{($0.036$)} & \footnotesize{($0.033$)} & \footnotesize{($0.022$)} & \footnotesize{($0.037$)} \\ [.15em]
+    & AUC & $0.881$ & $0.863$ & $0.734$ & $0.812$ \\ [-.25em]
+    & & \footnotesize{($0.012$)} & \footnotesize{($0.013$)} & \footnotesize{($0.017$)} & \footnotesize{($0.015$)} \\  [1em]
+    %
+    %
+    \multirow{8}{*}{$750,300,x$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $11.207$ & $11.154$ & $10.913$ & $10.928$ \\ [-.25em]
+    & & \footnotesize{($0.140$)} & \footnotesize{($0.148$)} & \footnotesize{($0.125$)} & \footnotesize{($0.128$)} \\ [.15em] 
+    & FPR & $0.257$ & $0.247$ & $0.214$ & $0.213$ \\ [-.25em]
+    & & \footnotesize{($0.007$)} & \footnotesize{($0.007$)} & \footnotesize{($0.007$)} & \footnotesize{($0.007$)} \\ [.15em]
+    & TPR & $0.936$ & $0.917$ & $0.835$ & $0.830$ \\ [-.25em]
+    & & \footnotesize{($0.010$)} & \footnotesize{($0.011$)} & \footnotesize{($0.016$)} & \footnotesize{($0.014$)} \\ [.15em]
+    & AUC & $0.938$ & $0.925$ & $0.878$ & $0.874$ \\ [-.25em]
+    & & \footnotesize{($0.006$)} & \footnotesize{($0.006$)} & \footnotesize{($0.008$)} & \footnotesize{($0.008$)} \\  [1em]
+    %
+    \multirow{8}{*}{$750,300,x^3$} & $\Norm{\hat{\Omega} - \Omega}_F$ & $11.199$ & $11.165$ & $11.398$ & $10.939$ \\ [-.25em] 
+    & & \footnotesize{($0.134$)} & \footnotesize{($0.140$)} & \footnotesize{($0.809$)} & \footnotesize{($0.149$)} \\ [.15em]
+    & FPR & $0.256$ & $0.248$ & $0.202$ & $0.214$ \\ [-.25em]
+    & & \footnotesize{($0.006$)} & \footnotesize{($0.007$)} & \footnotesize{($0.030$)} & \footnotesize{($0.007$)} \\ [.15em]
+    & TPR & $0.937$ & $0.919$ & $0.687$ & $0.831$ \\ [-.25em]
+    & & \footnotesize{($0.010$)} & \footnotesize{($0.011$)} & \footnotesize{($0.097$)} & \footnotesize{($0.015$)} \\ [.15em]
+    & AUC & $0.938$ & $0.925$ & $0.789$ & $0.874$ \\ [-.25em]
+    & & \footnotesize{($0.006$)} & \footnotesize{($0.007$)} & \footnotesize{($0.009$)} & \footnotesize{($0.008$)} \\ 
+    \hline \\[-1.8ex] 
+    \end{longtable}
+%\end{table} 
+
