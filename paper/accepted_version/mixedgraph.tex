@@ -93,22 +93,22 @@
 
 \begin{document}
 \begin{frontmatter}
-\title{High-Dimensional Undirected Graphical Models for Arbitrary Mixed Data}
-%\title{A sample article title with some additional note\thanksref{t1}}
-\runtitle{High-Dimensional Mixed Graphs}
-%\thankstext{T1}{A sample additional note to the title.}
+    \title{High-Dimensional Undirected Graphical Models for Arbitrary Mixed Data}
+    %\title{A sample article title with some additional note\thanksref{t1}}
+    \runtitle{High-Dimensional Mixed Graphs}
+    %\thankstext{T1}{A sample additional note to the title.}
 
-\begin{aug}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Only one address is permitted per author. %%
-%% Only division, organization and e-mail is %%
-%% included in the address.                  %%
-%% Additional information can be included in %%
-%% the Acknowledgments section if necessary. %%
-%% ORCID can be inserted by command:         %%
-%% \orcid{0000-0000-0000-0000}               %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\author{\fnms{Konstantin} \snm{Göbler}
+    \begin{aug}
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% Only one address is permitted per author. %%
+        %% Only division, organization and e-mail is %%
+        %% included in the address.                  %%
+        %% Additional information can be included in %%
+        %% the Acknowledgments section if necessary. %%
+        %% ORCID can be inserted by command:         %%
+        %% \orcid{0000-0000-0000-0000}               %%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \author{\fnms{Konstantin} \snm{Göbler}
             \ead[label=e1]{konstantin.goebler@tum.de}}
 
 
@@ -125,40 +125,39 @@
         \author{\fnms{Sach} \snm{Mukherjee}
             \ead[label=e4]{sach.mukherjee@dzne.de}}
 
-        \address{German Center for Neurodegenerative Diseases (DZNE)\\
-        Bonn, Germany, \\ [1em]
-        University of Cambridge,
-        MRC Biostatistics Unit \\
-        \printead{e4}}
+        \address{German Center for Neurodegenerative Diseases (DZNE)\\and University of Bonn\\
+            Bonn, Germany \\ and \\
+            MRC Biostatistics Unit,\\University of Cambridge, UK
+            \\
+            \printead{e4}}
 
         \author{\fnms{Anne} \snm{Miloschewski}
             \ead[label=e2]{anne.miloschwski@dzne.de}}
-
         \address{German Center for Neurodegenerative Diseases (DZNE)\\
             Bonn, Germany\\
             \printead{e2}}
 
         \runauthor{K. Göbler et al.}
-\end{aug}
+    \end{aug}
 
-\begin{abstract}
-    {\input{Sections/Abstract}}
-\end{abstract}
+    \begin{abstract}
+        {\input{Sections/Abstract}}
+    \end{abstract}
 
-% \begin{keyword}[class=MSC]
-% \kwd[Primary ]{00X00}
-% \kwd{00X00}
-% \kwd[; secondary ]{00X00}
-% \end{keyword}
+    % \begin{keyword}[class=MSC]
+    % \kwd[Primary ]{00X00}
+    % \kwd{00X00}
+    % \kwd[; secondary ]{00X00}
+    % \end{keyword}
 
-\begin{keyword}
-    \kwd{Generalized correlation}
-    \kwd{high-dimensional statistics}
-    \kwd{latent Gaussian copula}
-    \kwd{mixed data}
-    \kwd{polychoric/polyserial correlation}
-    \kwd{undirected graphical models}
-\end{keyword}
+    \begin{keyword}
+        \kwd{Generalized correlation}
+        \kwd{high-dimensional statistics}
+        \kwd{latent Gaussian copula}
+        \kwd{mixed data}
+        \kwd{polychoric/polyserial correlation}
+        \kwd{undirected graphical models}
+    \end{keyword}
 
 \end{frontmatter}
 
@@ -231,7 +230,7 @@ Software in the form of the \texttt{R} package \pkg{hume} is available on the co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{acks}[Acknowledgments]
-    We thank the anonymous reviewers whose insightful comments and constructive feedback significantly enhanced the quality and clarity of this paper. We further want to thank Hongjian Shi for his helpful insights on the subject.\\
+    We thank the anonymous reviewers whose insightful comments and constructive feedback significantly enhanced the quality and clarity of this paper. We further want to thank Hongjian Shi for his helpful insights on the subject. Empirical results include work conducted using the UK Biobank Resource. \\
 
     \paragraph{Conflict of Interest:} None declared.
 \end{acks}
@@ -243,10 +242,8 @@ Software in the form of the \texttt{R} package \pkg{hume} is available on the co
 %% funding section.                         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{funding}
-    This work was supported by the Helmholtz AI project
-    ``Scalable and Interpretable Models for Complex And Structured Data'' (SIMCARD),
-    the Medical Research Council [programme number
-            MC UU 00002/17] and the National Institute for Health Research (NIHR) Cambridge Biomedical Research Centre.
+    This work was partly supported by the Helmholtz AI project
+    ``Scalable and Interpretable Models for Complex And Structured Data'' (SIMCARD), the UK Medical Research Council (MC-UU-00002/17) and the National Institute for Health Research (Cambridge Biomedical Research Centre at the Cambridge University Hospitals NHS Foundation Trust).
     %This research has been conducted using the UK Biobank.
     \\
 

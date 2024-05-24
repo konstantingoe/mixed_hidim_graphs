@@ -44,8 +44,8 @@ where $r_{f(X_k)X_j}$ is the product-moment correlation between the Gaussian (un
 All that remains is to find sample versions of each of the three components in Eq. \eqref{population_polyserial_nonpara}. Let us start with the expectation in the denominator $E[f(Z_j)X_j]$. By assumption $f(\mathbf{Z}) \sim \text{N}(\mathbf{0},\mathbf{\Sigma})$ and therefore w.l.o.g. $f(Z_j) \sim \text{N}(0,1)$ for all $j \in 1, \dots, d_1$. Consequently, we have:
 \begin{equation}
     \begin{split}
-        E[f(Z_j)X_j] &= \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) \phi(f(z_j)) dz_j \\
-        &= \sum_{r=1}^{l_{j+1}} x^r_j \bigg(\phi(\Gamma_j^r) - \phi(\Gamma_j^{r-1}) \bigg) = \sum_{r=1}^{l_{j}} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r),
+        E[f(Z_j)X_j] & = \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) d F(f(z_j)) = \sum_{r=1}^{l_{j+1}} x^r_j \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} f(z_j) \phi(f(z_j)) dz_j \\
+                     & = \sum_{r=1}^{l_{j+1}} x^r_j \bigg(\phi(\Gamma_j^r) - \phi(\Gamma_j^{r-1}) \bigg) = \sum_{r=1}^{l_{j}} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r),
     \end{split}
 \end{equation}
 where $\phi(t)$ denotes the standard normal density. Whenever the ordinal states are consecutive integers we have $\sum_{r=1}^{l_{j}} (x^{r+1}_j - x^r_j)\phi(\Gamma_j^r) = \sum_{r=1}^{l_{j}}\phi(\Gamma_j^r)$. Based on this derivation, it is straightforward to give an estimate of $E[f(Z_j)X_j]$ once estimates of the thresholds $\Gamma_j$ have been formed (see Section \ref{sec::thresholds} for more details). Let us turn to the numerator of Eq. \eqref{population_polyserial_nonpara}. The standard deviation of $X_j$ does not require any special treatment, and we simply use $\sigma^{(n)}_{X_j} = \sqrt{1/n \sum_{i=1}^n (X_{ij} - \bar{X}_{j})^2}$ to be able to treat discrete variables with a general number of states. However, the product-moment correlation $r_{f(X_k), X_j}$ is inherently more challenging as it involves the (unobserved) transformed version of the continuous variables. Therefore, we proceed to estimate the transformation.
@@ -91,8 +91,8 @@ The unknown threshold parameters $\Gamma_j$ for \(j \in [d_1]\) play a key role 
 We start by highlighting that we set the LGCM model up such that for each $\Gamma_j$, there exists a constant $G$ such that $\Abs{\Gamma^r_j} \leq G$ for all $r \in [l_{j}]$, i.e., the estimable thresholds are bounded away from infinity. Let us define the cumulative probability vector $\pi_j = (\pi^1_j, \dots, \pi^{l_{j}}_j)$. Then, by Eq. \eqref{latent_ordered}, it is easy to see that
 \begin{equation}\label{thresholds_identity}
     \begin{split}
-        \pi^r_j &= \sum_{i=1}^r P(X_j = x^i_j) = P(X_j \leq x^r_j) \\
-        &= P(Z_j \leq \gamma_j^r) = P(f_j(Z_j) \leq f_j(\gamma_j^r)) = \Phi(\Gamma^r_j).
+        \pi^r_j & = \sum_{i=1}^r P(X_j = x^i_j) = P(X_j \leq x^r_j)                               \\
+                & = P(Z_j \leq \gamma_j^r) = P(f_j(Z_j) \leq f_j(\gamma_j^r)) = \Phi(\Gamma^r_j).
     \end{split}
 \end{equation}
 From this equation, it is immediately clear that the thresholds satisfy $\Gamma^{r}_{j} = \Phi^{-1}( \pi^r_j )$.

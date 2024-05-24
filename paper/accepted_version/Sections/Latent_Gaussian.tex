@@ -54,8 +54,8 @@ This is the Pearson product-moment correlation coefficient, which, of course, co
 Turning to \textit{Case II}, let $X_j$ be ordinal and $X_k$ be continuous. We are interested in the product-moment correlation $\Sigma_{jk}$ between two jointly Gaussian variables, where $X_j$ is not directly observed but only the ordered categories (see Eq. \eqref{latent_ordered}). This is called the \textit{polyserial} correlation \cite{Olsson82}. The likelihood and log-likelihood of the $n$-sample are defined by:
 \begin{equation}\label{polyserial_likelihood}
     \begin{split}
-        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k) &= \prod_{i=1}^n p(x^r_{ij},x_{ik}, \Sigma_{jk}) = \prod_{i=1}^n p(x_{ik})p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}) \\
-        \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) &= \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}))\big],
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k)    & = \prod_{i=1}^n p(x^r_{ij},x_{ik}, \Sigma_{jk}) = \prod_{i=1}^n p(x_{ik})p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}) \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) & = \sum_{i=1}^n \big[\log(p(x_{ik})) + \log(p(x^r_{ij} \mid x_{ik}, \Sigma_{jk}))\big],
     \end{split}
 \end{equation}
 where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j$ and $X_k$ and $p(x_{ik})$ the marginal density of the Gaussian variable $X_k$. MLEs are obtained by differentiating the log of the likelihood in Eq. \eqref{polyserial_likelihood} with respect to the unknown parameters, setting the partial derivatives to zero, and solving the system of equations for $\Sigma_{jk}, \mu, \sigma^2$, and $\Gamma_j^r$ for $r \in [l_j]$. Under the latent Gaussian model, we have the special case that the thresholds are identifiable from the observed data as \(\Gamma_j^r = \gamma_j^r\).
@@ -64,8 +64,8 @@ where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j
     Recall the log-likelihood in Eq. \eqref{polyserial_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1 < j \leq d_1 < k \leq d_2}$ is defined by:
     \begin{equation}
         \begin{split}
-            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k) \\
-            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k)
+            \hat{\Sigma}_{jk}^{(n)} & = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k)             \\
+                                    & = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x^r_j,x_k)
         \end{split}
     \end{equation}
     for all $1 < j \leq d_1 < k \leq d_2$.
@@ -75,16 +75,16 @@ where $p(x_{ij}^{r},x_{ik}, \Sigma_{jk})$ denotes the joint probability of  $X_j
 Lastly, consider \textit{Case III}, where both $X_j$ and $X_k$ are ordinal. The probability of an observation with $X_j = x^r_j$ and $X_k = x^s_k$ is given by
 \begin{equation}\label{cell_probabilities}
     \begin{split}
-        \pi_{rs} &\coloneqq p(X_j = x^r_j, X_k = x^s_k) \\
-        &= p(\Gamma_j^{r-1} \leq Z_j < \Gamma_j^r, \Gamma_k^{s-1} \leq Z_k < \Gamma_k^s) \\
-        &= \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} \int_{\Gamma_k^{s-1}}^{\Gamma_k^{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
+        \pi_{rs} & \coloneqq p(X_j = x^r_j, X_k = x^s_k)                                                                            \\
+                 & = p(\Gamma_j^{r-1} \leq Z_j < \Gamma_j^r, \Gamma_k^{s-1} \leq Z_k < \Gamma_k^s)                                  \\
+                 & = \int_{\Gamma_j^{r-1}}^{\Gamma_j^{r}} \int_{\Gamma_k^{s-1}}^{\Gamma_k^{s}} \phi(z_j,z_k,\Sigma_{jk}) dz_j dz_k,
     \end{split}
 \end{equation}
 where $r = 1, \dots, l_j$ and $s = 1, \dots, l_k$ and $\phi(x,y,\rho)$ denotes the standard bivariate density with correlation $\rho$. Then, as outlined by \citet{Olsson79} the likelihood and log-likelihood of the $n$-sample are defined as:
 \begin{equation}\label{polychoric_likelihood}
     \begin{split}
-        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= C \prod_{r=1}^{l_{{j}}} \prod_{s=1}^{l_{{k}}} \pi_{rs}^{n_{rs}}, \\
-        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) &= \log(C) + \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{k}} n_{rs} \log(\pi_{rs}),
+        L_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)    & = C \prod_{r=1}^{l_{{j}}} \prod_{s=1}^{l_{{k}}} \pi_{rs}^{n_{rs}},        \\
+        \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) & = \log(C) + \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{k}} n_{rs} \log(\pi_{rs}),
     \end{split}
 \end{equation}
 where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^r_j$ and $X_k = x^s_k$ in a sample of size $n= \sum_{r=1}^{l_{{j}}}\sum_{s=1}^{l_{{k}}} n_{rs}$. Differentiating the log-likelihood, setting it to zero, and solving for the unknown parameters yields the estimator for $\Sigma$ for \textit{Case III}:
@@ -92,8 +92,8 @@ where $C$ is a constant and $n_{rs}$ denotes the observed frequency of $X_j = x^
     Recall the log-likelihood in Eq. \eqref{polychoric_likelihood}. The estimator $\hat{\mathbf{\Sigma}}^{(n)} = (\hat{\Sigma}_{jk}^{(n)})_{1\leq j < k\leq d_1}$ of $\mathbf{\Sigma}$ is defined by:
     \begin{equation}
         \begin{split}
-            \hat{\Sigma}_{jk}^{(n)} &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s) \\
-            &= \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s),
+            \hat{\Sigma}_{jk}^{(n)} & = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s)              \\
+                                    & = \argmax_{\Abs{\Sigma_{jk}} \leq 1} \frac{1}{n} \ell_{jk}^{(n)}(\Sigma_{jk}, x_j^r,x_k^s),
         \end{split}
     \end{equation}
     for all $1 < j < k \leq d_1 $.
