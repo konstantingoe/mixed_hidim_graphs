@@ -1,0 +1,320 @@
+\documentclass[ejs,noshowframe]{imsart}
+%% Packages
+\RequirePackage{amsthm,amsmath,amsfonts,amssymb}
+\RequirePackage[numbers]{natbib}
+%\RequirePackage[authoryear]{natbib}%% uncomment this for author-year citations
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\RequirePackage{graphicx}
+
+
+
+
+\usepackage{commath}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{bbm}
+\usepackage{comment}
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{floatrow}
+\floatsetup[longtable]{LTcapwidth=table}
+
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\arxiv{2010.00000}
+\startlocaldefs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Uncomment next line to change            %%
+%% the type of equation numbering           %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\numberwithin{equation}{section}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% For Axiom, Claim, Corollary, Hypothesis, %%
+%% Lemma, Theorem, Proposition              %%
+%% use \theoremstyle{plain}                 %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \theoremstyle{plain}
+% \newtheorem{axiom}{Axiom}
+% \newtheorem{claim}[axiom]{Claim}
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{lemma}[theorem]{Lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% For Assumption, Definition, Example,     %%
+%% Notation, Property, Remark, Fact         %%
+%% use \theoremstyle{definition}            %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \theoremstyle{definition}
+% \newtheorem{definition}[theorem]{Definition}
+% \newtheorem*{example}{Example}
+% \newtheorem*{fact}{Fact}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% For Case use \theoremstyle{remark}       %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \theoremstyle{remark}
+% \newtheorem{case}{Case}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Please put your definitions here:        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclarePairedDelimiter\Abs{\lvert}{\rvert}%
+\DeclarePairedDelimiterX{\Norm}[1]{\lVert}{\rVert}{#1}
+
+%%%%%%%%%%%%%%%%%%%%Theorem Definition
+\theoremstyle{plain}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{theorem*}{Theorem}
+
+
+\endlocaldefs
+
+\begin{document}
+\begin{frontmatter}
+    \title{High-Dimensional Undirected Graphical Models for Arbitrary Mixed Data}
+    %\title{A sample article title with some additional note\thanksref{t1}}
+    \runtitle{High-Dimensional Mixed Graphs}
+    %\thankstext{T1}{A sample additional note to the title.}
+
+    \begin{aug}
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% Only one address is permitted per author. %%
+        %% Only division, organization and e-mail is %%
+        %% included in the address.                  %%
+        %% Additional information can be included in %%
+        %% the Acknowledgments section if necessary. %%
+        %% ORCID can be inserted by command:         %%
+        %% \orcid{0000-0000-0000-0000}               %%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \author{\fnms{Konstantin} \snm{Göbler}
+            \ead[label=e1]{konstantin.goebler@tum.de}}
+
+
+        \address{Technical University of Munich, \\
+            Robert Bosch GmbH \\
+            \printead{e1}}
+
+        \author{\fnms{Mathias} \snm{Drton}
+            \ead[label=e3]{mathias.drton@tum.de}}
+
+        \address{Munich Center for Machine Learning, \\ Technical University of Munich \\
+            \printead{e3}}
+
+        \author{\fnms{Sach} \snm{Mukherjee}
+            \ead[label=e4]{sach.mukherjee@dzne.de}}
+
+        \address{German Center for Neurodegenerative Diseases (DZNE)\\and University of Bonn\\
+            Bonn, Germany \\ and \\
+            MRC Biostatistics Unit,\\University of Cambridge, UK
+            \\
+            \printead{e4}}
+
+        \author{\fnms{Anne} \snm{Miloschewski}
+            \ead[label=e2]{anne.miloschwski@dzne.de}}
+        \address{German Center for Neurodegenerative Diseases (DZNE)\\
+            Bonn, Germany\\
+            \printead{e2}}
+
+        \runauthor{K. Göbler et al.}
+    \end{aug}
+
+    \begin{abstract}
+        {\input{Sections/Abstract}}
+    \end{abstract}
+
+    % \begin{keyword}[class=MSC]
+    % \kwd[Primary ]{00X00}
+    % \kwd{00X00}
+    % \kwd[; secondary ]{00X00}
+    % \end{keyword}
+
+    \begin{keyword}
+        \kwd{Generalized correlation}
+        \kwd{high-dimensional statistics}
+        \kwd{latent Gaussian copula}
+        \kwd{mixed data}
+        \kwd{polychoric/polyserial correlation}
+        \kwd{undirected graphical models}
+    \end{keyword}
+
+\end{frontmatter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Please use \tableofcontents for articles %%
+%% with 50 pages and more                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\tableofcontents
+
+
+\section{Introduction}
+\label{sec::intro}
+
+\input{Sections/Introduction}
+
+\section{Background and model set-up}
+\label{sec::gaussian}
+
+\input{Sections/Latent_Gaussian}
+
+\section{Latent Gaussian Copula Models}
+\label{sec::nonparanormal}
+
+\input{Sections/Nonparanormal}
+
+\section{Numerical results}\label{sec::numerical_results}
+
+% \subsection{Experimental Setup}\label{sec::setup}
+
+\input{Sections/Setup}
+
+% \subsection{Simulation Results}\label{sec::results}
+
+\input{Sections/Results}
+
+% \section{Application to COVID-19 data}\label{sec::empirical_application}
+
+% \input{Sections/Empirical_example}
+
+\section{Conclusion}\label{sec::conclusions}
+
+\input{Sections/Conclusion}
+
+\section{Software}\label{sec5}
+
+Software in the form of the \texttt{R} package \pkg{hume} is available on the corresponding author's GitHub page (\url{https://github.com/konstantingoe/hume}). The \texttt{R}-code to reproduce the simulation study conducted in the paper is available under \url{https://github.com/konstantingoe/mixed_hidim_graphs}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Example with single Appendix:            %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{appendix}
+% \section*{Title}\label{appn} %% if no title is needed, leave empty \section*{}.
+% Appendices should be provided in \verb|{appendix}| environment,
+% before Acknowledgements.
+
+% If there is only one appendix,
+% then please refer to it in text as \ldots\ in the \hyperref[appn]{Appendix}.
+% \end{appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Example with multiple Appendixes:        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{appendix}
+    \input{Sections/Appendix}
+\end{appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Acknowledgements                         %%
+%% should be provided in the                %%
+%% Acknowledgements section.                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{acks}[Acknowledgments]
+    We thank the anonymous reviewers whose insightful comments and constructive feedback significantly enhanced the quality and clarity of this paper. We further want to thank Hongjian Shi for his helpful insights on the subject. Empirical results include work conducted using the UK Biobank Resource. \\
+
+    \paragraph{Conflict of Interest:} None declared.
+\end{acks}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Funding information, if any,             %%
+%% should be provided in the                %%
+%% funding section.                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{funding}
+    This work was partly supported by the Helmholtz AI project
+    ``Scalable and Interpretable Models for Complex And Structured Data'' (SIMCARD), the UK Medical Research Council (MC-UU-00002/17) and the National Institute for Health Research (Cambridge Biomedical Research Centre at the Cambridge University Hospitals NHS Foundation Trust).
+    %This research has been conducted using the UK Biobank.
+    \\
+
+    \noindent This project also received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme [grant agreement No 883818].
+
+\end{funding}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Supplementary Material, including data   %%
+%% sets and code, should be provided in     %%
+%% {supplement} environment with title      %%
+%% and short description. It cannot be      %%
+%% available exclusively as external link.  %%
+%% All Supplementary Material must be       %%
+%% available to the reader on Project       %%
+%% Euclid with the published article.       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{supplement}
+% \stitle{Title of Supplement A}
+% \sdescription{Short description of Supplement A.}
+% \end{supplement}
+% \begin{supplement}
+% \stitle{Title of Supplement B}
+% \sdescription{Short description of Supplement B.}
+% \end{supplement}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  The Bibliography                       %%
+%%                                                         %%
+%%  imsart-???.bst  will be used to                        %%
+%%  create a .BBL file for submission.                     %%
+%%                                                         %%
+%%  Note that the displayed Bibliography will not          %%
+%%  necessarily be rendered by Latex exactly as specified  %%
+%%  in the online Instructions for Authors.                %%
+%%                                                         %%
+%%  MR numbers will be added by VTeX.                      %%
+%%                                                         %%
+%%  Use \cite{...} to cite references in text.             %%
+%%                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% if your bibliography is in bibtex format, uncomment commands:
+\bibliographystyle{imsart-nameyear}
+\bibliography{refs}       % Bibliography file (usually '*.bib')
+
+%% or include bibliography directly:
+% \begin{thebibliography}{9}
+
+% \bibitem{r1}
+% \textsc{Billingsley, P.} (1999). \textit{Convergence of
+% Probability Measures}, 2nd ed.
+% Wiley, New York.
+% \MR{1700749}
+
+% \bibitem{r2}
+% \textsc{Bourbaki, N.}  (1966). \textit{General Topology}  \textbf{1}.
+% Addison--Wesley, Reading, MA.
+
+% \bibitem{r3}
+% \textsc{Ethier, S. N.} and \textsc{Kurtz, T. G.} (1985).
+% \textit{Markov Processes: Characterization and Convergence}.
+% Wiley, New York.
+% \MR{838085}
+
+% \bibitem{r4}
+% \textsc{Prokhorov, Yu.} (1956).
+% Convergence of random processes and limit theorems in probability
+% theory. \textit{Theory  Probab.  Appl.}
+% \textbf{1} 157--214.
+% \MR{84896}
+% \end{thebibliography}
+
+\end{document}
