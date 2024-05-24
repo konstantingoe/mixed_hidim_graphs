@@ -1,12 +1,11 @@
-
 # Packages
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
-  stargazer,
   huge,
   glasso,
-  future.apply,
-  parallel,
+  foreach,
+  doFuture,
+  doRNG,
   dplyr,
   stats,
   MASS,
@@ -19,9 +18,15 @@ pacman::p_load(
   polycor,
   corpcor,
   cowplot,
+  latex2exp,
+  microbenchmark,
+  jsonlite,
   genscore,
+  nleqslv,
   pcaPP,
   VGAM,
   reshape,
   plyr,
-  ggplot2)
+  ggpubr,
+  ggplot2
+)

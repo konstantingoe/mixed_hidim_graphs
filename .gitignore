@@ -37,3 +37,34 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+.DS_Store
+
+# Texfiles
+*.bst
+*.aux
+*.out
+*.fls
+*.bbl
+*.blg
+*.fdb_latexmk
+*.gz
+*.log
+
+# tex pdfs
+
+*supplementary.pdf
+*ejs-template.pdf
+
+# virtual environment
+
+venv*
+
+# scribbling
+
+scribbling/*
+
+# vscode
+
+.vscode/*
+*.nfs*

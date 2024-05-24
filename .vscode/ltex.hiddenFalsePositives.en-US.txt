@@ -1,0 +1,2 @@
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QA large part of the graphical models literature has focused on the case in which either only continuous variables or only discrete variables are present.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIn practice, we use an efficient implementation of the alternating projections method proposed by \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
